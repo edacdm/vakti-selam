@@ -14,11 +14,13 @@
     "isolatedModules": true,
     "jsx": "react-native",
     "resolveJsonModule": true,
-    "types": ["react", "react-native", "react-native-maps"],
+    "types": ["react", "react-native", "react-native-maps", "expo-router/types"],
+
     "paths": {
-      "@/*": ["./*"]
+      "~/*": ["./*"]  // ✅ Yeni alias — artık "~" kök dizini gösterir
     }
   },
+
   "include": [
     "**/*.ts",
     "**/*.tsx",
@@ -26,5 +28,6 @@
     "expo-env.d.ts",
     "app/**/*"
   ],
+
   "exclude": ["node_modules"]
 }
