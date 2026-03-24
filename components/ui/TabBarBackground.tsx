@@ -1,6 +1,5 @@
-// This is a shim for web and Android where the tab bar is generally opaque.
-export default undefined;
+import { BlurView } from "expo-blur";
 
-export function useBottomTabOverflow() {
-  return 0;
+export default function TabBarBackground() {
+  return <BlurView tint="default" intensity={50} style={{ flex: 1 }} />;
 }
