@@ -1,88 +1,22 @@
-# 🕌 Vakt-i Selam
+🕌 Vakt-i Selam
+Kullanıcıların günlük ibadetlerini dijital ortamda düzenli ve bilinçli bir şekilde takip edebilmeleri için geliştirilmiş, modern ve minimalist bir mobil uygulamadır.
 
-Vakt-i Selam, kullanıcıların günlük ibadetlerini daha düzenli ve bilinçli şekilde yerine getirebilmesi için geliştirilmiş bir mobil uygulamadır.  
-Namaz rehberi, zikirmatik ve farz namaz içerikleri gibi temel özellikleri tek bir platformda sunar.
+✨ Özellikler
+Namaz Rehberi: 5 vakit ve diğer özel namazların adım adım anlatımı.
 
----
+Zikirmatik: Dijital tesbih ve zikir takibi.
 
-## ✨ Özellikler
+Kullanıcı Dostu: Sade, göz yormayan ve sezgisel arayüz.
 
-- 🕌 **Namaz Rehberi**  
-  5 vakit namazın adım adım anlatımı
+🛠️ Teknolojiler
+React Native (Expo) • TypeScript • Expo Router • Custom Hooks
 
-- 📿 **Zikirmatik**  
-  Dijital tesbih ile zikir takibi
-
-- 🕋 **Farz Namazlar**  
-  Cuma ve cenaze namazı gibi özel namaz içerikleri
-
-- 🎯 **Kullanıcı Dostu Arayüz**  
-  Sade ve anlaşılır tasarım
-
----
-
-## 🛠️ Kullanılan Teknolojiler
-
-- React Native (Expo)
-- TypeScript
-- Expo Router
-- JavaScript (ES6+)
-
----
-
-## 📂 Proje Yapısı
-
-vakti-selam/
-│
-├── app/                # Sayfalar ve navigasyon (Expo Router)
-├── components/         # UI bileşenleri
-├── assets/             # Ses ve görseller
-├── constants/          # Sabitler (renk vs.)
-├── hooks/              # Custom hook'lar
-└── package.json
-
----
-
-## ▶️ Kurulum ve Çalıştırma
-
-1. Projeyi klonlayın:
-
-git clone https://github.com/edacdm/vakti-selam.git  
+▶️ Kurulum
+Bash
+git clone https://github.com/edacdm/vakti-selam.git
 cd vakti-selam
-
-2. Bağımlılıkları yükleyin:
-
 npm install
-
-3. Uygulamayı başlatın:
-
 npx expo start
 
----
-
-## 📱 Uygulamayı Çalıştırma
-
-- Expo Go (telefon)
-- Android Emulator
-- iOS Simulator
-
----
-
-## 🚧 Geliştirme Durumu
-
-Proje aktif olarak geliştirilmektedir.  
-Yeni özellikler eklenmeye devam edecektir.
-
----
-
-## 👩‍💻 Geliştirici
-
-Eda Nur Çidem  
-Yönetim Bilişim Sistemleri mezunu  
-Mobil uygulama geliştirme ile ilgileniyor
-
----
-
-## 📌 Not
-
-Bu proje, mobil uygulama geliştirme becerilerini geliştirmek ve gerçek bir ürün ortaya koymak amacıyla hazırlanmıştır.
+📌 Proje Vizyonu
+Modern mobil yazılım prensipleri (tip güvenliği, modüler yapı) merkeze alınarak, gerçek dünya ihtiyaçlarına pratik ve kullanıcı odaklı bir dijital çözüm sunmak amacıyla tasarlanmıştır.
