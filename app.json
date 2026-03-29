@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "vakti-selam",
+    "name": "Vakti Selam",
     "slug": "vakti-selam",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,9 +12,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.vaktiselam.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0B101E"
       },
       "edgeToEdgeEnabled": true
     },
@@ -31,7 +32,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#0B101E"
         }
       ]
     ],

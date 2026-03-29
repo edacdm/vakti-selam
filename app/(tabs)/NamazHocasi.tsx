@@ -1,118 +1,131 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, {
-  Easing,
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
-
-const { width } = Dimensions.get("window");
+import React from "react";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function NamazHocasi() {
   const router = useRouter();
-  const bgProgress = useSharedValue(0);
-
-  useEffect(() => {
-    bgProgress.value = withRepeat(
-      withTiming(1, { duration: 9000, easing: Easing.inOut(Easing.sin) }),
-      -1,
-      true
-    );
-  }, []);
-
-  const animatedBg = useAnimatedStyle(() => {
-    const bgColor = interpolateColor(
-      bgProgress.value,
-      [0, 1],
-      ["#0B101E", "#15233E"]
-    );
-    return { backgroundColor: bgColor };
-  });
 
   const goTo = (path: string): void => {
     router.push(path as any);
   };
 
-  const renderCard = (
+  const renderListItem = (
     path: string, 
     IconComponent: any, 
     iconName: string, 
     title: string, 
-    desc: string
+    desc: string,
+    badgeText?: string
   ) => (
     <TouchableOpacity
-      style={styles.card}
+      style={styles.listItem}
       onPress={() => goTo(path)}
       activeOpacity={0.8}
     >
       <LinearGradient
-        colors={["rgba(212, 175, 55, 0.1)", "rgba(212, 175, 55, 0.02)"]}
+        colors={["rgba(255, 255, 255, 0.05)", "rgba(255, 255, 255, 0.01)"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.cardInner}
+        style={styles.listItemInner}
       >
-        <IconComponent name={iconName} size={30} color="#D4AF37" style={styles.icon} />
-        <Text style={styles.cardTitle}>{title}</Text>
-        <Text style={styles.cardDesc}>{desc}</Text>
+        <View style={styles.listIconBox}>
+          <IconComponent name={iconName} size={26} color="#0B101E" />
+        </View>
+        <View style={styles.listTextContainer}>
+          <View style={styles.titleRow}>
+            <Text style={styles.listTitle}>{title}</Text>
+            {badgeText && (
+              <View style={styles.badgeBox}>
+                 <Text style={styles.badgeText}>{badgeText}</Text>
+              </View>
+            )}
+          </View>
+          <Text style={styles.listDesc}>{desc}</Text>
+        </View>
+        <View style={styles.chevronBox}>
+           <Ionicons name="chevron-forward" size={18} color="#D4AF37" />
+        </View>
       </LinearGradient>
     </TouchableOpacity>
   );
 
   return (
-    <Animated.View style={[styles.container, animatedBg]}>
+    <LinearGradient colors={["#0B101E", "#15233E"]} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         
         <View style={styles.header}>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.replace("/" as any)}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
+          <Text style={styles.headerTitle}>İbadet Rehberi</Text>
+          <View style={{ width: 44 }} />
         </View>
 
-        <View style={styles.titleContainer}>
-          <MaterialCommunityIcons name="book-open-page-variant-outline" size={40} color="#D4AF37" />
-          <Text style={styles.title}>Namaz Hocası</Text>
-          <Text style={styles.subtitle}>Namazın her adımını öğrenmek için rehberiniz</Text>
-        </View>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          
+          {/* Lüks Kahraman (Hero) Kartı */}
+          <LinearGradient
+            colors={["rgba(212, 175, 55, 0.15)", "rgba(212, 175, 55, 0.02)"]}
+            style={styles.heroCard}
+          >
+            <View style={styles.heroContent}>
+              <View style={styles.heroIconBg}>
+                <MaterialCommunityIcons name="book-open-page-variant" size={40} color="#D4AF37" />
+              </View>
+              <View style={styles.heroTextContainer}>
+                <Text style={styles.heroTitle}>Namaz Hocası</Text>
+                <Text style={styles.heroSubtitle}>Adım Adım Öğrenin</Text>
+              </View>
+            </View>
+            <View style={styles.separator} />
+            <Text style={styles.heroQuote}>
+              "Kulun kıyamet gününde hesabını vereceği ilk ameli namazdır." (Tirmizî)
+            </Text>
+          </LinearGradient>
 
-        <View style={styles.grid}>
-          {renderCard(
-            "/namazlar/BesVakit",
-            MaterialCommunityIcons,
-            "clock-time-four-outline",
-            "Beş Vakit Namazlar",
-            "Farz namazların ayrıntılı kılınışı"
-          )}
-          {renderCard(
-            "/namazlar/FarzNamazlar",
-            Ionicons,
-            "star-outline",
-            "Farz Namazlar",
-            "İslam’ın direği olan namazlar"
-          )}
-          {renderCard(
-            "/namazlar/VacipNamazlar",
-            MaterialCommunityIcons,
-            "star-shooting-outline",
-            "Vacip Namazlar",
-            "Bayram ve vitr namazlarıyla"
-          )}
-          {renderCard(
-            "/namazlar/NafileNamazlar",
-            Ionicons,
-            "moon-outline",
-            "Nafile Namazlar",
-            "Teheccüd, kuşluk ve fazlası"
-          )}
-        </View>
+          {/* Dikey Kart Listesi */}
+          <View style={styles.listContainer}>
+            {renderListItem(
+              "/namazlar/BesVakit",
+              MaterialCommunityIcons,
+              "clock-time-four-outline",
+              "Beş Vakit Namaz",
+              "Farz namazlarının tam kılınışları",
+              "Sık Kullanılan"
+            )}
+            {renderListItem(
+              "/namazlar/FarzNamazlar",
+              Ionicons,
+              "star-outline",
+              "Farz Namazlar",
+              "Cuma namazı, Cenaze namazı vb.",
+              "Farz"
+            )}
+            {renderListItem(
+              "/namazlar/VacipNamazlar",
+              MaterialCommunityIcons,
+              "star-shooting-outline",
+              "Vacip Namazlar",
+              "Bayram ve Vitr namazı kılınışları",
+              "Vacip"
+            )}
+            {renderListItem(
+              "/namazlar/NafileNamazlar",
+              Ionicons,
+              "moon-outline",
+              "Nafile Namazlar",
+              "Teheccüd, Kuşluk ve Tesbih namazları",
+              "Sünnet"
+            )}
+          </View>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
         
       </SafeAreaView>
-    </Animated.View>
+    </LinearGradient>
   );
 }
 
@@ -124,9 +137,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    flexDirection: "row",
     paddingHorizontal: 20,
-    paddingTop: 20,
-    alignItems: "flex-start",
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   iconButton: {
     width: 44,
@@ -138,69 +153,146 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
   },
-  titleContainer: {
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20,
+  headerTitle: {
+    color: "#D4AF37",
+    fontSize: 18,
+    fontWeight: "600",
+    letterSpacing: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingTop: 10,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: "300",
-    color: "#E2E8F0",
-    letterSpacing: 1.5,
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  subtitle: {
-    color: "#94A3B8",
-    fontSize: 13,
-    textAlign: "center",
-    letterSpacing: 0.5,
-    fontWeight: "400",
-  },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 12,
-    paddingHorizontal: 16,
-  },
-  card: {
-    width: width * 0.43,
-    height: 125,
-    borderRadius: 20,
-    backgroundColor: "rgba(11, 16, 30, 0.8)",
-    shadowColor: "#D4AF37",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 6 },
-    shadowRadius: 10,
-    elevation: 6,
-  },
-  cardInner: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 20,
+  heroCard: {
+    width: "100%",
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 25,
     borderWidth: 1,
     borderColor: "rgba(212, 175, 55, 0.3)",
-    padding: 12,
+    shadowColor: "#D4AF37",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 15,
+    elevation: 5,
   },
-  icon: {
-    marginBottom: 8,
+  heroContent: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  cardTitle: {
-    fontSize: 14,
-    color: "#D4AF37",
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: 4,
+  heroIconBg: {
+    width: 60,
+    height: 60,
+    borderRadius: 18,
+    backgroundColor: "rgba(11, 16, 30, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.2)",
+  },
+  heroTextContainer: {
+    flex: 1,
+  },
+  heroTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#E2E8F0",
     letterSpacing: 0.5,
   },
-  cardDesc: {
-    fontSize: 11,
+  heroSubtitle: {
+    fontSize: 13,
+    color: "#D4AF37",
+    marginTop: 4,
+    fontWeight: "500",
+    letterSpacing: 0.5,
+  },
+  separator: {
+    width: "100%",
+    height: 1,
+    backgroundColor: "rgba(212, 175, 55, 0.2)",
+    marginVertical: 18,
+  },
+  heroQuote: {
     color: "#94A3B8",
+    fontSize: 14,
+    fontStyle: "italic",
+    lineHeight: 22,
     textAlign: "center",
-    lineHeight: 14,
+  },
+  listContainer: {
+    gap: 15,
+  },
+  listItem: {
+    width: "100%",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  listItemInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+  },
+  listIconBox: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: "#D4AF37",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+    shadowColor: "#D4AF37",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  listTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  listTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#E2E8F0",
+    marginRight: 8,
+  },
+  badgeBox: {
+    backgroundColor: "rgba(212, 175, 55, 0.15)",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.3)",
+  },
+  badgeText: {
+    fontSize: 9,
+    color: "#D4AF37",
+    fontWeight: "bold",
+    textTransform: "uppercase",
+  },
+  listDesc: {
+    fontSize: 12,
+    color: "#94A3B8",
+    lineHeight: 18,
+    paddingRight: 10,
+  },
+  chevronBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(11, 16, 30, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

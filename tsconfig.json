@@ -17,7 +17,8 @@
     "types": ["react", "react-native", "react-native-maps", "expo-router/types"],
 
     "paths": {
-      "~/*": ["./*"]  // ✅ Yeni alias — artık "~" kök dizini gösterir
+      "~/*": ["./*"],
+      "@/*": ["./*"]
     }
   },
 

@@ -32,7 +32,7 @@ export default function AksamNamazi() {
       <SafeAreaView style={styles.safeArea}>
         
         <View style={styles.header}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => router.push("/namazlar/BesVakit")}>
+          <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
         </View>

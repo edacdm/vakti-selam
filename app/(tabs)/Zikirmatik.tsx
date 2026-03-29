@@ -59,7 +59,7 @@ export default function Zikirmatik() {
   const playSound = async (): Promise<void> => {
     try {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("./assets/click.mp3")
+        require("../../assets/click.mp3.mp3")
       );
       setSound(newSound);
       await newSound.playAsync();

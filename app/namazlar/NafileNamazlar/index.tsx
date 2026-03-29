@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function FarzNamazlar() {
+export default function NafileNamazlar() {
   const router = useRouter();
 
   const renderListItem = (
@@ -54,7 +54,7 @@ export default function FarzNamazlar() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Farz Namazlar</Text>
+          <Text style={styles.headerTitle}>Nafile Namazlar</Text>
           <View style={{ width: 44 }} />
         </View>
 
@@ -66,33 +66,61 @@ export default function FarzNamazlar() {
           >
             <View style={styles.heroContent}>
               <View style={styles.heroIconBg}>
-                <Ionicons name="star-outline" size={38} color="#D4AF37" />
+                <Ionicons name="moon-outline" size={38} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Farz Namazlar</Text>
-                <Text style={styles.heroSubtitle}>İslam'ın Temel Şartı</Text>
+                <Text style={styles.heroTitle}>Gönüllü İbadetler</Text>
+                <Text style={styles.heroSubtitle}>Teheccüd, Kuşluk ve Fazlası</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              Cuma, cenaze ve vakit namazları Allah'ın kullarına kesin emridir.
+              Farzların dışında sevap kazanmak amacıyla kılınan namazlardır.
             </Text>
           </LinearGradient>
 
           <View style={styles.listContainer}>
             {renderListItem(
-              "/namazlar/FarzNamazlar/Cuma",
-              "mosque",
-              "Cuma Namazı",
-              "Haftalık farz kılınan namaz",
-              "Farz-ı Ayn"
+              "/namazlar/NafileNamazlar/Teheccud",
+              "weather-night",
+              "Teheccüd",
+              "Gecenin üçte birinde kılınan namaz",
+              "Gece"
             )}
             {renderListItem(
-              "/namazlar/FarzNamazlar/Cenaze",
-              "account-multiple-outline",
-              "Cenaze Namazı",
-              "Ayakta kılınan duasal namaz",
-              "Farz-ı Kifaye"
+              "/namazlar/NafileNamazlar/Kusluk",
+              "weather-sunny",
+              "Kuşluk (Duha)",
+              "Güneş doğduktan sonra",
+              "Gündüz"
+            )}
+            {renderListItem(
+              "/namazlar/NafileNamazlar/Evvabin",
+              "weather-sunset",
+              "Evvabin",
+              "Akşam namazından hemen sonra",
+              "Akşam"
+            )}
+            {renderListItem(
+              "/namazlar/NafileNamazlar/TahiyyetulMescid",
+              "arch",
+              "Tahiyyetü'l Mescid",
+              "Camiye girildiğinde kılınır",
+              "Cami"
+            )}
+            {renderListItem(
+              "/namazlar/NafileNamazlar/Hacet",
+              "hand-heart-outline",
+              "Hacet Namazı",
+              "Bir dilek için kılınan namaz",
+              "Dilek"
+            )}
+            {renderListItem(
+              "/namazlar/NafileNamazlar/Sukur",
+              "heart-outline",
+              "Şükür Namazı",
+              "Gelen bir nimete karşılık olarak",
+              "Şükür"
             )}
           </View>
 

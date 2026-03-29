@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function FarzNamazlar() {
+export default function VacipNamazlar() {
   const router = useRouter();
 
   const renderListItem = (
@@ -54,7 +54,7 @@ export default function FarzNamazlar() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Farz Namazlar</Text>
+          <Text style={styles.headerTitle}>Vacip Namazlar</Text>
           <View style={{ width: 44 }} />
         </View>
 
@@ -66,33 +66,47 @@ export default function FarzNamazlar() {
           >
             <View style={styles.heroContent}>
               <View style={styles.heroIconBg}>
-                <Ionicons name="star-outline" size={38} color="#D4AF37" />
+                <MaterialCommunityIcons name="star-shooting-outline" size={38} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Farz Namazlar</Text>
-                <Text style={styles.heroSubtitle}>İslam'ın Temel Şartı</Text>
+                <Text style={styles.heroTitle}>Vacip İbadetler</Text>
+                <Text style={styles.heroSubtitle}>Vitir, Bayram ve Secdeler</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              Cuma, cenaze ve vakit namazları Allah'ın kullarına kesin emridir.
+              Farz kadar kesin olmayan ancak yine emredilen değerli namazlar.
             </Text>
           </LinearGradient>
 
           <View style={styles.listContainer}>
             {renderListItem(
-              "/namazlar/FarzNamazlar/Cuma",
-              "mosque",
-              "Cuma Namazı",
-              "Haftalık farz kılınan namaz",
-              "Farz-ı Ayn"
+              "/namazlar/VacipNamazlar/VitirNamazi",
+              "moon-waning-crescent",
+              "Vitir Namazı",
+              "Yatsıdan sonra kılınan namaz",
+              "3 Rekat"
             )}
             {renderListItem(
-              "/namazlar/FarzNamazlar/Cenaze",
-              "account-multiple-outline",
-              "Cenaze Namazı",
-              "Ayakta kılınan duasal namaz",
-              "Farz-ı Kifaye"
+              "/namazlar/VacipNamazlar/RamazanBayrami",
+              "star-crescent",
+              "Ramazan Bayramı",
+              "Yılda bir kılınan bayram namazı",
+              "Yılda Bir"
+            )}
+            {renderListItem(
+              "/namazlar/VacipNamazlar/KurbanBayrami",
+              "food-variant",
+              "Kurban Bayramı",
+              "Kurban ibadeti öncesi olan namaz",
+              "Kurban"
+            )}
+            {renderListItem(
+              "/namazlar/VacipNamazlar/TilavetSecdesi",
+              "book-open-variant",
+              "Tilavet Secdesi",
+              "Mushaflarda geçen secde ayetleri için",
+              "Özel"
             )}
           </View>
 
