@@ -22,34 +22,38 @@ const ZIKIR_KEYS: TranslationKeys[] = ["dhikrSubhanallah", "dhikrAlhamdulillah",
 export default function Zikirmatik() {
   const router = useRouter();
   const { t } = useTranslation();
-  const [count, setCount] = useState<number>(0);
+  
+  // Revised state: Holds an object where keys are tab indices and values are counts
+  const [counts, setCounts] = useState<Record<number, number>>({});
   const [activeTabIdx, setActiveTabIdx] = useState<number>(0);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
 
   const scaleValue = useRef<Animated.Value>(new Animated.Value(1)).current;
   const translateYValue = useRef<Animated.Value>(new Animated.Value(0)).current;
 
+  // Load individual counts and the last active tab on mount
   useEffect(() => {
     const loadData = async (): Promise<void> => {
       try {
-        const savedCount = await AsyncStorage.getItem("count");
+        const savedCounts = await AsyncStorage.getItem("zikirCounts");
         const savedTab = await AsyncStorage.getItem("activeTabIdx");
-        if (savedCount !== null) setCount(parseInt(savedCount, 10));
+        if (savedCounts !== null) setCounts(JSON.parse(savedCounts));
         if (savedTab !== null) setActiveTabIdx(parseInt(savedTab, 10));
       } catch (error) {}
     };
     loadData();
   }, []);
 
+  // Save changes to storage whenever counts or active tab change
   useEffect(() => {
     const saveData = async (): Promise<void> => {
       try {
-        await AsyncStorage.setItem("count", count.toString());
+        await AsyncStorage.setItem("zikirCounts", JSON.stringify(counts));
         await AsyncStorage.setItem("activeTabIdx", activeTabIdx.toString());
       } catch (error) {}
     };
     saveData();
-  }, [count, activeTabIdx]);
+  }, [counts, activeTabIdx]);
 
   useEffect(() => {
     return sound
@@ -100,8 +104,11 @@ export default function Zikirmatik() {
   };
 
   const handleIncrement = async (): Promise<void> => {
-    const newCount: number = count + 1;
-    setCount(newCount);
+    const currentCount = counts[activeTabIdx] || 0;
+    const newCount = currentCount + 1;
+    
+    // Update only the count for the active dhikr
+    setCounts(prev => ({ ...prev, [activeTabIdx]: newCount }));
 
     await playSound();
 
@@ -114,12 +121,13 @@ export default function Zikirmatik() {
 
   const handleReset = (): void => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    setCount(0);
+    // Reset only the current dhikr's count
+    setCounts(prev => ({ ...prev, [activeTabIdx]: 0 }));
   };
 
   const handleTabChange = (idx: number): void => {
     setActiveTabIdx(idx);
-    setCount(0);
+    // Removed setCount(0) to maintain persistence across tabs
   };
 
   const handleGoBack = (): void => {
@@ -130,7 +138,8 @@ export default function Zikirmatik() {
     }
   };
 
-  const currentCycle: number = count > 0 && count % 33 === 0 ? 33 : count % 33;
+  const currentCount = counts[activeTabIdx] || 0;
+  const currentCycle: number = currentCount > 0 && currentCount % 33 === 0 ? 33 : currentCount % 33;
   const progressPercentage: number = (currentCycle / 33) * 100;
 
   return (
@@ -164,7 +173,7 @@ export default function Zikirmatik() {
 
         <View style={styles.centerArea}>
           <View style={styles.counterScreen}>
-            <Text style={styles.counterText}>{count}</Text>
+            <Text style={styles.counterText}>{currentCount}</Text>
           </View>
 
           <View style={styles.progressWrapper}>
