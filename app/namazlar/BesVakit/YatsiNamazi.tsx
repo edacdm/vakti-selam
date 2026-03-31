@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function YatsiNamazi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (
     stepNumber: string,
@@ -44,62 +45,64 @@ export default function YatsiNamazi() {
             style={styles.heroCard}
           >
             <MaterialCommunityIcons name="moon-waning-crescent" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>Yatsı Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazYatsi")}</Text>
             
             <View style={styles.badgeContainer}>
-              <View style={styles.badge}><Text style={styles.badgeText}>4 İlk Sünnet</Text></View>
-              <View style={styles.badge}><Text style={styles.badgeText}>4 Farz</Text></View>
-              <View style={styles.badge}><Text style={styles.badgeText}>2 Son Sünnet</Text></View>
-              <View style={[styles.badge, styles.badgeHighlight]}><Text style={styles.badgeTextHighlight}>3 Vitr</Text></View>
+              <View style={styles.badge}><Text style={styles.badgeText}>4 {t("sunnahLabel")}</Text></View>
+              <View style={styles.badge}><Text style={styles.badgeText}>4 {t("fardLabel")}</Text></View>
+              <View style={styles.badge}><Text style={styles.badgeText}>2 {t("sunnahLabel")}</Text></View>
+              <View style={[styles.badge, styles.badgeHighlight]}><Text style={styles.badgeTextHighlight}>3 {t("prayWitrTitle").split(' ')[2]}</Text></View>
             </View>
             <View style={[styles.badge, styles.badgeHighlight, { marginTop: 10, paddingHorizontal: 30 }]}>
-              <Text style={styles.badgeTextHighlight}>Toplam 13 Rekat</Text>
+              <Text style={styles.badgeTextHighlight}>{t("totalLabel")} 13 {t("rekatLabel")}</Text>
             </View>
           </LinearGradient>
 
           <LinearGradient colors={["rgba(18, 30, 54, 0.9)", "rgba(8, 12, 22, 0.9)"]} style={styles.sectionCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="book-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat İlk Sünnet</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("sunnahLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayYatsiSunnah1Title")}</Text>
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
-              <Text style={styles.niyetText}>“Niyet ettim Allah rızası için yatsı namazının ilk sünnetini kılmaya.”</Text>
+              <Text style={styles.niyetText}>{t("prayYatsiSunnah1Niyet")}</Text>
             </View>
             <View style={styles.pathwayContainer}>
-              {renderStep("1", "İlk 2 Rekat", "Tekbir alınır. Sübhaneke, Fatiha ve sure okunur. 2. rekat sonunda oturulur.")}
-              {renderStep("2", "İlk Oturuş Dikkat", "Ettehiyyatü'den sonra Salli-Barik duaları da okunur. 3. rekata kalkınca Sübhaneke ile başlanır.")}
-              {renderStep("4", "Tamamlama", "3. ve 4. rekatlar Fatiha ve sure ile kılınıp selam verilir.", true)}
+              {renderStep("1", t("namazStep2SittingTitle").split(' ')[0] + " 2 " + t("rekatLabel"), t("prayYatsiSunnah1Step4Content").split(' ')[0] + " 2 " + t("rekatLabel") + "...")}
+              {renderStep("2", t("prayYatsiSunnah1Step2Title"), t("prayYatsiSunnah1Step2Content"))}
+              {renderStep("4", t("completeLabel") || "Tamamlama", t("prayYatsiSunnah1Step4Content"), true)}
             </View>
           </LinearGradient>
 
           <LinearGradient colors={["rgba(18, 30, 54, 0.9)", "rgba(8, 12, 22, 0.9)"]} style={styles.sectionCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="star" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat Farz</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("fardLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayYatsiFardTitle")}</Text>
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
-              <Text style={styles.niyetText}>“Niyet ettim Allah rızası için yatsı namazının farzını kılmaya.”</Text>
+              <Text style={styles.niyetText}>{t("prayYatsiFardNiyet")}</Text>
             </View>
             <View style={styles.pathwayContainer}>
-              {renderStep("1", "Başlangıç", "Kamet getirilir. İlk 2 rekat Fatiha ve sure ile kılınır. İlk oturuşta sadece Ettehiyyatü okunur.")}
-              {renderStep("3", "Son 2 Rekat", "3. ve 4. rekatlarda sadece Fatiha okunur, sure okunmaz. Son oturuşta dualarla selam verilir.", true)}
+              {renderStep("1", t("prayYatsiFardStep1Title"), t("prayYatsiFardStep1Content"))}
+              {renderStep("3", t("prayIkindiFardStep3Content").split(' ')[0] + " 2 " + t("rekatLabel"), t("prayYatsiFardStep3Content"), true)}
             </View>
           </LinearGradient>
 
           <LinearGradient colors={["rgba(18, 30, 54, 0.9)", "rgba(8, 12, 22, 0.9)"]} style={styles.sectionCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="flash-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>3 Rekat Vitr Namazı</Text>
+              <Text style={styles.sectionTitle}>{t("prayYatsiWitrTitle")}</Text>
             </View>
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
-              <Text style={styles.niyetText}>“Niyet ettim Allah rızası için bugünkü vitr namazını kılmaya.”</Text>
+              <Text style={styles.niyetText}>{t("prayYatsiWitrNiyet")}</Text>
             </View>
             <View style={styles.pathwayContainer}>
-              {renderStep("1", "İlk 2 Rekat", "Normal 2 rekat gibi kılınır. 2. rekat sonunda sadece Ettehiyyatü okunup kalkılır.")}
-              {renderStep("3", "3. Rekat ve Kunut", "Fatiha ve sure okunur. Rükûya gitmeden 'Allahu Ekber' diyerek tekrar tekbir alınır (Kulaklar hizasına). Elleri bağlayıp Kunut duaları okunur. Ardından rükû ve secde ile tamamlanır.", true)}
+              {renderStep("1", t("namazStep2SittingTitle").split(' ')[0] + " 2 " + t("rekatLabel"), t("prayYatsiWitrStep1Content"))}
+              {renderStep("3", t("prayYatsiWitrStep3Title"), t("prayYatsiWitrStep3Content"), true)}
             </View>
           </LinearGradient>
 
@@ -109,14 +112,14 @@ export default function YatsiNamazi() {
               onPress={() => router.push("/namazlar/BesVakit/AksamNamazi" as any)}
             >
               <Ionicons name="chevron-back" size={18} color="#94A3B8" />
-              <Text style={styles.navTextSecondary}>Akşam</Text>
+              <Text style={styles.navTextSecondary}>{t("namazAksam").split(' ')[0]}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.navButtonPrimary}
               onPress={() => router.push("/namazlar/BesVakit" as any)}
             >
-              <Text style={styles.navTextPrimary}>Menüye Dön</Text>
+              <Text style={styles.navTextPrimary}>{t("returnToMenuLabel") || "Menüye Dön"}</Text>
               <Ionicons name="home-outline" size={18} color="#080C16" />
             </TouchableOpacity>
           </View>
@@ -143,6 +146,13 @@ const styles = StyleSheet.create({
   sectionCard: { borderRadius: 24, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.15)", elevation: 12 },
   sectionHeader: { flexDirection: "row", alignItems: "center", marginBottom: 25, gap: 12 },
   sectionTitle: { fontSize: 22, fontWeight: "600", color: "#D4AF37" },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -10,
+  },
   niyetBox: { flexDirection: "row", backgroundColor: "rgba(212, 175, 55, 0.08)", padding: 18, borderRadius: 16, marginBottom: 25, borderLeftWidth: 4, borderLeftColor: "#D4AF37", alignItems: "center", gap: 15 },
   niyetText: { flex: 1, color: "#E2E8F0", fontStyle: "italic", fontSize: 14, lineHeight: 20 },
   pathwayContainer: { paddingLeft: 5 },

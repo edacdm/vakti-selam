@@ -26,14 +26,14 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-// --- DUALAR DATA (Offline Assets) ---
+
 interface DuaItem {
   typeKey: "typeDua" | "typeSurah";
   titleKey: TranslationKeys;
   arabic: string;
   okunus: string;
   anlamKey: TranslationKeys;
-  audioSource?: any; // Local require or URL object
+  audioSource?: any;
 }
 
 const dualarData: DuaItem[] = [
@@ -59,7 +59,7 @@ const dualarData: DuaItem[] = [
   { typeKey: "typeSurah", titleKey: "zilzalSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم. ۝ إِذَا زُلْزِلَتِ الْأَرْضُ زِلْズâlEHÂ ۝ VE AHRECETİL ARDU ESKÂLEHÂ ۝ VE KÂLEL İNSÂNÜ MÂ LEHÂ ۝ YEVMEİZİN TÜHADDİSÜ AHBÂRAHÂ ۝ BİENNE RABBEKE EVHÂ LEHÂ ۝ YEVMEİZİN YASDÜRUN NÂSÜ EŞTÂTEN LİYÜRAV A'MÂLEHÜM ۝ FEMEN YA'MEL MİSKÂLE ZERRATİN HAYRAN YERAH ۝ VE MEN YA'MEL MİSKÂLE ZERRATİN ŞERRAN YERAH", okunus: "Bismillâhirrahmânirrahîm. İzâ zülziletil ardu zilzâlehâ. Ve ahrecetil ardu eskâlehâ. Ve kâlel insânü mâ lehâ. Yevmeizin tühaddisü ahbârahâ. Bienne rabbeke evhâ lehâ. Yevmeizin yasdürun nâsü eştâten liyürav a'mâlehüm. Femen ya'mel miskâle zerratin hayran yerah. Vemen ya'mel miskâle zerratin şerran yerah.", anlamKey: "zilzalMeaning", audioSource: require("../../assets/audio/099.mp3") }
 ];
 
-// --- INTERFACES ---
+
 interface Surah {
   number: number;
   name: string;
@@ -222,10 +222,10 @@ export default function KuranDualar() {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.topTabs}>
           <TouchableOpacity onPress={() => { flatListRef.current?.scrollToIndex({ index: 0 }); setActiveIndex(0); }} style={[styles.tabBtn, activeIndex === 0 && styles.tabBtnActive]}>
-            <Text style={[styles.tabBtnText, activeIndex === 0 && styles.tabBtnTextActive]}>{t("tabQuran")}</Text>
+            <Text style={[styles.tabBtnText, activeIndex === 0 && styles.tabBtnTextActive]}>{t("tabQuran").toUpperCase()}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => { flatListRef.current?.scrollToIndex({ index: 1 }); setActiveIndex(1); }} style={[styles.tabBtn, activeIndex === 1 && styles.tabBtnActive]}>
-            <Text style={[styles.tabBtnText, activeIndex === 1 && styles.tabBtnTextActive]}>{t("typeDua").toUpperCase()}</Text>
+            <Text style={[styles.tabBtnText, activeIndex === 1 && styles.tabBtnTextActive]}>{t("tabDualar").toUpperCase()}</Text>
           </TouchableOpacity>
         </View>
 
@@ -243,14 +243,14 @@ export default function KuranDualar() {
                 <View style={{ flex: 1 }}>
                   <View style={styles.searchBarContainer}>
                     <Ionicons name="search" size={18} color="#94A3B8" />
-                    <TextInput style={styles.searchInput} placeholder="Surah Search..." placeholderTextColor="#64748B" value={quranSearch} onChangeText={handleQuranSearch} />
+                    <TextInput style={styles.searchInput} placeholder={t("quranSearchPlaceholder")} placeholderTextColor="#64748B" value={quranSearch} onChangeText={handleQuranSearch} />
                   </View>
                   {loadingSurahs ? <View style={styles.center}><ActivityIndicator color="#D4AF37" /></View> : (
                     <FlatList data={filteredSurahs} contentContainerStyle={{ padding: 20, paddingBottom: 100 }} keyExtractor={(s) => s.number.toString()}
                       renderItem={({ item: s }) => (
                         <TouchableOpacity style={styles.surahCard} onPress={() => openSurah(s)}>
                           <View style={styles.surahNumberBox}><Text style={styles.surahNumberText}>{s.number}</Text></View>
-                          <View style={styles.surahInfo}><Text style={styles.surahName}>{s.englishName}</Text><Text style={styles.surahSubtitle}>{s.revelationType === "Meccan" ? "Mekki" : "Medeni"} • {s.numberOfAyahs} Ayet</Text></View>
+                          <View style={styles.surahInfo}><Text style={styles.surahName}>{s.englishName}</Text><Text style={styles.surahSubtitle}>{s.revelationType === "Meccan" ? t("revelationMeccan") : t("revelationMedinan")} • {s.numberOfAyahs} {t("ayahCountLabel")}</Text></View>
                           <Text style={styles.arabicSmall}>{s.name}</Text>
                         </TouchableOpacity>
                       )} />

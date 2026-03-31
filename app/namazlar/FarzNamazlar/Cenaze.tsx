@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function CenazeNamazi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (
     stepNumber: string,
@@ -42,9 +43,9 @@ export default function CenazeNamazi() {
             style={styles.heroCard}
           >
             <MaterialCommunityIcons name="account-group" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>Cenaze Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazCenaze")}</Text>
             <View style={[styles.badge, styles.badgeHighlight]}>
-              <Text style={styles.badgeTextHighlight}>Rükû ve Secde Yoktur</Text>
+              <Text style={styles.badgeTextHighlight}>{t("prayCenazeBadge")}</Text>
             </View>
           </LinearGradient>
 
@@ -55,30 +56,30 @@ export default function CenazeNamazi() {
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Allah rızası için namaza, meyit için duaya, uydum hazır olan imama.”
+                {t("prayCenazeNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "1. Tekbir",
-                "Niyet edilir ve tekbir alınarak eller bağlanır. 'Sübhaneke' duası 've celle senâük' kısmı eklenerek okunur."
+                t("prayCenazeStep1Title"),
+                t("prayCenazeStep1Content")
               )}
               {renderStep(
                 "2",
-                "2. Tekbir",
-                "Eller kaldırılmadan tekbir alınır. 'Salli' ve 'Barik' duaları okunur."
+                t("prayCenazeStep2Title"),
+                t("prayCenazeStep2Content")
               )}
               {renderStep(
                 "3",
-                "3. Tekbir",
-                "Eller kaldırılmadan tekbir alınır. Biliyorsa 'Cenaze Duası', bilmiyorsa 'Rabbena' veya 'Fatiha' (dua niyetiyle) okunur."
+                t("prayCenazeStep3Title"),
+                t("prayCenazeStep3Content")
               )}
               {renderStep(
                 "4",
-                "4. Tekbir ve Selam",
-                "Eller kaldırılmadan tekbir alınır. Ayakta önce sağa sonra sola selam verilerek namaz tamamlanır.",
+                t("prayCenazeStep4Title"),
+                t("prayCenazeStep4Content"),
                 true
               )}
             </View>
@@ -86,7 +87,7 @@ export default function CenazeNamazi() {
 
           <View style={styles.infoRow}>
             <Ionicons name="information-circle-outline" size={20} color="#94A3B8" />
-            <Text style={styles.infoRowText}>Cenaze namazı tamamen ayakta kılınır, rükû ve secde yapılmaz.</Text>
+            <Text style={styles.infoRowText}>{t("prayCenazeInfo")}</Text>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -141,6 +142,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "rgba(212, 175, 55, 0.15)",
+  },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -10,
   },
   niyetBox: {
     flexDirection: "row",

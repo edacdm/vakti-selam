@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function AksamNamazi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (
     stepNumber: string,
@@ -44,19 +45,19 @@ export default function AksamNamazi() {
             style={styles.heroCard}
           >
             <MaterialCommunityIcons name="weather-sunset" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>Akşam Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazAksam")}</Text>
             
             <View style={styles.badgeContainer}>
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>3 Farz</Text>
+                <Text style={styles.badgeText}>3 {t("fardLabel")}</Text>
               </View>
               <MaterialCommunityIcons name="plus" size={16} color="#D4AF37" />
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>2 Sünnet</Text>
+                <Text style={styles.badgeText}>2 {t("sunnahLabel")}</Text>
               </View>
               <MaterialCommunityIcons name="equal" size={16} color="#D4AF37" />
               <View style={[styles.badge, styles.badgeHighlight]}>
-                <Text style={styles.badgeTextHighlight}>Toplam 5 Rekat</Text>
+                <Text style={styles.badgeTextHighlight}>{t("totalLabel")} 5 {t("rekatLabel")}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -67,38 +68,39 @@ export default function AksamNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="star" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>3 Rekat Farz</Text>
+              <Text style={styles.sectionTitle}>3 {t("rekatLabel")} {t("fardLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayAksamFardTitle")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü akşam namazının farzını kılmaya.”
+                {t("prayAksamFardNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Kamet ve İlk İki Rekat",
-                "Erkekler kamet getirir. Tekbir alınır, Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve sure okunur. Rükû ve secdeler yapılıp 2. rekata kalkılır. 2. rekatta da Besmele, Fâtiha, sure okunup rükû ve secdeler yapılır. Ardından İlk Oturuş yapılır, sadece Ettehiyyatü okunur."
+                t("prayAksamFardStep1Title"),
+                t("prayAksamFardStep1Content")
               )}
               {renderStep(
                 "3",
-                "Üçüncü Rekat",
-                "Ayağa kalkılır. Sadece Besmele çekilir ve Fâtiha suresi okunur (Zamm-ı sure okunmaz). Rükû ve secdeler yapılıp Son Oturuşa geçilir."
+                t("namazStep3Title"),
+                t("prayAksamFardStep3Content")
               )}
               {renderStep(
                 "S",
-                "Son Oturuş ve Selam",
-                "Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Önce sağa, sonra sola selam verilerek farz bitirilir.",
+                t("namazStepLastTitle"),
+                t("prayAksamFardStepLastContent"),
                 true
               )}
             </View>
             
             <View style={styles.infoRow}>
               <Ionicons name="information-circle-outline" size={20} color="#94A3B8" />
-              <Text style={styles.infoRowText}>Akşam namazında önce Farz kılınır. Farzın 3. rekatında sadece Fâtiha okunur.</Text>
+              <Text style={styles.infoRowText}>{t("prayAksamFardInfo")}</Text>
             </View>
           </LinearGradient>
 
@@ -108,26 +110,27 @@ export default function AksamNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="book-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>2 Rekat Sünnet</Text>
+              <Text style={styles.sectionTitle}>2 {t("rekatLabel")} {t("sunnahLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayAksamSunnahTitle")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü akşam namazının sünnetini kılmaya.”
+                {t("prayAksamSunnahNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Birinci Rekat",
-                "Farzdan sonra tekbir alınır. Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılarak 2. rekata kalkılır."
+                t("namazStep1Title"),
+                t("prayAksamSunnahStep1Content")
               )}
               {renderStep(
                 "2",
-                "İkinci Rekat ve Selam",
-                "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdelerden sonra son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Sağa ve sola selam verilerek namaz tamamlanır.",
+                t("namazStep2SittingTitle"),
+                t("prayAksamSunnahStep2Content"),
                 true
               )}
             </View>
@@ -139,14 +142,14 @@ export default function AksamNamazi() {
               onPress={() => router.push("/namazlar/BesVakit/IkindiNamazi" as any)}
             >
               <Ionicons name="chevron-back" size={18} color="#94A3B8" />
-              <Text style={styles.navTextSecondary}>İkindi</Text>
+              <Text style={styles.navTextSecondary}>{t("namazIkindi")}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.navButtonPrimary}
               onPress={() => router.push("/namazlar/BesVakit/YatsiNamazi" as any)}
             >
-              <Text style={styles.navTextPrimary}>Yatsı Namazı</Text>
+              <Text style={styles.navTextPrimary}>{t("namazYatsi")}</Text>
               <Ionicons name="chevron-forward" size={18} color="#080C16" />
             </TouchableOpacity>
           </View>
@@ -258,6 +261,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#D4AF37",
     letterSpacing: 0.5,
+  },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -10,
   },
   niyetBox: {
     flexDirection: "row",

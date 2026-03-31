@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function FarzNamazlar() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderListItem = (
     path: string,
@@ -54,7 +55,7 @@ export default function FarzNamazlar() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Farz Namazlar</Text>
+          <Text style={styles.headerTitle}>{t("fardPrayers")}</Text>
           <View style={{ width: 44 }} />
         </View>
 
@@ -69,13 +70,13 @@ export default function FarzNamazlar() {
                 <Ionicons name="star-outline" size={38} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Farz Namazlar</Text>
-                <Text style={styles.heroSubtitle}>İslam'ın Temel Şartı</Text>
+                <Text style={styles.heroTitle}>{t("menuFarzHeroTitle")}</Text>
+                <Text style={styles.heroSubtitle}>{t("menuFarzHeroSubtitle")}</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              Cuma, cenaze ve vakit namazları Allah'ın kullarına kesin emridir.
+              {t("menuFarzQuote")}
             </Text>
           </LinearGradient>
 
@@ -83,16 +84,16 @@ export default function FarzNamazlar() {
             {renderListItem(
               "/namazlar/FarzNamazlar/Cuma",
               "mosque",
-              "Cuma Namazı",
-              "Haftalık farz kılınan namaz",
-              "Farz-ı Ayn"
+              t("namazCuma"),
+              t("namazCumaDesc"),
+              t("badgeFarzIAyn")
             )}
             {renderListItem(
               "/namazlar/FarzNamazlar/Cenaze",
               "account-multiple-outline",
-              "Cenaze Namazı",
-              "Ayakta kılınan duasal namaz",
-              "Farz-ı Kifaye"
+              t("namazCenaze"),
+              t("namazCenazeDesc"),
+              t("badgeFarzIKifaye")
             )}
           </View>
 

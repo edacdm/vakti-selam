@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function VacipNamazlar() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderListItem = (
     path: string,
@@ -54,7 +55,7 @@ export default function VacipNamazlar() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Vacip Namazlar</Text>
+          <Text style={styles.headerTitle}>{t("wajibPrayers")}</Text>
           <View style={{ width: 44 }} />
         </View>
 
@@ -69,13 +70,13 @@ export default function VacipNamazlar() {
                 <MaterialCommunityIcons name="star-shooting-outline" size={38} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Vacip İbadetler</Text>
-                <Text style={styles.heroSubtitle}>Vitir, Bayram ve Secdeler</Text>
+                <Text style={styles.heroTitle}>{t("menuVacipHeroTitle")}</Text>
+                <Text style={styles.heroSubtitle}>{t("menuVacipHeroSubtitle")}</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              Farz kadar kesin olmayan ancak yine emredilen değerli namazlar.
+              {t("menuVacipQuote")}
             </Text>
           </LinearGradient>
 
@@ -83,30 +84,30 @@ export default function VacipNamazlar() {
             {renderListItem(
               "/namazlar/VacipNamazlar/VitirNamazi",
               "moon-waning-crescent",
-              "Vitir Namazı",
-              "Yatsıdan sonra kılınan namaz",
-              "3 Rekat"
+              t("namazVitir"),
+              t("namazVitirDesc"),
+              `3 ${t("rekatLabel")}`
             )}
             {renderListItem(
               "/namazlar/VacipNamazlar/RamazanBayrami",
               "star-crescent",
-              "Ramazan Bayramı",
-              "Yılda bir kılınan bayram namazı",
-              "Yılda Bir"
+              t("namazRamazanBayrami"),
+              t("namazRamazanBayramiDesc"),
+              t("badgeOnceAYear")
             )}
             {renderListItem(
               "/namazlar/VacipNamazlar/KurbanBayrami",
               "food-variant",
-              "Kurban Bayramı",
-              "Kurban ibadeti öncesi olan namaz",
-              "Kurban"
+              t("namazKurbanBayrami"),
+              t("namazKurbanBayramiDesc"),
+              t("badgeKurban")
             )}
             {renderListItem(
               "/namazlar/VacipNamazlar/TilavetSecdesi",
               "book-open-variant",
-              "Tilavet Secdesi",
-              "Mushaflarda geçen secde ayetleri için",
-              "Özel"
+              t("namazTilavet"),
+              t("namazTilavetDesc"),
+              t("badgeSpecial")
             )}
           </View>
 

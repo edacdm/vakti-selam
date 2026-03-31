@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function IkindiNamazi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (
     stepNumber: string,
@@ -44,19 +45,19 @@ export default function IkindiNamazi() {
             style={styles.heroCard}
           >
             <MaterialCommunityIcons name="weather-sunset-down" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>İkindi Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazIkindi")}</Text>
             
             <View style={styles.badgeContainer}>
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>4 Sünnet</Text>
+                <Text style={styles.badgeText}>4 {t("sunnahLabel")}</Text>
               </View>
               <MaterialCommunityIcons name="plus" size={16} color="#D4AF37" />
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>4 Farz</Text>
+                <Text style={styles.badgeText}>4 {t("fardLabel")}</Text>
               </View>
               <MaterialCommunityIcons name="equal" size={16} color="#D4AF37" />
               <View style={[styles.badge, styles.badgeHighlight]}>
-                <Text style={styles.badgeTextHighlight}>Toplam 8 Rekat</Text>
+                <Text style={styles.badgeTextHighlight}>{t("totalLabel")} 8 {t("rekatLabel")}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -67,43 +68,44 @@ export default function IkindiNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="book-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat Sünnet</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("sunnahLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayIkindiSunnahTitle")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü ikindi namazının sünnetini kılmaya.”
+                {t("prayIkindiSunnahNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Birinci Rekat",
-                "Tekbir alınır. Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır."
+                t("namazStep1Title"),
+                t("prayOgleSunnah1Step1Content")
               )}
               {renderStep(
                 "2",
-                "İkinci Rekat ve İlk Oturuş",
-                "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdelerden sonra oturulur (İlk Oturuş). Ettehiyyatü okunur ve ardından Salli-Barik duaları da okunarak 3. rekata kalkılır."
+                t("namazStep2SittingTitle"),
+                t("prayIkindiSunnahStep2Content")
               )}
               {renderStep(
                 "3",
-                "Üçüncü Rekat (Sübhaneke)",
-                "Ayağa kalkıldığında önce Sübhaneke okunur. Sonra Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır."
+                t("prayIkindiSunnahStep3Title"),
+                t("prayIkindiSunnahStep3Content")
               )}
               {renderStep(
                 "4",
-                "Dördüncü Rekat ve Selam",
-                "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû, secde ve son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunup selam verilir.",
+                t("namazStep4SittingTitle"),
+                t("prayOgleSunnah1Step4Content"),
                 true
               )}
             </View>
             
             <View style={styles.infoRow}>
               <Ionicons name="information-circle-outline" size={20} color="#94A3B8" />
-              <Text style={styles.infoRowText}>İkindi sünneti "Gayr-i Müekked" olduğu için ilk oturuşta Salli-Barik okunur, 3. rekata Sübhaneke ile başlanır.</Text>
+              <Text style={styles.infoRowText}>{t("prayIkindiSunnahInfo")}</Text>
             </View>
           </LinearGradient>
 
@@ -113,39 +115,40 @@ export default function IkindiNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="star" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat Farz</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("fardLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayIkindiFardTitle")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü ikindi namazının farzını kılmaya.”
+                {t("prayIkindiFardNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Kamet ve İlk İki Rekat",
-                "Erkekler kamet getirir. İlk iki rekat, diğer farzlardaki gibi kılınır (Sübhaneke, Fâtiha, sure). İkinci rekatın sonunda oturulur ve sadece Ettehiyyatü okunup kalkılır."
+                t("prayIkindiFardStep1Title"),
+                t("prayIkindiFardStep1Content")
               )}
               {renderStep(
                 "3",
-                "Üçüncü ve Dördüncü Rekat",
-                "Ayağa kalkılınca sadece Besmele ve Fâtiha okunur (Sure okunmaz). Rükû ve secdeler yapılarak 4. rekat da aynı şekilde tamamlanır ve son oturuşa geçilir.",
+                t("namazStep3Title"),
+                t("prayIkindiFardStep3Content"),
                 false
               )}
               {renderStep(
                 "S",
-                "Son Oturuş ve Selam",
-                "Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Önce sağa, sonra sola selam verilerek farz bitirilir.",
+                t("namazStepLastTitle"),
+                t("prayOgleFardStepLastContent"),
                 true
               )}
             </View>
             
             <View style={styles.infoRow}>
               <Ionicons name="information-circle-outline" size={20} color="#94A3B8" />
-              <Text style={styles.infoRowText}>Farzın 3. ve 4. rekatlarında sadece Fâtiha okunur, zamm-ı sure okunmaz.</Text>
+              <Text style={styles.infoRowText}>{t("prayIkindiFardInfo")}</Text>
             </View>
           </LinearGradient>
 
@@ -155,14 +158,14 @@ export default function IkindiNamazi() {
               onPress={() => router.push("/namazlar/BesVakit/OgleNamazi" as any)}
             >
               <Ionicons name="chevron-back" size={18} color="#94A3B8" />
-              <Text style={styles.navTextSecondary}>Öğle</Text>
+              <Text style={styles.navTextSecondary}>{t("namazOgle").split(' ')[0]}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.navButtonPrimary}
               onPress={() => router.push("/namazlar/BesVakit/AksamNamazi" as any)}
             >
-              <Text style={styles.navTextPrimary}>Akşam Namazı</Text>
+              <Text style={styles.navTextPrimary}>{t("namazAksam")}</Text>
               <Ionicons name="chevron-forward" size={18} color="#080C16" />
             </TouchableOpacity>
           </View>
@@ -274,6 +277,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#D4AF37",
     letterSpacing: 0.5,
+  },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -10,
   },
   niyetBox: {
     flexDirection: "row",

@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function OgleNamazi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (
     stepNumber: string,
@@ -44,23 +45,23 @@ export default function OgleNamazi() {
             style={styles.heroCard}
           >
             <MaterialCommunityIcons name="white-balance-sunny" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>Öğle Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazOgle")}</Text>
             
             <View style={styles.badgeContainer}>
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>4 İlk Sünnet</Text>
+                <Text style={styles.badgeText}>4 {t("sunnahLabel")}</Text>
               </View>
               <MaterialCommunityIcons name="plus" size={16} color="#D4AF37" />
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>4 Farz</Text>
+                <Text style={styles.badgeText}>4 {t("fardLabel")}</Text>
               </View>
               <MaterialCommunityIcons name="plus" size={16} color="#D4AF37" />
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>2 Son Sünnet</Text>
+                <Text style={styles.badgeText}>2 {t("sunnahLabel")}</Text>
               </View>
             </View>
             <View style={[styles.badge, styles.badgeHighlight, { marginTop: 10 }]}>
-              <Text style={styles.badgeTextHighlight}>Toplam 10 Rekat</Text>
+              <Text style={styles.badgeTextHighlight}>{t("totalLabel")} 10 {t("rekatLabel")}</Text>
             </View>
           </LinearGradient>
 
@@ -70,36 +71,37 @@ export default function OgleNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="book-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat İlk Sünnet</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("sunnahLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayOgleSunnah1Title")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü öğle namazının ilk sünnetini kılmaya.”
+                {t("prayOgleSunnah1Niyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Birinci Rekat",
-                "Tekbir alınır. Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır."
+                t("namazStep1Title"),
+                t("prayOgleSunnah1Step1Content")
               )}
               {renderStep(
                 "2",
-                "İkinci Rekat ve İlk Oturuş",
-                "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdelerden sonra oturulur (İlk Oturuş). Sadece 'Ettehiyyatü' okunur ve 3. rekata kalkılır."
+                t("namazStep2SittingTitle"),
+                t("prayOgleSunnah1Step2Content")
               )}
               {renderStep(
                 "3",
-                "Üçüncü Rekat",
-                "Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır."
+                t("namazStep3Title"),
+                t("prayOgleSunnah1Step3Content")
               )}
               {renderStep(
                 "4",
-                "Dördüncü Rekat ve Selam",
-                "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû, secde ve son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunup selam verilir.",
+                t("namazStep4SittingTitle"),
+                t("prayOgleSunnah1Step4Content"),
                 true
               )}
             </View>
@@ -111,39 +113,40 @@ export default function OgleNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="star" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat Farz</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("fardLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayOgleFardTitle")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü öğle namazının farzını kılmaya.”
+                {t("prayOgleFardNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Kamet ve İlk 2 Rekat",
-                "Erkekler kamet getirir. İlk iki rekat, sünnetteki gibi kılınır (Sübhaneke, Fâtiha, sure). İkinci rekatın sonunda sadece Ettehiyyatü okunup kalkılır."
+                t("prayOgleFardStep1Content").substring(0, 20),
+                t("prayOgleFardStep1Content")
               )}
               {renderStep(
                 "3",
-                "Üçüncü ve Dördüncü Rekat",
-                "Ayağa kalkılınca sadece Besmele ve Fâtiha okunur (Zamm-ı sure okunmaz). Rükû ve secdeler yapılır. 4. rekatın sonunda oturulur.",
+                t("namazStep3Title"),
+                t("prayOgleFardStep3Content"),
                 false
               )}
               {renderStep(
                 "S",
-                "Son Oturuş ve Selam",
-                "Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Önce sağa, sonra sola selam verilerek farz bitirilir.",
+                t("namazStepLastTitle"),
+                t("prayOgleFardStepLastContent"),
                 true
               )}
             </View>
             
             <View style={styles.infoRow}>
               <Ionicons name="information-circle-outline" size={20} color="#94A3B8" />
-              <Text style={styles.infoRowText}>Farzın 3. ve 4. rekatlarında Fâtiha'dan sonra sure okunmaz.</Text>
+              <Text style={styles.infoRowText}>{t("prayOgleFardInfo")}</Text>
             </View>
           </LinearGradient>
 
@@ -153,26 +156,27 @@ export default function OgleNamazi() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="book-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>2 Rekat Son Sünnet</Text>
+              <Text style={styles.sectionTitle}>2 {t("rekatLabel")} {t("sunnahLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayOgleSunnah2Title")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için bugünkü öğle namazının son sünnetini kılmaya.”
+                {t("prayOgleSunnah2Niyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "Birinci Rekat",
-                "Tekbir alınır. Sübhaneke, Eûzü Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır."
+                t("namazStep1Title"),
+                t("prayOgleSunnah2Step1Content")
               )}
               {renderStep(
                 "2",
-                "İkinci Rekat ve Selam",
-                "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû, secde ve son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunup selam verilir.",
+                t("namazStep2SittingTitle"),
+                t("prayOgleSunnah2Step2Content"),
                 true
               )}
             </View>
@@ -184,14 +188,14 @@ export default function OgleNamazi() {
               onPress={() => router.push("/namazlar/BesVakit/SabahNamazi" as any)}
             >
               <Ionicons name="chevron-back" size={18} color="#94A3B8" />
-              <Text style={styles.navTextSecondary}>Sabah</Text>
+              <Text style={styles.navTextSecondary}>{t("namazSabah").split(' ')[0]}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.navButtonPrimary}
               onPress={() => router.push("/namazlar/BesVakit/IkindiNamazi" as any)}
             >
-              <Text style={styles.navTextPrimary}>İkindi Namazı</Text>
+              <Text style={styles.navTextPrimary}>{t("namazIkindi")}</Text>
               <Ionicons name="chevron-forward" size={18} color="#080C16" />
             </TouchableOpacity>
           </View>
@@ -305,6 +309,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#D4AF37",
     letterSpacing: 0.5,
+  },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -10,
   },
   niyetBox: {
     flexDirection: "row",

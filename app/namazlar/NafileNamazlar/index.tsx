@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function NafileNamazlar() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderListItem = (
     path: string,
@@ -54,7 +55,7 @@ export default function NafileNamazlar() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Nafile Namazlar</Text>
+          <Text style={styles.headerTitle}>{t("nafilPrayers")}</Text>
           <View style={{ width: 44 }} />
         </View>
 
@@ -69,13 +70,13 @@ export default function NafileNamazlar() {
                 <Ionicons name="moon-outline" size={38} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Gönüllü İbadetler</Text>
-                <Text style={styles.heroSubtitle}>Teheccüd, Kuşluk ve Fazlası</Text>
+                <Text style={styles.heroTitle}>{t("menuNafileHeroTitle")}</Text>
+                <Text style={styles.heroSubtitle}>{t("menuNafileHeroSubtitle")}</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              Farzların dışında sevap kazanmak amacıyla kılınan namazlardır.
+              {t("menuNafileQuote")}
             </Text>
           </LinearGradient>
 
@@ -83,44 +84,44 @@ export default function NafileNamazlar() {
             {renderListItem(
               "/namazlar/NafileNamazlar/Teheccud",
               "weather-night",
-              "Teheccüd",
-              "Gecenin üçte birinde kılınan namaz",
-              "Gece"
+              t("namazTeheccud"),
+              t("namazTeheccudDesc"),
+              t("badgeNight")
             )}
             {renderListItem(
               "/namazlar/NafileNamazlar/Kusluk",
               "weather-sunny",
-              "Kuşluk (Duha)",
-              "Güneş doğduktan sonra",
-              "Gündüz"
+              t("namazKusluk"),
+              t("namazKuslukDesc"),
+              t("badgeDay")
             )}
             {renderListItem(
               "/namazlar/NafileNamazlar/Evvabin",
               "weather-sunset",
-              "Evvabin",
-              "Akşam namazından hemen sonra",
-              "Akşam"
+              t("namazEvvabin"),
+              t("namazEvvabinDesc"),
+              t("badgeEvening")
             )}
             {renderListItem(
               "/namazlar/NafileNamazlar/TahiyyetulMescid",
               "arch",
-              "Tahiyyetü'l Mescid",
-              "Camiye girildiğinde kılınır",
-              "Cami"
+              t("namazTahiyyetulMescid"),
+              t("namazTahiyyetulMescidDesc"),
+              t("badgeMosque")
             )}
             {renderListItem(
               "/namazlar/NafileNamazlar/Hacet",
               "hand-heart-outline",
-              "Hacet Namazı",
-              "Bir dilek için kılınan namaz",
-              "Dilek"
+              t("namazHacet"),
+              t("namazHacetDesc"),
+              t("badgeWish")
             )}
             {renderListItem(
               "/namazlar/NafileNamazlar/Sukur",
               "heart-outline",
-              "Şükür Namazı",
-              "Gelen bir nimete karşılık olarak",
-              "Şükür"
+              t("namazSukur"),
+              t("namazSukurDesc"),
+              t("badgeShukr")
             )}
           </View>
 

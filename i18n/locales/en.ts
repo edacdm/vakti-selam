@@ -1,5 +1,4 @@
 export const en = {
-
   appName: "Vakti Selam",
   loading: "Loading..",
   retry: "Retry",
@@ -8,12 +7,10 @@ export const en = {
   save: "Save",
   cancel: "Cancel",
 
-
   greetingMorning: "Good Morning",
   greetingDay: "Good Afternoon",
   greetingEvening: "Good Evening",
   greetingNight: "Good Night",
-
 
   fajr: "Dawn",
   sunrise: "Sunrise",
@@ -29,13 +26,12 @@ export const en = {
   zikirmatikBtn: "Dhikr Counter",
   mosquesBtn: "Mosques",
 
-
   tabPrayerTimes: "Times",
   tabQuran: "Qur'an",
+  tabDualar: "Prayers",
   tabGuide: "Guide",
   tabDhikr: "Dhikr",
   tabCalendar: "Calendar",
-
 
   hadith1: "Actions are judged by intentions. (Bukhari)",
   hadith2: "Make things easy, do not make them difficult. (Bukhari)",
@@ -44,7 +40,6 @@ export const en = {
   hadith5: "Every act of kindness is charity. (Bukhari)",
   hadith6: "A believer is a mirror to another believer. (Abu Dawud)",
   hadith7: "Smiling at your brother is an act of charity. (Tirmidhi)",
-
 
   religiousDaysTitle: "Islamic Calendar",
   nextHolyDay: "NEXT HOLY DAY",
@@ -66,7 +61,6 @@ export const en = {
   ashuraDay: "Day of Ashura",
   mawlidKandili: "Mawlid an-Nabi",
 
-
   dhikrTitle: "Dhikr Counter",
   dhikrTarget: "GOAL",
   dhikrSubhanallah: "SubhanAllah",
@@ -74,24 +68,261 @@ export const en = {
   dhikrAllahuAkbar: "Allahu Akbar",
   dhikrLaIlaha: "La ilaha illallah",
 
-
   worshipGuide: "Worship Guide",
   prayerTeacher: "Prayer Teacher",
   stepByStep: "Learn Step by Step",
-  prayerTeacherQuote: '"The first act that a servant will be held accountable for on the Day of Judgment is prayer." (Tirmidhi)',
+  prayerTeacherQuote: '"The first of his actions for which a servant of Allah will be held accountable on the Day of Resurrection will be his prayer." (Tirmidhi)',
   fiveDailyPrayers: "Five Daily Prayers",
   fiveDailyPrayersDesc: "Complete performance of obligatory prayers",
   frequentlyUsed: "Common",
-  fardPrayers: "Fard (Obligatory) Prayers",
+  fardPrayers: "Fard Prayers",
   fardPrayersDesc: "Jumu'ah prayer, Janazah prayer, etc.",
-  fard: "Fard",
+  fardLabel: "Fard",
   wajibPrayers: "Wajib Prayers",
-  wajibPrayersDesc: "Eid and Witr prayer performances",
-  wajib: "Wajib",
-  nafilPrayers: "Nafil (Voluntary) Prayers",
+  wajibLabel: "Wajib",
+  nafilPrayers: "Nafil Prayers",
+  nafilLabel: "Nafil",
   nafilPrayersDesc: "Tahajjud, Duha and Tasbih prayers",
   sunnah: "Sunnah",
 
+  rekatLabel: "Rak'ah",
+  sunnahLabel: "Sunnah",
+  totalLabel: "Total",
+
+  // Bes Vakit Menu
+  menuBesVakitHeroTitle: "Obligatory Prayers",
+  menuBesVakitHeroSubtitle: "Daily Worship Times",
+  menuBesVakitQuote: '"Indeed, prayer has been decreed upon the believers a decree of specified times." (An-Nisa 103)',
+  
+  // Prayer Titles & Descs
+  namazSabah: "Fajr Prayer",
+  namazSabahDesc: "2 sunnah + 2 fard",
+  namazOgle: "Dhuhr Prayer",
+  namazOgleDesc: "4 sunnah + 4 fard + 2 sunnah",
+  namazIkindi: "Asr Prayer",
+  namazIkindiDesc: "4 sunnah + 4 fard",
+  namazAksam: "Maghrib Prayer",
+  namazAksamDesc: "3 fard + 2 sunnah",
+  namazYatsi: "Isha Prayer",
+  namazYatsiDesc: "4 sunnah + 4 fard + 2 sunnah + 3 witr",
+  
+  // Farz Categories
+  menuFarzHeroTitle: "Fard Prayers",
+  menuFarzHeroSubtitle: "Basic Pillar of Islam",
+  menuFarzQuote: "Jumu'ah, Janazah and daily prayers are absolute commands of Allah to His servants.",
+  badgeFarzIAyn: "Individual Duty",
+  badgeFarzIKifaye: "Communal Duty",
+  namazCuma: "Jumu'ah Prayer",
+  namazCumaDesc: "Weekly congregational prayer",
+  namazCenaze: "Janazah Prayer",
+  namazCenazeDesc: "Funeral prayer for the deceased",
+  
+  // Vacip Categories
+  menuVacipHeroTitle: "Wajib Worship",
+  menuVacipHeroSubtitle: "Witr, Eid and Prostrations",
+  menuVacipQuote: "Valuable prayers that are not as strict as Fard but still commanded.",
+  namazVitir: "Witr Prayer",
+  namazVitirDesc: "Prayer performed after Isha",
+  namazRamazanBayrami: "Eid al-Fitr",
+  namazRamazanBayramiDesc: "Annual Eid prayer after Ramadan",
+  namazKurbanBayrami: "Eid al-Adha",
+  namazKurbanBayramiDesc: "Annual Eid prayer of sacrifice",
+  namazTilavet: "Sajdah Tilawat",
+  namazTilavetDesc: "For prostration verses in the Quran",
+  badgeOnceAYear: "Once a Year",
+  badgeKurban: "Qurban",
+  badgeSpecial: "Special",
+
+  // Nafile Categories
+  menuNafileHeroTitle: "Nafil Prayers Guide",
+  menuNafileHeroSubtitle: "Voluntary Prayers That Draw One Closer to Allah",
+  menuNafileQuote: '"My servant does not draw near to Me with anything more loved by Me than the religious duties I have obligated... My servant continues to draw near to me with nafil works until I love him." (Hadith Qudsi)',
+  badgeNight: "Night",
+  badgeDay: "Day",
+  badgeEvening: "Evening",
+  badgeMosque: "Mosque",
+  badgeWish: "Wish",
+  badgeShukr: "Shukr",
+  namazTeheccud: "Tahajjud Prayer",
+  namazTeheccudDesc: "Performed by waking up at night",
+  namazKusluk: "Duha (Kusluk) Prayer",
+  namazKuslukDesc: "Healing prayer performed when the sun rises",
+  namazEvvabin: "Awwabin Prayer",
+  namazEvvabinDesc: "Prayer of those who turn back (after Maghrib)",
+  namazHacet: "Hajat Prayer",
+  namazHacetDesc: "For a request or wish",
+  namazSukur: "Shukr Prayer",
+  namazSukurDesc: "Thankfulness for a blessing",
+  namazTahiyyetulMescid: "Tahiyyatul Masjid",
+  namazTahiyyetulMescidDesc: "Greeting upon entering the mosque",
+
+  // Shared Namaz Labels
+  namazStep1Title: "First Rak'ah",
+  namazStep2Title: "Second Rak'ah",
+  namazStep3Title: "Third Rak'ah",
+  namazStep4Title: "Fourth Rak'ah",
+  namazStep2SittingTitle: "Second Rak'ah and First Sitting",
+  namazStep4SittingTitle: "Fourth Rak'ah and Greeting",
+  namazStepLastTitle: "Final Sitting and Salam",
+
+  // Sabah Namazı Detailed
+  praySabahSunnahTitle: "Performing the Sunnah",
+  praySabahSunnahNiyet: "“I intend to perform today's Fajr prayer sunnah for the sake of Allah.”",
+  praySabahSunnahStep1Content: "Take the opening Takbir. Recite Subhanaka. Say E'uzhu Basmala, recite Al-Fatihah and a surah (e.g., Al-Kafirun). Perform Ruku and prostrations then stand up.",
+  praySabahSunnahStep2Title: "Second Rak'ah and Salam",
+  praySabahSunnahStep2Content: "Say Basmala, recite Al-Fatihah and a surah (e.g., Al-Ikhlas). After Ruku and prostrations, proceed to the final sitting. Recite Et-Tahiyyat, Salli-Barik and Rabbana prayers. Complete by giving salam to the right and left.",
+  praySabahFardTitle: "Performing the Fard",
+  praySabahFardNiyet: "“I intend to perform today's Fajr prayer fard for the sake of Allah.”",
+  praySabahFardStep1Title: "Iqamah and First Rak'ah",
+  praySabahFardStep1Content: "Iqamah is called (for men). Take Takbir, recite Subhanaka. Recite Al-Fatihah and a surah with E'uzhu Basmala. Perform Ruku and prostrations.",
+  praySabahFardStep2Title: "Second Rak'ah and Salam",
+  praySabahFardStep2Content: "Recite Basmala, Al-Fatihah and a surah. Perform Ruku, prostrations and final sitting. Recite Et-Tahiyyat, Salli-Barik, Rabbana prayers. Finish by giving salam to the right and left.",
+  praySabahInfo: "If performed in congregation, the imam recites aloud and the congregation listens.",
+
+  // Ogle Namazı Detailed
+  prayOgleSunnah1Title: "4 Rak'ah Opening Sunnah",
+  prayOgleSunnah1Niyet: "“I intend to perform today's Dhuhr prayer's opening sunnah for the sake of Allah.”",
+  prayOgleSunnah1Step1Content: "Take Takbir. Recite Subhanaka. Say E'uzhu Basmala, recite Al-Fatihah and a surah. Perform Ruku and prostrations.",
+  prayOgleSunnah1Step2Content: "Recite Basmala, Al-Fatihah and a surah. After Ruku and prostrations, sit (First Sitting). Recite only 'Et-Tahiyyat' and stand up for the 3rd rak'ah.",
+  prayOgleSunnah1Step3Content: "Say Basmala, recite Al-Fatihah and a surah. Perform Ruku and prostrations.",
+  prayOgleSunnah1Step4Content: "Recite Basmala, Al-Fatihah and a surah. Perform Ruku, prostration and proceed to the final sitting. Recite Et-Tahiyyat, Salli-Barik and Rabbena prayers, then give salam.",
+  prayOgleFardTitle: "4 Rak'ah Fard",
+  prayOgleFardNiyet: "“I intend to perform today's Dhuhr prayer's fard for the sake of Allah.”",
+  prayOgleFardStep1Content: "Iqamah is called. The first two rak'ahs are performed like the sunnah (Subhanaka, Al-Fatihah, surah). At the end of the 2nd rak'ah, recite only Et-Tahiyyat and stand up.",
+  prayOgleFardStep3Content: "When standing, recite only Basmala and Al-Fatihah (do not recite an additional surah). Perform Ruku and prostrations. Sit at the end of the 4th rak'ah.",
+  prayOgleFardStepLastContent: "Recite Et-Tahiyyat, Salli-Barik and Rabbena prayers. Finish the fard by giving salam to the right, then left.",
+  prayOgleFardInfo: "Additional surahs are not recited after Al-Fatihah in the 3rd and 4th rak'ahs of the fard.",
+  prayOgleSunnah2Title: "2 Rak'ah Final Sunnah",
+  prayOgleSunnah2Niyet: "“I intend to perform today's Dhuhr prayer's final sunnah for the sake of Allah.”",
+  prayOgleSunnah2Step1Content: "Take Takbir. Recite Subhanaka, E'uzhu Basmala, Al-Fatihah and a surah. Perform Ruku and prostrations.",
+  prayOgleSunnah2Step2Content: "Recite Basmala, Al-Fatihah and a surah. Perform Ruku, prostration and proceed to the final sitting. Recite Et-Tahiyyat, Salli-Barik and Rabbena prayers, then give salam.",
+
+  // Ikindi Namazı Detailed
+  prayIkindiSunnahTitle: "Performing the Asr Sunnah",
+  prayIkindiSunnahNiyet: "“I intend to perform today's Asr prayer sunnah for the sake of Allah.”",
+  prayIkindiSunnahStep2Content: "Recite Basmala, Al-Fatihah, and an additional surah. After Ruku and prostrations, sit (First Sitting). Recite Et-Tahiyyat followed by Salli and Barik prayers (special for Asr sunnah). Then stand for the 3rd rak'ah.",
+  prayIkindiSunnahStep3Title: "Third Rak'ah (Starts with Subhanaka)",
+  prayIkindiSunnahStep3Content: "When standing up, first recite Subhanaka. Then say E'uzhu Basmala, recite Al-Fatihah and a surah. Perform Ruku and prostrations.",
+  prayIkindiSunnahInfo: "Since the Asr sunnah is 'Ghayr Mu'akkadah', Salli-Barik is recited in the first sitting and the 3rd rak'ah starts with Subhanaka.",
+  prayIkindiFardTitle: "Performing the Fard",
+  prayIkindiFardNiyet: "“I intend to perform today's Asr prayer fard for the sake of Allah.”",
+  prayIkindiFardStep1Title: "Iqamah and First Two Rak'ahs",
+  prayIkindiFardStep1Content: "Iqamah is called. The first two rak'ahs are performed like other fard prayers (Subhanaka, Al-Fatihah, surah). At the end of the 2nd rak'ah, sit and recite only Et-Tahiyyat.",
+  prayIkindiFardStep3Content: "When standing for the 3rd and 4th rak'ahs, recite only Basmala and Al-Fatihah (no additional surah). Perform Ruku and prostrations, then proceed to the final sitting at the end of the 4th rak'ah.",
+  prayIkindiFardInfo: "Only Al-Fatihah is recited in the 3rd and 4th rak'ahs of the fard; additional surahs are not recited.",
+
+  // Aksam Namazı Detailed
+  prayAksamFardTitle: "Performing the Fard",
+  prayAksamFardNiyet: "“I intend to perform today's Maghrib prayer fard for the sake of Allah.”",
+  prayAksamFardStep1Title: "Iqamah and First Two Rak'ahs",
+  prayAksamFardStep1Content: "Men call iqamah. Take Takbir, recite Subhanaka. Recite Al-Fatihah and a surah with E'uzhu Basmala. Perform ruku and prostrations, then stand for the 2nd rak'ah. In the 2nd rak'ah, recite Basmala, Al-Fatihah, surah, and perform ruku/prostrations. Then perform the First Sitting, reciting only Et-Tahiyyat.",
+  prayAksamFardStep3Content: "Stand up. Recite only Basmala and Al-Fatihah (no additional surah). Perform ruku and prostrations, then proceed to the Final Sitting.",
+  prayAksamFardStepLastContent: "Recite Et-Tahiyyat, Salli-Barik and Rabbena prayers. Finish the fard by giving salam to the right, then left.",
+  prayAksamFardInfo: "In Maghrib prayer, the Fard is performed first. Only Al-Fatihah is recited in the 3rd rak'ah of the fard.",
+  prayAksamSunnahTitle: "Performing the Sunnah",
+  prayAksamSunnahNiyet: "“I intend to perform today's Maghrib prayer sunnah for the sake of Allah.”",
+  prayAksamSunnahStep1Content: "Take Takbir after the fard. Recite Subhanaka, E'uzhu Basmala, Al-Fatihah, and a surah. Perform ruku and prostrations, then stand for the 2nd rak'ah.",
+  prayAksamSunnahStep2Content: "Recite Basmala, Al-Fatihah, and an additional surah. After ruku and prostrations, proceed to the final sitting. Recite Et-Tahiyyat, Salli-Barik, and Rabbena prayers. Finish by giving salam to the right and left.",
+
+  // Yatsi Namazı Detailed
+  prayYatsiSunnah1Title: "4 Rak'ah Opening Sunnah",
+  prayYatsiSunnah1Niyet: "“I intend to perform today's Isha prayer's opening sunnah for the sake of Allah.”",
+  prayYatsiSunnah1Step2Title: "First Sitting Attention",
+  prayYatsiSunnah1Step2Content: "Recite Et-Tahiyyat followed by Salli and Barik prayers. After standing for the 3rd rak'ah, begin with Subhanaka.",
+  prayYatsiSunnah1Step4Content: "The 3rd and 4th rak'ahs are performed with Al-Fatihah and a surah, then give salam.",
+  prayYatsiFardTitle: "4 Rak'ah Fard",
+  prayYatsiFardNiyet: "“I intend to perform today's Isha prayer's fard for the sake of Allah.”",
+  prayYatsiFardStep1Title: "Beginning",
+  prayYatsiFardStep1Content: "Iqamah is called. The first 2 rak'ahs are performed with Al-Fatihah and a surah. In the first sitting, recite only Et-Tahiyyat.",
+  prayYatsiFardStep3Content: "In the 3rd and 4th rak'ahs, recite only Al-Fatihah; no surah is recited. In the final sitting, give salam after the prayers.",
+  prayYatsiWitrTitle: "3 Rak'ah Witr Prayer",
+  prayWitrTitle: "3 Rak'ah Witr Prayer",
+  completeLabel: "Completion",
+  returnToMenuLabel: "Return to Menu",
+  prayYatsiWitrNiyet: "“I intend to perform today's Witr prayer for the sake of Allah.”",
+  prayYatsiWitrStep1Content: "Performed like a normal 2-rak'ah prayer. At the end of the 2nd rak'ah, sit and recite only Et-Tahiyyat, then stand up.",
+  prayYatsiWitrStep3Title: "3rd Rak'ah and Qunut",
+  prayYatsiWitrStep3Content: "Recite Al-Fatihah and a surah. Before going to Ruku, take Takbir again by saying 'Allahu Akbar' (raising hands to ears). Bind hands and recite Qunut prayers. Then complete with Ruku and prostration.",
+
+  // Farz Namazlar Detailed
+  prayCumaSunnah1Title: "4 Rak'ah Opening Sunnah",
+  prayCumaSunnah1Niyet: "“I intend to perform the opening sunnah of the Friday prayer for the sake of Allah.”",
+  prayCumaSunnah1Step1Content: "Performed like the opening sunnah of Dhuhr prayer. Recite Al-Fatihah and a surah in every rak'ah. Sit in the 2nd rak'ah, then stand up and finish with salam at the end of the 4th rak'ah.",
+  prayCumaFardTitle: "2 Rak'ah Fard",
+  prayCumaFardNiyet: "“I intend to perform the fard of the Friday prayer for the sake of Allah, following the imam.”",
+  prayCumaFardStep1Title: "Congregational Performance",
+  prayCumaFardStep1Content: "Take Takbir with the imam. Recite Subhanaka and remain silent. Perform ruku and prostrations by following the imam.",
+  prayCumaFardStep2Content: "In the 2nd rak'ah, follow the imam for ruku and prostrations. In the final sitting, recite the prayers and give salam with the imam.",
+  prayCumaInfo: "It is a requirement of the prayer for the khatib to deliver the Khutbah from the minbar before the fard. Do not speak or perform other prayers during the Khutbah.",
+  badgeCongregation: "Performed in Congregation",
+  
+  prayCenazeNiyet: "“I intend to perform the prayer for the sake of Allah, and the supplication for the deceased, following the imam.”",
+  prayCenazeBadge: "No Ruku or Prostration",
+  prayCenazeStep1Title: "1st Takbir",
+  prayCenazeStep1Content: "Make intention, take Takbir and bind hands. Recite 'Subhanaka' adding the 'wa jalla sanauk' part.",
+  prayCenazeStep2Title: "2nd Takbir",
+  prayCenazeStep2Content: "Take Takbir without raising hands. Recite 'Salli' and 'Barik' prayers.",
+  prayCenazeStep3Title: "3rd Takbir",
+  prayCenazeStep3Content: "Take Takbir without raising hands. Recite the 'Funeral Prayer' if known, otherwise recite 'Rabbena' or 'Al-Fatihah' (with the intention of supplication).",
+  prayCenazeStep4Title: "4th Takbir and Salam",
+  prayCenazeStep4Content: "Take Takbir without raising hands. While standing, give salam first to the right then to the left to complete the prayer.",
+  prayCenazeInfo: "The funeral prayer is performed entirely while standing; there is no ruku (bowing) or prostration.",
+
+  // Vacip Namazlar Detailed
+  prayWitrFullTitle: "Witr Prayer (Wajib) Performance",
+  prayWitrInfo: "The Witr prayer does not have to be performed immediately after the Isha prayer, but it cannot be performed before the Isha time begins.",
+  
+  namazTilavetTitle: "Prostration of Recitation (Wajib) Performance",
+  prayTilavetNiyet: "“I intend to perform the prostration of recitation for the sake of Allah.”",
+  prayTilavetBadge: "Only 1 Prostration",
+  prayTilavetStep1Title: "Takbir and Prostration",
+  prayTilavetStep1Content: "Facing the Qibla, say 'Allahu Akbar' without raising hands and go directly into prostration. Say 'Subhana rabbiyal a'la' three times in prostration.",
+  prayTilavetStep2Title: "Rising (Straightening up)",
+  prayTilavetStep2Content: "While rising from prostration, say 'Allahu Akbar' and stand up (qiyam). While standing up, say 'Gufranaka Rabbana wa ilaykal-masir'.",
+  prayTilavetInfo: "It is wajib (obligatory) to perform this whenever any of the 14 prostration verses in the Holy Quran is recited or heard.",
+
+  namazBayramTitle: "Eid Prayer (Wajib) Performance",
+  prayBayramBadge: "Total 2 Rak'ahs + Khutbah",
+  prayRamazanBayramNiyet: "“I intend to perform today's Eid al-Fitr prayer for the sake of Allah, following the imam.”",
+  prayKurbanBayramNiyet: "“I intend to perform today's Eid al-Adha prayer for the sake of Allah, following the imam.”",
+  prayBayramStep1Content: "Start with the opening Takbir, recite 'Subhanaka'. Then the imam takes 3 additional Takbirs (zawait takbir) aloud while the congregation follows silently. The imam recites Al-Fatihah and a surah aloud, followed by ruku and prostration.",
+  prayBayramStep2Content: "The imam recites Al-Fatihah and a surah aloud. Then, take 3 additional Takbirs before going to ruku. Go to ruku with the 4th Takbir. After prostrations and prayers in the sitting position, finish with salam.",
+  prayRamazanBayramInfo: "It is wajib to perform the Eid prayer in congregation. It is sunnah to listen to the Eid khutbah delivered by the imam after the prayer.",
+  prayKurbanBayramInfo: "The performance is identical to Eid al-Fitr. Don't forget the tashriq takbirs recited after fard prayers starting from the morning of the Day of Arafah.",
+
+  // Nafile Namazlar Detailed
+  prayTeheccudNiyet: "“I intend to perform the Tahajjud prayer for the sake of Allah.”",
+  prayTeheccudInfo: "It is most virtuous to perform it after the Isha prayer and before the morning time begins, by waking up from sleep.",
+  prayTeheccudStep1Title: "Performance in Sets of Two Rak'ahs",
+  prayTeheccudStep1Content: "It is performed just like the sunnah of the morning prayer. It is recommended to give salam every two rak'ahs. If salam is given in two rak'ahs, recite Subhanaka, Fatihah, and a surah in the first rak'ah, and Fatihah and a surah in the second rak'ah.",
+  prayTeheccudStep2Title: "Performance in Sets of Four Rak'ahs",
+  prayTeheccudStep2Content: "If salam is given in four rak'ahs, it is performed like the sunnah of the Asr prayer. That is, the Salli-Barik prayers are recited in the first sitting, and Subhanaka is recited again at the beginning of the third rak'ah.",
+
+  prayKuslukNiyet: "“I intend to perform the Duha prayer for the sake of Allah.”",
+  prayKuslukInfo: "It is performed from the time the sun rises and reaches a certain height (ishraq time) until approximately 45 minutes before the Dhuhr time.",
+  prayKuslukStep1Title: "Performance in Sets of Two Rak'ahs",
+  prayKuslukStep1Content: "It can be performed like the morning or noon sunnah. The most virtuous way is to give salam every two rak'ahs. In the first rak'ah, Subhanaka is recited, followed by Fatihah and a surah.",
+
+  prayEvvabinNiyet: "“I intend to perform the Awwabin prayer for the sake of Allah.”",
+  prayEvvabinInfo: "Awwabin is a nafile worship performed after the sunnah of the Maghrib prayer, meaning 'the prayer of those who turn to Allah'.",
+  prayEvvabinStep1Title: "Performance in Twos",
+  prayEvvabinStep1Content: "It is commonly performed as 6 rak'ahs, with salam every 2 rak'ahs. Each two-rak'ah prayer is performed like the sunnah of the morning prayer.",
+  prayEvvabinStep2Title: "Performance All At Once",
+  prayEvvabinStep2Content: "Depending on the intention, it can also be performed as 6 rak'ahs at once. In this case, the first sitting is made at the end of every two rak'ahs and the middle prayers are recited.",
+
+  prayHacetNiyet: "“I intend to perform the Hajat prayer for the sake of Allah.”",
+  prayHacetInfo: "After the prayer, needs and wishes are requested from Allah through supplication.",
+  prayHacetStep1Content: "Subhanaka is recited, Fatihah and a chosen surah finish 2 rak'ahs. However, as a sunnah, it is recommended to recite Ayat al-Kursi 3 times in the 1st rak'ah.",
+  prayHacetStep2Content: "Fatihah and a surah are recited (According to sunnah, Surah Al-Ikhlas, Al-Falaq, and An-Nas are recited here). Ruku and prostrations are completed, and salam is given.",
+
+  praySukurNiyet: "“I intend to perform the Shukr prayer for the sake of Allah.”",
+  praySukurInfo: "It is performed with the intention of praising and thanking Allah upon being saved from a calamity or attaining a beautiful blessing.",
+  praySukurStep1Content: "Takbir is taken, Subhanaka is recited. Fatihah and a surah (can be any) are recited. Ruku and prostrations are performed, and then one rises for the second rak'ah.",
+
+  prayTahiyyetulMescidNiyet: "“I intend to perform the Tahiyyatul Masjid prayer for the sake of Allah.”",
+  prayTahiyyetulMescidInfo: "It is performed upon entering the mosque before sitting down. It serves as a greeting to the Lord of the mosque.",
+  prayTahiyyetulMescidStep1Content: "Takbir is taken, Subhanaka is recited. Fatihah and a surah (e.g., Surah Al-Kafirun) are recited. Ruku and prostrations are performed.",
+  prayTahiyyetulMescidStep2Content: "Fatihah and a surah (e.g., Surah Al-Ikhlas) are recited. Ruku, prostration, and sitting are completed, and salam is given.",
 
   prayersAndSurahs: "Prayers & Surahs",
   prayersSubtitle: "Guide to memorized recitations in prayer",
@@ -102,6 +333,11 @@ export const en = {
   listen: "Listen",
   stop: "Stop",
   noAudio: "No Audio",
+
+  quranSearchPlaceholder: "Search Surah...",
+  revelationMeccan: "Meccan",
+  revelationMedinan: "Medinan",
+  ayahCountLabel: "Ayah",
 
   subhanakaDua: "Subhanaka Prayer",
   ettehiyyatuDua: "At-Tahiyyat Prayer",
@@ -146,7 +382,6 @@ export const en = {
   takathurMeaning: "Competition in worldly increase diverts you, until you visit the graveyards. No! You are going to know. Then no! You are going to know. No! If you only knew with knowledge of certainty, you will surely see the Hellfire. Then you will surely see it with the eye of certainty. Then you will surely be asked that Day about pleasure.",
   zilzalMeaning: "When the earth is shaken with its earthquake, and the earth discharges its burdens, and man says, 'What is wrong with it?' — that Day it will report its news. Because your Lord has commanded it. That Day, people will depart separated to be shown their deeds. So whoever does an atom's weight of good will see it. And whoever does an atom's weight of evil will see it.",
 
-
   nearbyMosques: "Nearby Mosques",
   searchingMosques: "Searching for nearby mosques...",
   locationPermissionError: "Location permission is required for the map.",
@@ -158,7 +393,6 @@ export const en = {
   distanceAway: "away",
   distanceLabel: "distance",
   unknownMosque: "Unknown Mosque",
-
 
   settingsTitle: "Settings",
   languageSection: "Language",

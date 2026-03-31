@@ -75,9 +75,10 @@ export default function YakindakiCamiler() {
       setUserLocation({ latitude: lat, longitude: lon });
 
       const query = `[out:json][timeout:25];(node["amenity"="place_of_worship"]["religion"="muslim"](around:3000,${lat},${lon});way["amenity"="place_of_worship"]["religion"="muslim"](around:3000,${lat},${lon}););out center;`;
-      const overpassUrl = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+      const overpassUrl = `https://lz4.overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
 
       const response = await fetch(overpassUrl);
+      if (!response.ok) throw new Error("Server responded with an error");
       const data = await response.json();
 
       let fetchedMosques: Mosque[] = [];

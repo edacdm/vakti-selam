@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function Teheccud() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (
     stepNumber: string,
@@ -44,11 +45,11 @@ export default function Teheccud() {
             style={styles.heroCard}
           >
             <MaterialCommunityIcons name="weather-night" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>Teheccüd Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazTeheccud")}</Text>
             
             <View style={styles.badgeContainer}>
               <View style={[styles.badge, styles.badgeHighlight]}>
-                <Text style={styles.badgeTextHighlight}>2 - 8 Rekat</Text>
+                <Text style={styles.badgeTextHighlight}>2 - 8 {t("rekatLabel")}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -59,33 +60,34 @@ export default function Teheccud() {
           >
             <View style={styles.sectionHeader}>
               <Ionicons name="moon" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>Teheccüd (Nafile) Kılınışı</Text>
+              <Text style={styles.sectionTitle}>{t("nafilLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("namazTeheccud")}</Text>
 
             <View style={styles.niyetBox}>
               <MaterialCommunityIcons name="hands-pray" size={24} color="#D4AF37" />
               <Text style={styles.niyetText}>
-                “Niyet ettim Allah rızası için teheccüd namazını kılmaya.”
+                {t("prayTeheccudNiyet")}
               </Text>
             </View>
 
             <View style={styles.pathwayContainer}>
               {renderStep(
                 "1",
-                "İkişer Rekatlık Kılınış",
-                "Tıpkı sabah namazının sünneti gibi kılınır. Her iki rekatta bir selam verilmesi tavsiye edilir. İki rekatta selam verilecekse birinci rekatta Subhaneke, Fatiha ve zamm-ı sure, ikinci rekatta Fatiha ve zamm-ı sure okunur."
+                t("prayTeheccudStep1Title"),
+                t("prayTeheccudStep1Content")
               )}
               {renderStep(
                 "2",
-                "Dört Rekatlık Kılınış",
-                "Dört rekatta bir selam verilecekse ikindi namazının sünneti gibi kılınır. Yani ilk oturuşta salli-barik duaları okunur, üçüncü rekatın başında sübhaneke tekrar okunur.",
+                t("prayTeheccudStep2Title"),
+                t("prayTeheccudStep2Content"),
                 true
               )}
             </View>
             
             <View style={styles.infoRow}>
               <Ionicons name="information-circle-outline" size={20} color="#94A3B8" />
-              <Text style={styles.infoRowText}>Yatsı namazından sonra ve sabah vakti girmeden, uykudan kalkarak kılınması en eftalidir.</Text>
+              <Text style={styles.infoRowText}>{t("prayTeheccudInfo")}</Text>
             </View>
           </LinearGradient>
 
@@ -110,6 +112,13 @@ const styles = StyleSheet.create({
   sectionCard: { borderRadius: 24, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.15)", shadowColor: "#000", shadowOffset: { width: 0, height: 15 }, shadowOpacity: 0.4, shadowRadius: 25, elevation: 12 },
   sectionHeader: { flexDirection: "row", alignItems: "center", marginBottom: 25, gap: 12 },
   sectionTitle: { fontSize: 22, fontWeight: "600", color: "#D4AF37", letterSpacing: 0.5 },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -15,
+  },
   niyetBox: { flexDirection: "row", backgroundColor: "rgba(212, 175, 55, 0.08)", padding: 18, borderRadius: 16, marginBottom: 25, borderLeftWidth: 4, borderLeftColor: "#D4AF37", alignItems: "center", gap: 15 },
   niyetText: { flex: 1, color: "#E2E8F0", fontStyle: "italic", fontSize: 15, lineHeight: 22, fontWeight: "500" },
   pathwayContainer: { paddingLeft: 5 },

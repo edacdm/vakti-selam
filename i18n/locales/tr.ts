@@ -1,5 +1,4 @@
 export const tr = {
-
   appName: "Vakt-i Selam",
   loading: "Yükleniyor..",
   retry: "Tekrar Dene",
@@ -8,12 +7,10 @@ export const tr = {
   save: "Kaydet",
   cancel: "İptal",
 
-
   greetingMorning: "Hayırlı Sabahlar",
   greetingDay: "Hayırlı Günler",
   greetingEvening: "Hayırlı Akşamlar",
   greetingNight: "Hayırlı Geceler",
-
 
   fajr: "İmsak",
   sunrise: "Güneş",
@@ -22,7 +19,6 @@ export const tr = {
   maghrib: "Akşam",
   isha: "Yatsı",
 
-
   nextPrayerLabel: "SIRADAKİ",
   nextBadge: "Sıradaki",
   prayerTimesTitle: "Namaz Vakitleri",
@@ -30,13 +26,12 @@ export const tr = {
   zikirmatikBtn: "Zikirmatik",
   mosquesBtn: "Camiler",
 
-
   tabPrayerTimes: "Vakitler",
   tabQuran: "Kur'an",
+  tabDualar: "Dualar",
   tabGuide: "Rehber",
   tabDhikr: "Zikir",
   tabCalendar: "Takvim",
-
 
   hadith1: "Ameller niyetlere göredir. (Buhârî)",
   hadith2: "Kolaylaştırın, zorlaştırmayın. (Buhârî)",
@@ -46,7 +41,6 @@ export const tr = {
   hadith6: "Mümin müminin aynasıdır. (Ebû Dâvûd)",
   hadith7: "Din kardeşine gülümsemen sadakadır. (Tirmizî)",
 
-
   religiousDaysTitle: "Dini Günler Takvimi",
   nextHolyDay: "SIRADAKİ MÜBAREK GÜN",
   daysLeft: "GÜN KALDI",
@@ -54,7 +48,6 @@ export const tr = {
   today: "Bugün!",
   passed: "Geride Kaldı",
   upcoming: "Yaklaşıyor",
-
 
   threeMonthsStart: "Üç Ayların Başlangıcı",
   regaibKandili: "Regaib Kandili",
@@ -68,14 +61,12 @@ export const tr = {
   ashuraDay: "Aşure Günü",
   mawlidKandili: "Mevlid Kandili",
 
-
   dhikrTitle: "Zikirmatik",
   dhikrTarget: "HEDEF",
   dhikrSubhanallah: "Sübhanallah",
   dhikrAlhamdulillah: "Elhamdülillah",
   dhikrAllahuAkbar: "Allahu Ekber",
   dhikrLaIlaha: "La ilahe illallah",
-
 
   worshipGuide: "İbadet Rehberi",
   prayerTeacher: "Namaz Hocası",
@@ -86,14 +77,252 @@ export const tr = {
   frequentlyUsed: "Sık Kullanılan",
   fardPrayers: "Farz Namazlar",
   fardPrayersDesc: "Cuma namazı, Cenaze namazı vb.",
-  fard: "Farz",
+  fardLabel: "Farz",
   wajibPrayers: "Vacip Namazlar",
-  wajibPrayersDesc: "Bayram ve Vitr namazı kılınışları",
-  wajib: "Vacip",
+  wajibLabel: "Vacip",
   nafilPrayers: "Nafile Namazlar",
+  nafilLabel: "Nafile",
   nafilPrayersDesc: "Teheccüd, Kuşluk ve Tesbih namazları",
   sunnah: "Sünnet",
 
+  rekatLabel: "Rekat",
+  sunnahLabel: "Sünnet",
+  totalLabel: "Toplam",
+
+  // Bes Vakit Menu
+  menuBesVakitHeroTitle: "Farz Namazlar",
+  menuBesVakitHeroSubtitle: "Günlük İbadet Vakitleri",
+  menuBesVakitQuote: '"Şüphesiz namaz, müminlere vakitleri belirlenmiş bir farzdır." (Nisâ 103)',
+  
+  // Prayer Titles & Descs
+  namazSabah: "Sabah Namazı",
+  namazSabahDesc: "2 sünnet + 2 farz",
+  namazOgle: "Öğle Namazı",
+  namazOgleDesc: "4 sünnet + 4 farz + 2 sünnet",
+  namazIkindi: "İkindi Namazı",
+  namazIkindiDesc: "4 sünnet + 4 farz",
+  namazAksam: "Akşam Namazı",
+  namazAksamDesc: "3 farz + 2 sünnet",
+  namazYatsi: "Yatsı Namazı",
+  namazYatsiDesc: "4 sünnet + 4 farz + 2 sünnet + 3 vitr",
+  
+  // Farz Categories
+  menuFarzHeroTitle: "Farz Namazlar",
+  menuFarzHeroSubtitle: "İslam'ın Temel Şartı",
+  menuFarzQuote: "Cuma, cenaze ve vakit namazları Allah'ın kullarına kesin emridir.",
+  badgeFarzIAyn: "Farz-ı Ayn",
+  badgeFarzIKifaye: "Farz-ı Kifaye",
+  namazCuma: "Cuma Namazı",
+  namazCumaDesc: "Haftalık cemaatle kılınan namaz",
+  namazCenaze: "Cenaze Namazı",
+  namazCenazeDesc: "Vefat eden mümin için dua",
+  
+  // Vacip Categories
+  menuVacipHeroTitle: "Vacip İbadetler",
+  menuVacipHeroSubtitle: "Vitir, Bayram ve Secdeler",
+  menuVacipQuote: "Farz kadar kesin olmayan ancak yine emredilen değerli namazlar.",
+  namazVitir: "Vitir Namazı",
+  namazVitirDesc: "Yatsıdan sonra kılınan namaz",
+  namazRamazanBayrami: "Ramazan Bayramı",
+  namazRamazanBayramiDesc: "Yılda bir kılınan bayram namazı",
+  namazKurbanBayrami: "Kurban Bayramı",
+  namazKurbanBayramiDesc: "Kurban ibadeti öncesi olan namaz",
+  namazTilavet: "Tilavet Secdesi",
+  namazTilavetDesc: "Mushaflarda geçen secde ayetleri için",
+  badgeOnceAYear: "Yılda Bir",
+  badgeKurban: "Kurban",
+  badgeSpecial: "Özel",
+
+  // Nafile Categories
+  menuNafileHeroTitle: "Nafile Namazlar Rehberi",
+  menuNafileHeroSubtitle: "Allah'a Yakınlaştıran Gönüllü Namazlar",
+  menuNafileQuote: '"Kuluma farz kıldığım şeylerden daha sevimli bir şeyle yaklaşamaz. Kulum bana nafilelerle de yaklaşmaya devam eder, sonunda onu severim." (Hadis-i Kudsî)',
+  badgeNight: "Gece",
+  badgeDay: "Gündüz",
+  badgeEvening: "Akşam",
+  badgeMosque: "Mescid",
+  badgeWish: "Dilek",
+  badgeShukr: "Şükür",
+  namazTeheccud: "Teheccüd Namazı",
+  namazTeheccudDesc: "Gece vakti uykudan kalkarak",
+  namazKusluk: "Kuşluk (Duha) Namazı",
+  namazKuslukDesc: "Güneş yükselince kılınan şifa namazı",
+  namazEvvabin: "Evvabin Namazı",
+  namazEvvabinDesc: "Akşamdan sonra tövbe edenlerin namazı",
+  namazHacet: "Hacet Namazı",
+  namazHacetDesc: "Bir istek veya dilek için",
+  namazSukur: "Şükür Namazı",
+  namazSukurDesc: "Bir nimet için teşekkür",
+  namazTahiyyetulMescid: "Tahiyyetü'l-Mescid",
+  namazTahiyyetulMescidDesc: "Camiye giriş selamı",
+
+  // Shared Namaz Labels
+  namazStep1Title: "Birinci Rekat",
+  namazStep2Title: "İkinci Rekat",
+  namazStep3Title: "Üçüncü Rekat",
+  namazStep4Title: "Dördüncü Rekat",
+  namazStep2SittingTitle: "İkinci Rekat ve İlk Oturuş",
+  namazStep4SittingTitle: "Dördüncü Rekat ve Selam",
+  namazStepLastTitle: "Son Oturuş ve Selam",
+
+  // Sabah Namazı Detailed
+  praySabahSunnahTitle: "Sünnetin Kılınışı",
+  praySabahSunnahNiyet: "“Niyet ettim Allah rızası için bugünkü sabah namazının sünnetini kılmaya.”",
+  praySabahSunnahStep1Content: "İftitah tekbiri alınır. Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve bir zamm-ı sure (örneğin Kâfirun) okunur. Rükû ve secdeler yapılarak ayağa kalkılır.",
+  praySabahSunnahStep2Title: "İkinci Rekat ve Selam",
+  praySabahSunnahStep2Content: "Besmele çekilir, Fâtiha ve bir sure (örneğin İhlâs) okunur. Rükû ve secde yapıldıktan sonra son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Önce sağa, sonra sola selam verilerek tamamlanır.",
+  praySabahFardTitle: "Farzın Kılınışı",
+  praySabahFardNiyet: "“Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya.”",
+  praySabahFardStep1Title: "Kamet ve Birinci Rekat",
+  praySabahFardStep1Content: "Erkekler için kamet getirilir. Tekbir alınır, Sübhaneke okunur. Eûzü Besmele ile Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır.",
+  praySabahFardStep2Title: "İkinci Rekat ve Selam",
+  praySabahFardStep2Content: "Besmele, Fâtiha ve bir sure okunur. Rükû, secde ve son oturuş yapılır. Ettehiyyatü, Salli-Barik, Rabbena duaları okunur. Sağa ve sola selam verilerek namaz bitirilir.",
+  praySabahInfo: "Cemaatle kılınıyorsa imam sesli okur, cemaat dinler.",
+
+  // Ogle Namazı Detailed
+  prayOgleSunnah1Title: "4 Rekat İlk Sünnet",
+  prayOgleSunnah1Niyet: "“Niyet ettim Allah rızası için bugünkü öğle namazının ilk sünnetini kılmaya.”",
+  prayOgleSunnah1Step1Content: "Tekbir alınır. Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır.",
+  prayOgleSunnah1Step2Content: "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdelerden sonra oturulur (İlk Oturuş). Sadece 'Ettehiyyatü' okunur ve 3. rekata kalkılır.",
+  prayOgleSunnah1Step3Content: "Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır.",
+  prayOgleSunnah1Step4Content: "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû, secde ve son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunup selam verilir.",
+  prayOgleFardTitle: "4 Rekat Farz",
+  prayOgleFardNiyet: "“Niyet ettim Allah rızası için bugünkü öğle namazının farzını kılmaya.”",
+  prayOgleFardStep1Content: "Erkekler kamet getirir. İlk iki rekat, sünnetteki gibi kılınır (Sübhaneke, Fâtiha, sure). İkinci rekatın sonunda sadece Ettehiyyatü okunup kalkılır.",
+  prayOgleFardStep3Content: "Ayağa kalkılınca sadece Besmele ve Fâtiha okunur (Zamm-ı sure okunmaz). Rükû ve secdeler yapılır. 4. rekatın sonunda oturulur.",
+  prayOgleFardStepLastContent: "Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Önce sağa, sonra sola selam verilerek farz bitirilir.",
+  prayOgleFardInfo: "Farzın 3. ve 4. rekatlarında Fâtiha'dan sonra sure okunmaz.",
+  prayOgleSunnah2Title: "2 Rekat Son Sünnet",
+  prayOgleSunnah2Niyet: "“Niyet ettim Allah rızası için bugünkü öğle namazının son sünnetini kılmaya.”",
+  prayOgleSunnah2Step1Content: "Tekbir alınır. Sübhaneke, Eûzü Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır.",
+  prayOgleSunnah2Step2Content: "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû, secde ve son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunup selam verilir.",
+
+  // Ikindi Namazı Detailed
+  prayIkindiSunnahTitle: "İkindi Sünnetinin Kılınışı",
+  prayIkindiSunnahNiyet: "“Niyet ettim Allah rızası için bugünkü ikindi namazının sünnetini kılmaya.”",
+  prayIkindiSunnahStep2Content: "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdelerden sonra oturulur (İlk Oturuş). Ettehiyyatü okunur ve ardından Salli-Barik duaları da okunarak 3. rekata kalkılır.",
+  prayIkindiSunnahStep3Title: "Üçüncü Rekat (Sübhaneke ile başlanır)",
+  prayIkindiSunnahStep3Content: "Ayağa kalkıldığında önce Sübhaneke okunur. Sonra Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılır.",
+  prayIkindiSunnahInfo: "İkindi sünneti \"Gayr-i Müekked\" olduğu için ilk oturuşta Salli-Barik okunur, 3. rekata Sübhaneke ile başlanır.",
+  prayIkindiFardTitle: "Farzın Kılınışı",
+  prayIkindiFardNiyet: "“Niyet ettim Allah rızası için bugünkü ikindi namazının farzını kılmaya.”",
+  prayIkindiFardStep1Title: "Kamet ve İlk İki Rekat",
+  prayIkindiFardStep1Content: "Erkekler kamet getirir. İlk iki rekat, diğer farzlardaki gibi kılınır (Sübhaneke, Fâtiha, sure). İkinci rekatın sonunda oturulur ve sadece Ettehiyyatü okunup kalkılır.",
+  prayIkindiFardStep3Content: "Ayağa kalkılınca sadece Besmele ve Fâtiha okunur (Sure okunmaz). Rükû ve secdeler yapılarak 4. rekat da aynı şekilde tamamlanır ve son oturuşa geçilir.",
+  prayIkindiFardInfo: "Farzın 3. ve 4. rekatlarında sadece Fâtiha okunur, zamm-ı sure okunmaz.",
+
+  // Aksam Namazı Detailed
+  prayAksamFardTitle: "Farzın Kılınışı",
+  prayAksamFardNiyet: "“Niyet ettim Allah rızası için bugünkü akşam namazının farzını kılmaya.”",
+  prayAksamFardStep1Title: "Kamet ve İlk İki Rekat",
+  prayAksamFardStep1Content: "Erkekler kamet getirir. Tekbir alınır, Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve sure okunur. Rükû ve secdeler yapılıp 2. rekata kalkılır. 2. rekatta da Besmele, Fâtiha, sure okunup rükû ve secdeler yapılır. Ardından İlk Oturuş yapılır, sadece Ettehiyyatü okunur.",
+  prayAksamFardStep3Content: "Ayağa kalkılır. Sadece Besmele çekilir ve Fâtiha suresi okunur (Zamm-ı sure okunmaz). Rükû ve secdeler yapılıp Son Oturuşa geçilir.",
+  prayAksamFardStepLastContent: "Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Önce sağa, sonra sola selam verilerek farz bitirilir.",
+  prayAksamFardInfo: "Akşam namazında önce Farz kılınır. Farzın 3. rekatında sadece Fâtiha okunur.",
+  prayAksamSunnahTitle: "Sünnetin Kılınışı",
+  prayAksamSunnahNiyet: "“Niyet ettim Allah rızası için bugünkü akşam namazının sünnetini kılmaya.”",
+  prayAksamSunnahStep1Content: "Farzdan sonra tekbir alınır. Sübhaneke okunur. Eûzü Besmele çekilir, Fâtiha ve zamm-ı sure okunur. Rükû ve secdeler yapılarak 2. rekata kalkılır.",
+  prayAksamSunnahStep2Content: "Besmele, Fâtiha ve zamm-ı sure okunur. Rükû ve secdelerden sonra son oturuşa geçilir. Ettehiyyatü, Salli-Barik ve Rabbena duaları okunur. Sağa ve sola selam verilerek namaz tamamlanır.",
+
+  // Yatsi Namazı Detailed
+  prayYatsiSunnah1Title: "4 Rekat İlk Sünnet",
+  prayYatsiSunnah1Niyet: "“Niyet ettim Allah rızası için yatsı namazının ilk sünnetini kılmaya.”",
+  prayYatsiSunnah1Step2Title: "İlk Oturuş Dikkat",
+  prayYatsiSunnah1Step2Content: "Ettehiyyatü'den sonra Salli-Barik duaları da okunur. 3. rekata kalkınca Sübhaneke ile başlanır.",
+  prayYatsiSunnah1Step4Content: "3. ve 4. rekatlar Fatiha ve sure ile kılınıp selam verilir.",
+  prayYatsiFardTitle: "4 Rekat Farz",
+  prayYatsiFardNiyet: "“Niyet ettim Allah rızası için yatsı namazının farzını kılmaya.”",
+  prayYatsiFardStep1Title: "Başlangıç",
+  prayYatsiFardStep1Content: "Kamet getirilir. İlk 2 rekat Fatiha ve sure ile kılınır. İlk oturuşta sadece Ettehiyyatü okunur.",
+  prayYatsiFardStep3Content: "3. ve 4. rekatlarda sadece Fatiha okunur, sure okunmaz. Son oturuşta dualarla selam verilir.",
+  prayYatsiWitrTitle: "3 Rekat Vitir Namazı",
+  prayWitrTitle: "3 Rekat Vitir Namazı",
+  completeLabel: "Tamamlama",
+  returnToMenuLabel: "Menüye Dön",
+  prayYatsiWitrNiyet: "“Niyet ettim Allah rızası için bugünkü vitir namazını kılmaya.”",
+  prayYatsiWitrStep1Content: "Normal 2 rekat gibi kılınır. 2. rekat sonunda sadece Ettehiyyatü okunup kalkılır.",
+  prayYatsiWitrStep3Title: "3. Rekat ve Kunut",
+  prayYatsiWitrStep3Content: "Fatiha ve sure okunur. Rükûya gitmeden 'Allahu Ekber' diyerek tekrar tekbir alınır (Kulaklar hizasına). Elleri bağlayıp Kunut duaları okunur. Ardından rükû ve secde ile tamamlanır.",
+
+  // Farz Namazlar Detailed
+  prayCumaSunnah1Title: "4 Rekat İlk Sünnet",
+  prayCumaSunnah1Niyet: "“Niyet ettim Allah rızası için Cuma namazının ilk sünnetini kılmaya.”",
+  prayCumaSunnah1Step1Content: "Öğle namazının ilk sünneti gibi kılınır. Her rekatta Fatiha ve sure okunur. 2. rekatta oturulduktan sonra ayağa kalkılır, 4. rekat sonunda selam verilir.",
+  prayCumaFardTitle: "2 Rekat Farz",
+  prayCumaFardNiyet: "“Niyet ettim Allah rızası için Cuma namazının farzını kılmaya, uydum hazır olan imama.”",
+  prayCumaFardStep1Title: "Cemaatle Kılınış",
+  prayCumaFardStep1Content: "İmamla beraber tekbir alınır. Sübhaneke okunur ve susulur. İmamı dinleyerek rükû ve secdeler yapılır.",
+  prayCumaFardStep2Content: "2. rekatta imamı takip ederek rükû ve secdeler yapılır. Son oturuşta dualar okunup imamla beraber selam verilir.",
+  prayCumaInfo: "Farzdan önce hatibin minbere çıkıp Hutbe okuması namazın şartıdır. Hutbe sırasında konuşulmaz ve namaz kılınmaz.",
+  badgeCongregation: "Cemaatle Kılınır",
+  
+  prayCenazeNiyet: "“Allah rızası için namaza, meyit için duaya, uydum hazır olan imama.”",
+  prayCenazeBadge: "Rükû ve Secde Yoktur",
+  prayCenazeStep1Title: "1. Tekbir",
+  prayCenazeStep1Content: "Niyet edilir ve tekbir alınarak eller bağlanır. 'Sübhaneke' duası 've celle senâük' kısmı eklenerek okunur.",
+  prayCenazeStep2Title: "2. Tekbir",
+  prayCenazeStep2Content: "Eller kaldırılmadan tekbir alınır. 'Salli' ve 'Barik' duaları okunur.",
+  prayCenazeStep3Title: "3. Tekbir",
+  prayCenazeStep3Content: "Eller kaldırılmadan tekbir alınır. Biliyorsa 'Cenaze Duası', bilmiyorsa 'Rabbena' veya 'Fatiha' (dua niyetiyle) okunur.",
+  prayCenazeStep4Title: "4. Tekbir ve Selam",
+  prayCenazeStep4Content: "Eller kaldırılmadan tekbir alınır. Ayakta önce sağa sonra sola selam verilerek namaz tamamlanır.",
+  prayCenazeInfo: "Cenaze namazı tamamen ayakta kılınır, rükû ve secde yapılmaz.",
+
+  // Vacip Namazlar Detailed
+  prayWitrFullTitle: "Vitir Namazı (Vacip) Kılınışı",
+  prayWitrInfo: "Vitir namazı yatsı namazından hemen sonra kılınmak zorunda değildir, yatsı vakti girmeden ise kılınmaz.",
+  
+  namazTilavetTitle: "Tilavet Secdesi (Vacip) Kılınışı",
+  prayTilavetNiyet: "“Niyet ettim Allah rızası için tilavet secdesi yapmaya.”",
+  prayTilavetBadge: "Sadece 1 Secde",
+  prayTilavetStep1Title: "Tekbir ve Secde",
+  prayTilavetStep1Content: "Kıbleye dönülür, eller kaldırılmadan 'Allahu Ekber' denilip doğrudan secdeye gidilir. Secdede üç defa 'Sübhâne rabbiye'l-a'lâ' denir.",
+  prayTilavetStep2Title: "Ayağa Kalkış (Doğrulma)",
+  prayTilavetStep2Content: "Secdeden kalkılırken yine tekbir ('Allahu Ekber') getirilerek ayağa (kıyama) doğrulunur. Ayağa kalkarken 'Gufrâneke Rabbenâ ve ileykel-masîr' denir.",
+  prayTilavetInfo: "Kur'an-ı Kerim'de yer alan 14 adet secde ayetinden herhangi biri okunduğunda veya duyulduğunda yapılması vaciptir.",
+
+  namazBayramTitle: "Bayram Namazı (Vacip) Kılınışı",
+  prayBayramBadge: "Toplam 2 Rekat + Hutbe",
+  prayRamazanBayramNiyet: "“Niyet ettim Allah rızası için bugünkü Ramazan Bayramı namazını kılmaya, uydum hazır olan imama.”",
+  prayKurbanBayramNiyet: "“Niyet ettim Allah rızası için bugünkü Kurban Bayramı namazını kılmaya, uydum hazır olan imama.”",
+  prayBayramStep1Content: "İftitah tekbiri ile namaza başlanır, 'Sübhaneke' okunur. Ardından imam sesli, cemaat sessiz olarak peş peşe 3 kez daha ilave tekbir (zavait tekbir) alır. İmam açıktan Fâtiha ve sure okuduktan sonra rükû ve secdeye gidilir.",
+  prayBayramStep2Content: "İmam doğrudan açıktan Fâtiha ve bir zamm-ı sure okur. Bitince peş peşe 3 kez ilave tekbir alınır. 4. tekbir ile rükûya varılır. Secdelerden sonra oturuşa geçilir, okunan duaların ardından selam ile bitirilir.",
+  prayRamazanBayramInfo: "Bayram namazı cemaat ile kılınması vaciptir. Namazdan sonra imamın okuduğu bayram hutbesini dinlemek sünnettir.",
+  prayKurbanBayramInfo: "Ramazan bayramıyla kılınışı tıpatıp aynıdır. Arife günü sabahtan itibaren farz namazlar ardında okunan teşrik tekbiri unutulmamalıdır.",
+
+  // Nafile Namazlar Detailed
+  prayTeheccudNiyet: "“Niyet ettim Allah rızası için teheccüd namazını kılmaya.”",
+  prayTeheccudInfo: "Yatsı namazından sonra ve sabah vakti girmeden, uykudan kalkarak kılınması en eftalidir.",
+  prayTeheccudStep1Title: "İkişer Rekatlık Kılınış",
+  prayTeheccudStep1Content: "Tıpkı sabah namazının sünneti gibi kılınır. Her iki rekatta bir selam verilmesi tavsiye edilir. İki rekatta selam verilecekse birinci rekatta Subhaneke, Fatiha ve zamm-ı sure, ikinci rekatta Fatiha ve zamm-ı sure okunur.",
+  prayTeheccudStep2Title: "Dört Rekatlık Kılınış",
+  prayTeheccudStep2Content: "Dört rekatta bir selam verilecekse ikindi namazının sünneti gibi kılınır. Yani ilk oturuşta salli-barik duaları okunur, üçüncü rekatın başında sübhaneke tekrar okunur.",
+
+  prayKuslukNiyet: "“Niyet ettim Allah rızası için kuşluk namazını kılmaya.”",
+  prayKuslukInfo: "Güneşin doğup ufukta yükselmesinden (işrak vakti), öğle vaktine yaklaşık 45 dakika kalana dek kılınır.",
+  prayKuslukStep1Title: "İkişer Rekatlık Kılınış",
+  prayKuslukStep1Content: "Sabah veya öğle sünneti gibi kılınabilir. En efdali iki rekatta bir selam vermektir. Birinci rekatta Subhaneke okunur ve ardından Fatiha ile bir sure eklenir.",
+
+  prayEvvabinNiyet: "“Niyet ettim Allah rızası için Evvabin namazını kılmaya.”",
+  prayEvvabinInfo: "Evvabin, akşam namazının sünnetinden sonra kılınan ve 'Allah'a yönelenlerin namazı' anlamına gelen nafile ibadettir.",
+  prayEvvabinStep1Title: "İkişer İkişer Kılınması",
+  prayEvvabinStep1Content: "Genellikle 6 rekat olarak, 2 rekatta bir selam verilerek kılınması yaygındır. Her iki rekat namaz, sabah namazının sünneti gibi kılınır.",
+  prayEvvabinStep2Title: "Tek Seferde Kılınması",
+  prayEvvabinStep2Content: "Alınan niyete göre tek seferde 6 rekat olarak da kılınabilir. Bu durumda her iki rekat sonunda ilk oturuş yapılarak ara duaları okunur.",
+
+  prayHacetNiyet: "“Niyet ettim Allah rızası için hacet namazı kılmaya.”",
+  prayHacetInfo: "Namazdan sonra Allah'tan ihtiyaç ve dilekler duayla istenir.",
+  prayHacetStep1Content: "Sübhaneke okunur, Fatiha ve zamm-ı sure serbest olarak okunursa 2 rekat bitirilir. Ancak sünnet olarak; 1. rekatta 3 kere Ayetel Kürsi okunması tavsiye edilir.",
+  prayHacetStep2Content: "Fatiha ve zamm-ı sure okunur (Sünnete göre burda İhlas, Felak ve Nas sureleri okunur). Rükû ve secdeler tamamlanıp selam verilir.",
+
+  praySukurNiyet: "“Niyet ettim Allah rızası için şükür namazı kılmaya.”",
+  praySukurInfo: "Bir musibetten kurtulunca yahut güzel bir nimete nail olunca Allah'a hamdetmek ve şükretmek niyetiyle kılınır.",
+  praySukurStep1Content: "Tekbir alınır, Sübhaneke okunur. Fatiha ve zamm-ı sure (herhangi biri olabilir) okunur. Rükû ve secdeler yapılarak ikinci rekata kalkılır.",
+
+  prayTahiyyetulMescidNiyet: "“Niyet ettim Allah rızası için Tahiyyetü'l Mescid namazı kılmaya.”",
+  prayTahiyyetulMescidInfo: "Camiye girildiğinde oturmadan kılınır. Mescidin Rabbine bir selamlama niteliği taşır.",
+  prayTahiyyetulMescidStep1Content: "Tekbir alınır, Sübhaneke okunur. Fatiha ve zamm-ı sure (örneğin Kafirun Suresi) okunur. Rükû ve secdeler yapılır.",
+  prayTahiyyetulMescidStep2Content: "Fatiha ve zamm-ı sure (örneğin İhlas Suresi) okunur. Rükû, secde ve oturuş yapılarak selam verilir.",
 
   prayersAndSurahs: "Dualar ve Sureler",
   prayersSubtitle: "Namazda okunan ezberler rehberi",
@@ -105,6 +334,10 @@ export const tr = {
   stop: "Durdur",
   noAudio: "Ses Yok",
 
+  quranSearchPlaceholder: "Sure Ara...",
+  revelationMeccan: "Mekki",
+  revelationMedinan: "Medeni",
+  ayahCountLabel: "Ayet",
 
   subhanakaDua: "Sübhaneke Duası",
   ettehiyyatuDua: "Ettehiyyatü Duası",
@@ -112,7 +345,6 @@ export const tr = {
   allahummaBarik: "Allahümme Barik Duası",
   rabbanaAtina: "Rabbenâ Âtinâ Duası",
   qunutDuas: "Kunut Duaları (Vitir)",
-
 
   fatiha: "Fatiha Suresi",
   ayatulKursi: "Âyet-el Kürsî",
@@ -129,7 +361,6 @@ export const tr = {
   takathurSurah: "Tekâsür Suresi",
   zilzalSurah: "Zilzal Suresi",
 
-
   subhanakaMeaning: "Allah'ım! Sen eksik sıfatlardan pak ve uzaksın. Seni daima böyle tenzih eder ve överim. Senin adın mübarektir. Varlığın her şeyden üstündür. Senden başka ilah yoktur. (*Ve celle senâük cümlesi sadece cenaze namazında eklenir.)",
   ettehiyyatuMeaning: "Bütün dualar, senalar, bedeni ve mali ibadetler Allah'a mahsustur. Ey Peygamber! Sana selam olsun, Allah'ın rahmeti ve bereketi üzerine olsun. Selam bize ve Allah'ın salih kullarına olsun. Ben şehadet ederim ki, Allah'tan başka ilah yoktur ve yine şehadet ederim ki, Muhammed O'nun kulu ve elçisidir.",
   allahummaSalliMeaning: "Allah'ım! Hz. Muhammed'e ve onun âline rahmet eyle, tıpkı Hz. İbrahim'e ve onun âline rahmet eylediğin gibi. Şüphesiz sen övülmeye layıksın, yücesin.",
@@ -144,13 +375,12 @@ export const tr = {
   falaqMeaning: "De ki: Yarattığı şeylerin şerrinden, karanlığı çöktüğü zaman gecenin şerrinden, düğümlere üfleyen büyücülerin şerrinden ve haset ettiği zaman hasetçinin şerrinden, sabah aydınlığının Rabbine sığınırım.",
   nasMeaning: "De ki: Cinlerden ve insanlardan olup, insanların göğüslerine vesvese veren o sinsi vesvesecinin şerrinden insanların Rabbine, insanların Hükümdarına, insanların İlahına sığınırım.",
   inshirahMeaning: "Rahmân ve Rahîm olan Allah'ın adıyla. Biz senin göğsünü açıp genişletmedik mi? Belini büken yükünü üzerinden kaldırmadık mı? Senin şanını ve ününü yüceltmedik mi? Muhakkak ki zorlukla beraber bir kolaylık vardır. Evet, zorlukla beraber bir kolaylık vardır. Öyleyse, bir işi bitirince diğerine koyul. Ve ancak Rabbine yönel ve O'na yalvar.",
-  kafirunMeaning: "De ki: Ey kâfirler! Ben sizin taptıklarınıza tapmam. Siz de benim taptığıma tapanlar değilsiniz. Ben de sizin taptıklarınıza tapacak değilim. Siz de benim taptığıma tapacak değilsiniz. Sizin dininiz size, benim dinim bana.",
+  kafirunMeaning: "De ki: Ey kâfirler! Ben sizin taptıklarınıza tapmam. Siz de benim taptığıma tapanlar değilsiniz. Ben de sizin taptıklarınıza tapacak değilim. Siz de benim taptığıma tapacak değilim. Sizin dininiz size, benim dinim bana.",
   filMeaning: "Rabbin fil sahiplerine ne yaptı, görmedin mi? Onların tuzaklarını boşa çıkarmadı mı? Onların üzerine sürü sürü kuşlar gönderdi. Onlara balçıktan sertleştirilmiş taşlar atıyorlardı. Böylece Allah onları yenilmiş ekin yaprağı gibi kılıp parçaladı.",
   quraishMeaning: "Kureyş'in yurt edinmesi, kış ve yaz yolculuklarına alıştırılmaları için. O hâlde bu Kâbe'nin Rabbi olan Allah'a kulluk etsinler. O ki, onları açlıktan doyurmuş ve korkudan emin kılmıştır.",
   maunMeaning: "Din gününü yalanlayanı gördün mü? İşte yetimi iten, kakıştıran o kimsedir. Yoksulun yiyeceği için teşvik etmez. Vay haline o namaz kılanların ki, onlar namazlarından gafildirler; onlar gösteriş yaparlar ve zekât vermezler.",
   takathurMeaning: "Çokluğu ile öğünmek sizi oyaladı. Hatta mezarlıkları ziyaret edinceye kadar. Hayır! İleride bileceksiniz. Yine hayır! İleride bileceksiniz. Hayır! Kesin olarak bilseniz o cehennem ateşini mutlaka görürsünüz. Sonra onu gözün görmesiyle (kesin olarak) görürsünüz. Sonra o gün nimetlerden muhakkak hesaba çekileceksiniz.",
   zilzalMeaning: "Yer, o şiddetli sarsıntısıyla sarsıldığında; yer, ağırlıklarını (içindekilerini) dışarı çıkardığında; insan 'Bu (yer) ne oluyor?' dediğinde; işte o gün yer, haberlerini anlatır. Çünkü Rabbin ona vahyetmiştir. O gün insanlar, amellerinin karşılığını görmek üzere bölük bölük dönerler. Kim zerre ağırlığınca hayır işlerse onu görür. Kim de zerre ağırlığınca kötülük işlerse onu görür.",
-
 
   nearbyMosques: "Yakındaki Camiler",
   searchingMosques: "Çevredeki minareler aranıyor...",
@@ -164,7 +394,6 @@ export const tr = {
   distanceLabel: "mesafe",
   unknownMosque: "İsimsiz Cami / Mescit",
 
-
   settingsTitle: "Ayarlar",
   languageSection: "Dil Seçimi",
   languageDesc: "Uygulama dilini seçin",
@@ -175,7 +404,6 @@ export const tr = {
   hadithNotificationDesc: "Her gün sabah bir hadis bildirimi",
   notificationsEnabled: "Bildirimler açık",
   notificationsDisabled: "Bildirimler kapalı",
-
 
   prayerNotifTitle: "Namaz Vakti Yaklaşıyor",
   prayerNotifBody: "vaktine 5 dakika kaldı",

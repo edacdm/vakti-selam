@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function BesVakit() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderListItem = (
     path: string,
@@ -54,7 +55,7 @@ export default function BesVakit() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Beş Vakit Namaz</Text>
+          <Text style={styles.headerTitle}>{t("fiveDailyPrayers")}</Text>
           <View style={{ width: 44 }} />
         </View>
 
@@ -69,13 +70,13 @@ export default function BesVakit() {
                 <MaterialCommunityIcons name="clock-time-four-outline" size={38} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Farz Namazlar</Text>
-                <Text style={styles.heroSubtitle}>Günlük İbadet Vakitleri</Text>
+                <Text style={styles.heroTitle}>{t("menuBesVakitHeroTitle")}</Text>
+                <Text style={styles.heroSubtitle}>{t("menuBesVakitHeroSubtitle")}</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              "Şüphesiz namaz, müminlere vakitleri belirlenmiş bir farzdır." (Nisâ 103)
+              {t("menuBesVakitQuote")}
             </Text>
           </LinearGradient>
 
@@ -83,37 +84,37 @@ export default function BesVakit() {
             {renderListItem(
               "/namazlar/BesVakit/SabahNamazi",
               "weather-sunset-up",
-              "Sabah Namazı",
-              "2 sünnet + 2 farz",
-              "4 Rekat"
+              t("namazSabah"),
+              t("namazSabahDesc"),
+              `4 ${t("rekatLabel")}`
             )}
             {renderListItem(
               "/namazlar/BesVakit/OgleNamazi",
               "white-balance-sunny",
-              "Öğle Namazı",
-              "4 sünnet + 4 farz + 2 sünnet",
-              "10 Rekat"
+              t("namazOgle"),
+              t("namazOgleDesc"),
+              `10 ${t("rekatLabel")}`
             )}
             {renderListItem(
               "/namazlar/BesVakit/IkindiNamazi",
               "weather-sunset-down",
-              "İkindi Namazı",
-              "4 sünnet + 4 farz",
-              "8 Rekat"
+              t("namazIkindi"),
+              t("namazIkindiDesc"),
+              `8 ${t("rekatLabel")}`
             )}
             {renderListItem(
               "/namazlar/BesVakit/AksamNamazi",
               "weather-sunset",
-              "Akşam Namazı",
-              "3 farz + 2 sünnet",
-              "5 Rekat"
+              t("namazAksam"),
+              t("namazAksamDesc"),
+              `5 ${t("rekatLabel")}`
             )}
             {renderListItem(
               "/namazlar/BesVakit/YatsiNamazi",
               "moon-waning-crescent",
-              "Yatsı Namazı",
-              "4 sünnet + 4 farz + 2 sünnet + 3 vitr",
-              "13 Rekat"
+              t("namazYatsi"),
+              t("namazYatsiDesc"),
+              `13 ${t("rekatLabel")}`
             )}
           </View>
 

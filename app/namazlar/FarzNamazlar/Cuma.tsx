@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../../i18n";
 
 export default function CumaNamazi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderStep = (stepNumber: string, title: string, content: string, isLast: boolean = false) => (
     <View style={styles.stepRow}>
@@ -32,44 +33,46 @@ export default function CumaNamazi() {
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <LinearGradient colors={["rgba(212, 175, 55, 0.15)", "rgba(212, 175, 55, 0.02)"]} style={styles.heroCard}>
             <MaterialCommunityIcons name="mosque" size={56} color="#D4AF37" />
-            <Text style={styles.heroTitle}>Cuma Namazı</Text>
+            <Text style={styles.heroTitle}>{t("namazCuma")}</Text>
             <View style={styles.badgeContainer}>
-              <View style={styles.badge}><Text style={styles.badgeText}>4 İlk Sünnet</Text></View>
-              <View style={styles.badge}><Text style={styles.badgeText}>2 Farz</Text></View>
-              <View style={styles.badge}><Text style={styles.badgeText}>4 Son Sünnet</Text></View>
+              <View style={styles.badge}><Text style={styles.badgeText}>4 {t("sunnahLabel")}</Text></View>
+              <View style={styles.badge}><Text style={styles.badgeText}>2 {t("fardLabel")}</Text></View>
+              <View style={styles.badge}><Text style={styles.badgeText}>4 {t("sunnahLabel")}</Text></View>
             </View>
-            <View style={[styles.badge, styles.badgeHighlight, { marginTop: 10 }]}><Text style={styles.badgeTextHighlight}>Cemaatle Kılınır</Text></View>
+            <View style={[styles.badge, styles.badgeHighlight, { marginTop: 10 }]}><Text style={styles.badgeTextHighlight}>{t("badgeCongregation")}</Text></View>
           </LinearGradient>
 
           <View style={styles.infoRowMain}>
             <Ionicons name="megaphone-outline" size={24} color="#D4AF37" />
-            <Text style={styles.infoRowTextMain}>Farzdan önce hatibin minbere çıkıp Hutbe okuması namazın şartıdır. Hutbe sırasında konuşulmaz ve namaz kılınmaz.</Text>
+            <Text style={styles.infoRowTextMain}>{t("prayCumaInfo")}</Text>
           </View>
 
           <LinearGradient colors={["rgba(18, 30, 54, 0.9)", "rgba(8, 12, 22, 0.9)"]} style={styles.sectionCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="book-outline" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>4 Rekat İlk Sünnet</Text>
+              <Text style={styles.sectionTitle}>4 {t("rekatLabel")} {t("sunnahLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayCumaSunnah1Title")}</Text>
             <View style={styles.niyetBox}>
-              <Text style={styles.niyetText}>“Niyet ettim Allah rızası için Cuma namazının ilk sünnetini kılmaya.”</Text>
+              <Text style={styles.niyetText}>{t("prayCumaSunnah1Niyet")}</Text>
             </View>
             <View style={styles.pathwayContainer}>
-              {renderStep("1", "Kılınışı", "Öğle namazının ilk sünneti gibi kılınır. Her rekatta Fatiha ve sure okunur. 2. rekatta oturulur, 4. rekat sonunda selam verilir.", true)}
+              {renderStep("1", t("sunnahLabel"), t("prayCumaSunnah1Step1Content"), true)}
             </View>
           </LinearGradient>
 
           <LinearGradient colors={["rgba(18, 30, 54, 0.9)", "rgba(8, 12, 22, 0.9)"]} style={styles.sectionCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="star" size={26} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>2 Rekat Farz</Text>
+              <Text style={styles.sectionTitle}>2 {t("rekatLabel")} {t("fardLabel")}</Text>
             </View>
+            <Text style={styles.sectionSubtitle}>{t("prayCumaFardTitle")}</Text>
             <View style={styles.niyetBox}>
-              <Text style={styles.niyetText}>“Niyet ettim Allah rızası için Cuma namazının farzını kılmaya, uydum hazır olan imama.”</Text>
+              <Text style={styles.niyetText}>{t("prayCumaFardNiyet")}</Text>
             </View>
             <View style={styles.pathwayContainer}>
-              {renderStep("1", "Cemaatle Kılınış", "İmamla beraber tekbir alınır. Sübhaneke okunur ve susulur. İmamı dinleyerek rükû ve secdeler yapılır.")}
-              {renderStep("2", "Tamamlama", "2. rekatta imamı takip ederek rükû ve secdeler yapılır. Son oturuşta dualar okunup imamla beraber selam verilir.", true)}
+              {renderStep("1", t("prayCumaFardStep1Title"), t("prayCumaFardStep1Content"))}
+              {renderStep("2", t("completeLabel"), t("prayCumaFardStep2Content"), true)}
             </View>
           </LinearGradient>
 
@@ -97,6 +100,13 @@ const styles = StyleSheet.create({
   sectionCard: { borderRadius: 24, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.15)" },
   sectionHeader: { flexDirection: "row", alignItems: "center", marginBottom: 20, gap: 12 },
   sectionTitle: { fontSize: 22, fontWeight: "600", color: "#D4AF37" },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#CBD5E1",
+    marginBottom: 15,
+    marginTop: -10,
+  },
   niyetBox: { backgroundColor: "rgba(212, 175, 55, 0.08)", padding: 18, borderRadius: 16, marginBottom: 25, borderLeftWidth: 4, borderLeftColor: "#D4AF37" },
   niyetText: { color: "#E2E8F0", fontStyle: "italic", fontSize: 14, lineHeight: 20 },
   pathwayContainer: { paddingLeft: 5 },
