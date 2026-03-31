@@ -3,9 +3,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "../../i18n";
 
 export default function NamazHocasi() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const goTo = (path: string): void => {
     router.push(path as any);
@@ -59,13 +61,12 @@ export default function NamazHocasi() {
           <TouchableOpacity style={styles.iconButton} onPress={() => router.replace("/" as any)}>
             <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>İbadet Rehberi</Text>
+          <Text style={styles.headerTitle}>{t("worshipGuide")}</Text>
           <View style={{ width: 44 }} />
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           
-          {/* Lüks Kahraman (Hero) Kartı */}
           <LinearGradient
             colors={["rgba(212, 175, 55, 0.15)", "rgba(212, 175, 55, 0.02)"]}
             style={styles.heroCard}
@@ -75,49 +76,48 @@ export default function NamazHocasi() {
                 <MaterialCommunityIcons name="book-open-page-variant" size={40} color="#D4AF37" />
               </View>
               <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>Namaz Hocası</Text>
-                <Text style={styles.heroSubtitle}>Adım Adım Öğrenin</Text>
+                <Text style={styles.heroTitle}>{t("prayerTeacher")}</Text>
+                <Text style={styles.heroSubtitle}>{t("stepByStep")}</Text>
               </View>
             </View>
             <View style={styles.separator} />
             <Text style={styles.heroQuote}>
-              "Kulun kıyamet gününde hesabını vereceği ilk ameli namazdır." (Tirmizî)
+              {t("prayerTeacherQuote")}
             </Text>
           </LinearGradient>
 
-          {/* Dikey Kart Listesi */}
           <View style={styles.listContainer}>
             {renderListItem(
               "/namazlar/BesVakit",
               MaterialCommunityIcons,
               "clock-time-four-outline",
-              "Beş Vakit Namaz",
-              "Farz namazlarının tam kılınışları",
-              "Sık Kullanılan"
+              t("fiveDailyPrayers"),
+              t("fiveDailyPrayersDesc"),
+              t("frequentlyUsed")
             )}
             {renderListItem(
               "/namazlar/FarzNamazlar",
               Ionicons,
               "star-outline",
-              "Farz Namazlar",
-              "Cuma namazı, Cenaze namazı vb.",
-              "Farz"
+              t("fardPrayers"),
+              t("fardPrayersDesc"),
+              t("fard")
             )}
             {renderListItem(
               "/namazlar/VacipNamazlar",
               MaterialCommunityIcons,
               "star-shooting-outline",
-              "Vacip Namazlar",
-              "Bayram ve Vitr namazı kılınışları",
-              "Vacip"
+              t("wajibPrayers"),
+              t("wajibPrayersDesc"),
+              t("wajib")
             )}
             {renderListItem(
               "/namazlar/NafileNamazlar",
               Ionicons,
               "moon-outline",
-              "Nafile Namazlar",
-              "Teheccüd, Kuşluk ve Tesbih namazları",
-              "Sünnet"
+              t("nafilPrayers"),
+              t("nafilPrayersDesc"),
+              t("sunnah")
             )}
           </View>
 
@@ -130,169 +130,29 @@ export default function NamazHocasi() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  headerTitle: {
-    color: "#D4AF37",
-    fontSize: 18,
-    fontWeight: "600",
-    letterSpacing: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  heroCard: {
-    width: "100%",
-    borderRadius: 24,
-    padding: 24,
-    marginBottom: 25,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-    shadowColor: "#D4AF37",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 15,
-    elevation: 5,
-  },
-  heroContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  heroIconBg: {
-    width: 60,
-    height: 60,
-    borderRadius: 18,
-    backgroundColor: "rgba(11, 16, 30, 0.6)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 15,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.2)",
-  },
-  heroTextContainer: {
-    flex: 1,
-  },
-  heroTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#E2E8F0",
-    letterSpacing: 0.5,
-  },
-  heroSubtitle: {
-    fontSize: 13,
-    color: "#D4AF37",
-    marginTop: 4,
-    fontWeight: "500",
-    letterSpacing: 0.5,
-  },
-  separator: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
-    marginVertical: 18,
-  },
-  heroQuote: {
-    color: "#94A3B8",
-    fontSize: 14,
-    fontStyle: "italic",
-    lineHeight: 22,
-    textAlign: "center",
-  },
-  listContainer: {
-    gap: 15,
-  },
-  listItem: {
-    width: "100%",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  listItemInner: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-  },
-  listIconBox: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: "#D4AF37",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 16,
-    shadowColor: "#D4AF37",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  listTextContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  listTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#E2E8F0",
-    marginRight: 8,
-  },
-  badgeBox: {
-    backgroundColor: "rgba(212, 175, 55, 0.15)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-  },
-  badgeText: {
-    fontSize: 9,
-    color: "#D4AF37",
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  },
-  listDesc: {
-    fontSize: 12,
-    color: "#94A3B8",
-    lineHeight: 18,
-    paddingRight: 10,
-  },
-  chevronBox: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(11, 16, 30, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  container: { flex: 1 },
+  safeArea: { flex: 1 },
+  header: { flexDirection: "row", paddingHorizontal: 20, paddingVertical: 15, alignItems: "center", justifyContent: "space-between" },
+  iconButton: { width: 44, height: 44, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(255, 255, 255, 0.05)", borderRadius: 12, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.1)" },
+  headerTitle: { color: "#D4AF37", fontSize: 18, fontWeight: "600", letterSpacing: 1 },
+  scrollContent: { paddingHorizontal: 20, paddingTop: 10 },
+  heroCard: { width: "100%", borderRadius: 24, padding: 24, marginBottom: 25, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.3)", shadowColor: "#D4AF37", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 10 }, shadowRadius: 15, elevation: 5 },
+  heroContent: { flexDirection: "row", alignItems: "center" },
+  heroIconBg: { width: 60, height: 60, borderRadius: 18, backgroundColor: "rgba(11, 16, 30, 0.6)", justifyContent: "center", alignItems: "center", marginRight: 15, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)" },
+  heroTextContainer: { flex: 1 },
+  heroTitle: { fontSize: 24, fontWeight: "bold", color: "#E2E8F0", letterSpacing: 0.5 },
+  heroSubtitle: { fontSize: 13, color: "#D4AF37", marginTop: 4, fontWeight: "500", letterSpacing: 0.5 },
+  separator: { width: "100%", height: 1, backgroundColor: "rgba(212, 175, 55, 0.2)", marginVertical: 18 },
+  heroQuote: { color: "#94A3B8", fontSize: 14, fontStyle: "italic", lineHeight: 22, textAlign: "center" },
+  listContainer: { gap: 15 },
+  listItem: { width: "100%", shadowColor: "#000", shadowOpacity: 0.2, shadowOffset: { width: 0, height: 4 }, shadowRadius: 5, elevation: 3 },
+  listItemInner: { flexDirection: "row", alignItems: "center", padding: 16, borderRadius: 20, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.08)" },
+  listIconBox: { width: 52, height: 52, borderRadius: 16, backgroundColor: "#D4AF37", justifyContent: "center", alignItems: "center", marginRight: 16, shadowColor: "#D4AF37", shadowOpacity: 0.5, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },
+  listTextContainer: { flex: 1, justifyContent: "center" },
+  titleRow: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
+  listTitle: { fontSize: 16, fontWeight: "600", color: "#E2E8F0", marginRight: 8 },
+  badgeBox: { backgroundColor: "rgba(212, 175, 55, 0.15)", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.3)" },
+  badgeText: { fontSize: 9, color: "#D4AF37", fontWeight: "bold", textTransform: "uppercase" },
+  listDesc: { fontSize: 12, color: "#94A3B8", lineHeight: 18, paddingRight: 10 },
+  chevronBox: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(11, 16, 30, 0.5)", justifyContent: "center", alignItems: "center" },
 });

@@ -45,7 +45,6 @@ const downloadAudio = (name, text) => {
 const main = async () => {
     for (const [name, text] of Object.entries(dualar)) {
         await downloadAudio(name, text);
-        // Wait 1 second to avoid rate limiting
         await new Promise(r => setTimeout(r, 1000));
     }
     console.log("TTS Dualar Download Complete!");

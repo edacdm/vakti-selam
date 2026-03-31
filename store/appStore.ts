@@ -1,17 +1,43 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
 interface AppState {
   location: { latitude: number; longitude: number } | null;
   setLocation: (lat: number, lng: number) => void;
-  // İleride eklenebilecek ayarlar
-  notificationsEnabled: boolean;
-  setNotificationsEnabled: (enabled: boolean) => void;
+  prayerNotificationsEnabled: boolean;
+  setPrayerNotificationsEnabled: (enabled: boolean) => void;
+  hadithNotificationsEnabled: boolean;
+  setHadithNotificationsEnabled: (enabled: boolean) => void;
+  loadNotificationSettings: () => Promise<void>;
 }
+
+const PRAYER_NOTIF_KEY = '@vakti_selam_prayer_notif';
+const HADITH_NOTIF_KEY = '@vakti_selam_hadith_notif';
 
 export const useAppStore = create<AppState>((set) => ({
   location: null,
   setLocation: (lat, lng) => set({ location: { latitude: lat, longitude: lng } }),
   
-  notificationsEnabled: true,
-  setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
+  prayerNotificationsEnabled: true,
+  setPrayerNotificationsEnabled: (enabled) => {
+    set({ prayerNotificationsEnabled: enabled });
+    AsyncStorage.setItem(PRAYER_NOTIF_KEY, JSON.stringify(enabled)).catch(() => {});
+  },
+
+  hadithNotificationsEnabled: true,
+  setHadithNotificationsEnabled: (enabled) => {
+    set({ hadithNotificationsEnabled: enabled });
+    AsyncStorage.setItem(HADITH_NOTIF_KEY, JSON.stringify(enabled)).catch(() => {});
+  },
+
+  loadNotificationSettings: async () => {
+    try {
+      const prayer = await AsyncStorage.getItem(PRAYER_NOTIF_KEY);
+      const hadith = await AsyncStorage.getItem(HADITH_NOTIF_KEY);
+      set({
+        prayerNotificationsEnabled: prayer !== null ? JSON.parse(prayer) : true,
+        hadithNotificationsEnabled: hadith !== null ? JSON.parse(hadith) : true,
+      });
+    } catch {}
+  },
 }));

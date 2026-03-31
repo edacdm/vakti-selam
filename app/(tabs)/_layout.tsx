@@ -1,80 +1,67 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, View, StyleSheet } from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Platform } from "react-native";
+import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { useTranslation } from "../../i18n";
 
 export default function TabLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
-      initialRouteName="index"
       screenOptions={{
-        tabBarActiveTintColor: "#D4AF37",
-        tabBarInactiveTintColor: "#64748B",
         headerShown: false,
-        tabBarStyle: [
-          styles.tabBar,
-          Platform.select({
-            ios: { position: "absolute" },
-            default: {},
-          }),
-        ],
+        tabBarActiveTintColor: "#D4AF37",
+        tabBarInactiveTintColor: "#94A3B8",
+        tabBarStyle: {
+          backgroundColor: "#0B101E",
+          borderTopColor: "rgba(212, 175, 55, 0.2)",
+          height: Platform.OS === "ios" ? 88 : 65,
+          paddingBottom: Platform.OS === "ios" ? 30 : 10,
+          paddingTop: 10,
+        },
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: "600",
-          marginBottom: 4,
+          fontWeight: "500",
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Vakitler",
+          title: t("tabPrayerTimes"),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time" size={size} color={color} />
+            <MaterialCommunityIcons name="clock-outline" size={size} color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="Kuran"
+        name="KuranDualar"
         options={{
-          title: "Kur'an",
+          title: t("tabQuran"),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />
           ),
         }}
       />
 
-      {/* Eski Dualar tabını gizle */}
-      <Tabs.Screen
-        name="Dualar"
-        options={{ href: null }}
-      />
-
       <Tabs.Screen
         name="NamazHocasi"
         options={{
-          title: "Rehber",
+          title: t("tabGuide"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="hands-pray" size={size} color={color} />
+            <MaterialCommunityIcons name="mosque" size={size} color={color} />
           ),
-        }}
-      />
-
-      {/* Kible tab'i kullanım dışı */}
-      <Tabs.Screen
-        name="Kible"
-        options={{
-          href: null,
         }}
       />
 
       <Tabs.Screen
         name="Zikirmatik"
         options={{
-          title: "Zikir",
+          title: t("tabDhikr"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="counter" size={size} color={color} />
+            <MaterialCommunityIcons name="dots-horizontal-circle-outline" size={size} color={color} />
           ),
         }}
       />
@@ -82,31 +69,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="DiniGunler"
         options={{
-          title: "Takvim",
+          title: t("tabCalendar"),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="calendar-month-outline" size={size} color={color} />
           ),
         }}
       />
 
-      {/* Explore tab'i layouttan gizliyoruz (Kullanım dışı) */}
-      <Tabs.Screen
-        name="explore"
-        options={{
-          href: null,
-        }}
-      />
+      {/* Hidden Screens but reachable via router */}
+      <Tabs.Screen name="Kuran" options={{ href: null }} />
+      <Tabs.Screen name="Dualar" options={{ href: null }} />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: "#0B101E",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(212, 175, 55, 0.2)",
-    height: Platform.OS === "ios" ? 85 : 70,
-    paddingBottom: Platform.OS === "ios" ? 25 : 10,
-    paddingTop: 10,
-  },
-});

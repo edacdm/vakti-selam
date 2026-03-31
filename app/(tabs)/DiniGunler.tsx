@@ -2,81 +2,73 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "../../i18n";
+import type { TranslationKeys } from "../../i18n";
 
-// 2026-2027 Resmi/Tahmini İslami Dini Günler (Miladi Karşılıkları)
-const DINI_GUNLER = [
-  { name: "Üç Ayların Başlangıcı", date: "2026-01-19" },
-  { name: "Regaib Kandili", date: "2026-01-22" },
-  { name: "Miraç Kandili", date: "2026-02-13" },
-  { name: "Ramazan Başlangıcı", date: "2026-02-18" },
-  { name: "Berat Kandili", date: "2026-03-03" },
-  { name: "Kadir Gecesi", date: "2026-03-15" },
-  { name: "Ramazan Bayramı", date: "2026-03-20" },
-  { name: "Kurban Bayramı", date: "2026-05-27" },
-  { name: "Hicri Yılbaşı", date: "2026-06-16" },
-  { name: "Aşure Günü", date: "2026-06-25" },
-  { name: "Mevlid Kandili", date: "2026-08-25" },
+const DINI_GUNLER: { nameKey: TranslationKeys; date: string }[] = [
+  { nameKey: "threeMonthsStart", date: "2026-01-19" },
+  { nameKey: "regaibKandili", date: "2026-01-22" },
+  { nameKey: "mirajKandili", date: "2026-02-13" },
+  { nameKey: "ramadanStart", date: "2026-02-18" },
+  { nameKey: "beratKandili", date: "2026-03-03" },
+  { nameKey: "qadirNight", date: "2026-03-15" },
+  { nameKey: "eidAlFitr", date: "2026-03-20" },
+  { nameKey: "eidAlAdha", date: "2026-05-27" },
+  { nameKey: "hijriNewYear", date: "2026-06-16" },
+  { nameKey: "ashuraDay", date: "2026-06-25" },
+  { nameKey: "mawlidKandili", date: "2026-08-25" },
 
-  // 2027
-  { name: "Üç Ayların Başlangıcı", date: "2027-01-08" },
-  { name: "Regaib Kandili", date: "2027-01-11" },
-  { name: "Ramazan Başlangıcı", date: "2027-02-07" },
-  { name: "Miraç Kandili", date: "2027-02-02" },
-  { name: "Berat Kandili", date: "2027-02-20" },
-  { name: "Kadir Gecesi", date: "2027-03-04" },
-  { name: "Ramazan Bayramı", date: "2027-03-09" },
-  { name: "Kurban Bayramı", date: "2027-05-16" },
-  { name: "Hicri Yılbaşı", date: "2027-06-05" },
-  { name: "Aşure Günü", date: "2027-06-14" },
-  { name: "Mevlid Kandili", date: "2027-08-14" },
+  { nameKey: "threeMonthsStart", date: "2027-01-08" },
+  { nameKey: "regaibKandili", date: "2027-01-11" },
+  { nameKey: "ramadanStart", date: "2027-02-07" },
+  { nameKey: "mirajKandili", date: "2027-02-02" },
+  { nameKey: "beratKandili", date: "2027-02-20" },
+  { nameKey: "qadirNight", date: "2027-03-04" },
+  { nameKey: "eidAlFitr", date: "2027-03-09" },
+  { nameKey: "eidAlAdha", date: "2027-05-16" },
+  { nameKey: "hijriNewYear", date: "2027-06-05" },
+  { nameKey: "ashuraDay", date: "2027-06-14" },
+  { nameKey: "mawlidKandili", date: "2027-08-14" },
 ];
 
-// Tarihe göre sırala
 DINI_GUNLER.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
 export default function DiniGunler() {
-  const [nextEvent, setNextEvent] = useState<any>(null);
+  const { t, language } = useTranslation();
+  const [nextEvent, setNextEvent] = useState<typeof DINI_GUNLER[0] | null>(null);
   const [daysLeft, setDaysLeft] = useState<number>(0);
   const [todayText, setTodayText] = useState("");
 
   useEffect(() => {
-    // Bugünün tarihini düzeltme (Saat farklarını yok sayıp sadece günü almak için)
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
-    let found = false;
-
-    // Sıradaki günü bul (Bugün veya daha ileri bir güne denk gelen ilk tarih)
     for (const event of DINI_GUNLER) {
       const eventDate = new Date(event.date);
       eventDate.setHours(0, 0, 0, 0);
-
       if (eventDate.getTime() >= now.getTime()) {
         const diffTime = eventDate.getTime() - now.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
         setNextEvent(event);
         setDaysLeft(diffDays);
-        found = true;
         break;
       }
     }
 
-    // Hicri Takvim Bugün
     try {
-      const formatter = new Intl.DateTimeFormat("tr-TR-u-ca-islamic", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
+      const locale = language === 'id' ? 'id-ID' : language === 'en' ? 'en-US' : 'tr-TR';
+      const formatter = new Intl.DateTimeFormat(`${locale}-u-ca-islamic`, {
+        day: "numeric", month: "long", year: "numeric"
       });
-      setTodayText(formatter.format(new Date()) + " (Hicri)");
+      setTodayText(formatter.format(new Date()) + (language === 'id' ? " (Hijriah)" : language === 'en' ? " (Hijri)" : " (Hicri)"));
     } catch {
-      setTodayText("Mübarek Günler Rehberi"); // Desteklemeyen eski cihazlar için fallback
+      setTodayText(t("religiousDaysTitle"));
     }
+  }, [language]);
 
-  }, []);
+  const getDateLocale = () => language === 'id' ? 'id-ID' : language === 'en' ? 'en-US' : 'tr-TR';
 
-  const renderEventItem = (event: any, index: number) => {
+  const renderEventItem = (event: typeof DINI_GUNLER[0], index: number) => {
     const eventDate = new Date(event.date);
     eventDate.setHours(0, 0, 0, 0);
     const now = new Date();
@@ -84,10 +76,9 @@ export default function DiniGunler() {
 
     const isPast = eventDate.getTime() < now.getTime();
     const isToday = eventDate.getTime() === now.getTime();
-    const isNext = nextEvent && nextEvent.name === event.name && nextEvent.date === event.date;
+    const isNext = nextEvent && nextEvent.nameKey === event.nameKey && nextEvent.date === event.date;
 
-    // Tarihi TR formatında güzelleştir
-    const dateStr = eventDate.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'short' });
+    const dateStr = eventDate.toLocaleDateString(getDateLocale(), { day: 'numeric', month: 'long', weekday: 'short' });
 
     return (
       <View
@@ -102,21 +93,20 @@ export default function DiniGunler() {
         <View style={styles.listLeft}>
           <View style={[styles.dateDot, isPast ? styles.dateDotPast : isNext ? styles.dateDotNext : null]} />
           <View>
-            <Text style={[styles.eventName, isPast && styles.textPast]}>{event.name}</Text>
+            <Text style={[styles.eventName, isPast && styles.textPast]}>{t(event.nameKey)}</Text>
             <Text style={[styles.eventDate, isPast && styles.textPast]}>{dateStr} {eventDate.getFullYear()}</Text>
           </View>
         </View>
 
         {isToday ? (
           <View style={styles.badgeToday}>
-            <Text style={styles.badgeTodayText}>Bugün!</Text>
+            <Text style={styles.badgeTodayText}>{t("today")}</Text>
           </View>
         ) : isPast ? (
-          <Text style={styles.pastLabel}>Geride Kaldı</Text>
+          <Text style={styles.pastLabel}>{t("passed")}</Text>
         ) : (
           <View style={styles.daysLeftPill}>
-            {/* Eğer nextEvent ise üstteki büyük kartta gösterdiğimiz için burada sade yazıyoruz, diğerlerine ekstra gün yazdırabiliriz */}
-            <Text style={styles.daysLeftText}>Yaklaşıyor</Text>
+            <Text style={styles.daysLeftText}>{t("upcoming")}</Text>
           </View>
         )}
       </View>
@@ -129,7 +119,7 @@ export default function DiniGunler() {
 
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerTitle}>Dini Günler Takvimi</Text>
+            <Text style={styles.headerTitle}>{t("religiousDaysTitle")}</Text>
             <Text style={styles.headerSubtitle}>{todayText}</Text>
           </View>
           <MaterialCommunityIcons name="calendar-month-outline" size={36} color="#D4AF37" />
@@ -137,22 +127,21 @@ export default function DiniGunler() {
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-          {/* Sırada Yaklaşan Etkinlik Dev Kartı */}
           {nextEvent && (
             <View style={styles.heroCard}>
               <MaterialCommunityIcons name="moon-waning-crescent" size={40} color="rgba(212, 175, 55, 0.2)" style={styles.heroGlowIcon} />
-              <Text style={styles.heroSubtitle}>SIRADAKİ MÜBAREK GÜN</Text>
-              <Text style={styles.heroTitle}>{nextEvent.name}</Text>
+              <Text style={styles.heroSubtitle}>{t("nextHolyDay")}</Text>
+              <Text style={styles.heroTitle}>{t(nextEvent.nameKey)}</Text>
               <View style={styles.heroDivider} />
               <View style={styles.heroFooter}>
                 <View style={styles.countdownBox}>
                   <Text style={styles.countdownNumber}>{daysLeft}</Text>
-                  <Text style={styles.countdownLabel}>GÜN KALDI</Text>
+                  <Text style={styles.countdownLabel}>{t("daysLeft")}</Text>
                 </View>
                 <View style={styles.heroDateInfo}>
                   <Ionicons name="calendar" size={16} color="#D4AF37" />
                   <Text style={styles.heroDateText}>
-                    {new Date(nextEvent.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    {new Date(nextEvent.date).toLocaleDateString(getDateLocale(), { day: 'numeric', month: 'long', year: 'numeric' })}
                   </Text>
                 </View>
               </View>
@@ -160,10 +149,9 @@ export default function DiniGunler() {
           )}
 
           <View style={styles.listHeader}>
-            <Text style={styles.listTitle}>2026 - 2027 Takvimi</Text>
+            <Text style={styles.listTitle}>{t("calendarRange")}</Text>
           </View>
 
-          {/* Tüm Tarihlerin Listesi */}
           <View style={styles.listContainer}>
             {DINI_GUNLER.map((item, index) => renderEventItem(item, index))}
           </View>
@@ -191,18 +179,11 @@ const styles = StyleSheet.create({
 
   heroCard: {
     backgroundColor: "rgba(212, 175, 55, 0.08)",
-    borderRadius: 24,
-    padding: 24,
-    marginBottom: 30,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.4)",
-    overflow: "hidden",
-    position: "relative",
-    shadowColor: "#D4AF37",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15,
-    shadowRadius: 25,
-    elevation: 8,
+    borderRadius: 24, padding: 24, marginBottom: 30,
+    borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.4)",
+    overflow: "hidden", position: "relative",
+    shadowColor: "#D4AF37", shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15, shadowRadius: 25, elevation: 8,
   },
   heroGlowIcon: { position: "absolute", right: -10, top: -10, transform: [{ scale: 4 }] },
   heroSubtitle: { color: "#94A3B8", fontSize: 11, fontWeight: "700", letterSpacing: 2, marginBottom: 8 },

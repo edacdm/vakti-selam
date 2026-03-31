@@ -1,0 +1,183 @@
+export const tr = {
+
+  appName: "Vakt-i Selam",
+  loading: "Yükleniyor..",
+  retry: "Tekrar Dene",
+  settings: "Ayarlar",
+  close: "Kapat",
+  save: "Kaydet",
+  cancel: "İptal",
+
+
+  greetingMorning: "Hayırlı Sabahlar",
+  greetingDay: "Hayırlı Günler",
+  greetingEvening: "Hayırlı Akşamlar",
+  greetingNight: "Hayırlı Geceler",
+
+
+  fajr: "İmsak",
+  sunrise: "Güneş",
+  dhuhr: "Öğle",
+  asr: "İkindi",
+  maghrib: "Akşam",
+  isha: "Yatsı",
+
+
+  nextPrayerLabel: "SIRADAKİ",
+  nextBadge: "Sıradaki",
+  prayerTimesTitle: "Namaz Vakitleri",
+  dailyHadithLabel: "— Günün Hadisi",
+  zikirmatikBtn: "Zikirmatik",
+  mosquesBtn: "Camiler",
+
+
+  tabPrayerTimes: "Vakitler",
+  tabQuran: "Kur'an",
+  tabGuide: "Rehber",
+  tabDhikr: "Zikir",
+  tabCalendar: "Takvim",
+
+
+  hadith1: "Ameller niyetlere göredir. (Buhârî)",
+  hadith2: "Kolaylaştırın, zorlaştırmayın. (Buhârî)",
+  hadith3: "Komşusu açken tok yatan bizden değildir. (Tirmizî)",
+  hadith4: "Selâmı yayınız ki aranızda sevgi artsın. (Müslim)",
+  hadith5: "İyilik sadakadır. (Buhârî)",
+  hadith6: "Mümin müminin aynasıdır. (Ebû Dâvûd)",
+  hadith7: "Din kardeşine gülümsemen sadakadır. (Tirmizî)",
+
+
+  religiousDaysTitle: "Dini Günler Takvimi",
+  nextHolyDay: "SIRADAKİ MÜBAREK GÜN",
+  daysLeft: "GÜN KALDI",
+  calendarRange: "2026 - 2027 Takvimi",
+  today: "Bugün!",
+  passed: "Geride Kaldı",
+  upcoming: "Yaklaşıyor",
+
+
+  threeMonthsStart: "Üç Ayların Başlangıcı",
+  regaibKandili: "Regaib Kandili",
+  mirajKandili: "Miraç Kandili",
+  ramadanStart: "Ramazan Başlangıcı",
+  beratKandili: "Berat Kandili",
+  qadirNight: "Kadir Gecesi",
+  eidAlFitr: "Ramazan Bayramı",
+  eidAlAdha: "Kurban Bayramı",
+  hijriNewYear: "Hicri Yılbaşı",
+  ashuraDay: "Aşure Günü",
+  mawlidKandili: "Mevlid Kandili",
+
+
+  dhikrTitle: "Zikirmatik",
+  dhikrTarget: "HEDEF",
+  dhikrSubhanallah: "Sübhanallah",
+  dhikrAlhamdulillah: "Elhamdülillah",
+  dhikrAllahuAkbar: "Allahu Ekber",
+  dhikrLaIlaha: "La ilahe illallah",
+
+
+  worshipGuide: "İbadet Rehberi",
+  prayerTeacher: "Namaz Hocası",
+  stepByStep: "Adım Adım Öğrenin",
+  prayerTeacherQuote: '"Kulun kıyamet gününde hesabını vereceği ilk ameli namazdır." (Tirmizî)',
+  fiveDailyPrayers: "Beş Vakit Namaz",
+  fiveDailyPrayersDesc: "Farz namazlarının tam kılınışları",
+  frequentlyUsed: "Sık Kullanılan",
+  fardPrayers: "Farz Namazlar",
+  fardPrayersDesc: "Cuma namazı, Cenaze namazı vb.",
+  fard: "Farz",
+  wajibPrayers: "Vacip Namazlar",
+  wajibPrayersDesc: "Bayram ve Vitr namazı kılınışları",
+  wajib: "Vacip",
+  nafilPrayers: "Nafile Namazlar",
+  nafilPrayersDesc: "Teheccüd, Kuşluk ve Tesbih namazları",
+  sunnah: "Sünnet",
+
+
+  prayersAndSurahs: "Dualar ve Sureler",
+  prayersSubtitle: "Namazda okunan ezberler rehberi",
+  typeDua: "Dua",
+  typeSurah: "Sure",
+  pronunciation: "Okunuşu:",
+  meaning: "Anlamı:",
+  listen: "Dinle",
+  stop: "Durdur",
+  noAudio: "Ses Yok",
+
+
+  subhanakaDua: "Sübhaneke Duası",
+  ettehiyyatuDua: "Ettehiyyatü Duası",
+  allahummaSalli: "Allahümme Salli Duası",
+  allahummaBarik: "Allahümme Barik Duası",
+  rabbanaAtina: "Rabbenâ Âtinâ Duası",
+  qunutDuas: "Kunut Duaları (Vitir)",
+
+
+  fatiha: "Fatiha Suresi",
+  ayatulKursi: "Âyet-el Kürsî",
+  asrSurah: "Asr Suresi",
+  kavtharSurah: "Kevser Suresi",
+  ikhlasSurah: "İhlas Suresi",
+  falaqSurah: "Felak Suresi",
+  nasSurah: "Nâs Suresi",
+  inshirahSurah: "İnşirah Suresi",
+  kafirunSurah: "Kâfirûn Suresi",
+  filSurah: "Fil Suresi",
+  quraishSurah: "Kureyş Suresi",
+  maunSurah: "Mâûn Suresi",
+  takathurSurah: "Tekâsür Suresi",
+  zilzalSurah: "Zilzal Suresi",
+
+
+  subhanakaMeaning: "Allah'ım! Sen eksik sıfatlardan pak ve uzaksın. Seni daima böyle tenzih eder ve överim. Senin adın mübarektir. Varlığın her şeyden üstündür. Senden başka ilah yoktur. (*Ve celle senâük cümlesi sadece cenaze namazında eklenir.)",
+  ettehiyyatuMeaning: "Bütün dualar, senalar, bedeni ve mali ibadetler Allah'a mahsustur. Ey Peygamber! Sana selam olsun, Allah'ın rahmeti ve bereketi üzerine olsun. Selam bize ve Allah'ın salih kullarına olsun. Ben şehadet ederim ki, Allah'tan başka ilah yoktur ve yine şehadet ederim ki, Muhammed O'nun kulu ve elçisidir.",
+  allahummaSalliMeaning: "Allah'ım! Hz. Muhammed'e ve onun âline rahmet eyle, tıpkı Hz. İbrahim'e ve onun âline rahmet eylediğin gibi. Şüphesiz sen övülmeye layıksın, yücesin.",
+  allahummaBarikMeaning: "Allah'ım! Hz. Muhammed'i ve onun âlini mübarek kıl (bereketlendir), tıpkı Hz. İbrahim'i ve onun âlini mübarek kıldığın gibi. Şüphesiz sen övülmeye layıksın, yücesin.",
+  rabbanaAtinaMeaning: "Rabbimiz! Bize dünyada da iyilik ve güzellik ver, ahirette de iyilik ve güzellik ver. Ve bizi cehennem ateşinin azabından koru.",
+  qunutMeaning: "Allah'ım! Senden yardım dileriz, günahlarımızı bağışlamanı isteriz... Allah'ım! Biz ancak sana ibadet ederiz ve sadece senin için namaz kılarız...",
+  fatihaMeaning: "Rahman ve Rahim olan Allah'ın adıyla. Hamd, âlemlerin Rabbi, Rahman, Rahim ve hesap gününün sahibi olan Allah'a mahsustur. (Allahım!) Yalnız sana ibadet ederiz ve yalnız senden yardım dileriz. Bizi doğru yola, kendilerine nimet verdiklerinin yoluna ilet; gazaba uğrayanlarınkine ve sapkınlarınkine değil.",
+  ayatulKursiMeaning: "Allah kendisinden başka hiçbir ilah olmayandır. Diridir, kayyumdur. Onu ne bir uyuklama tutabilir, ne de bir uyku. Göklerdeki her şey, yerdeki her şey onundur. İzni olmaksızın onun katında şefaatte bulunacak kimdir?...",
+  asrMeaning: "Asra yemin olsun ki, şüphesiz insan ziyandadır. Ancak iman edip salih amel işleyenler, birbirlerine hakkı tavsiye edenler ve birbirlerine sabrı tavsiye edenler müstesnadır.",
+  kavtharMeaning: "Şüphesiz biz sana Kevser'i verdik. O halde Rabbin için namaz kıl ve kurban kes. Doğrusu sana kin besleyen, soyu kesik olanın ta kendisidir.",
+  ikhlasMeaning: "De ki: O, Allah birdir. Allah sameddir. (Her şey O'na muhtaçtır; O, hiçbir şeye muhtaç değildir.) O, doğurmamış ve doğmamıştır. Onun hiçbir dengi yoktur.",
+  falaqMeaning: "De ki: Yarattığı şeylerin şerrinden, karanlığı çöktüğü zaman gecenin şerrinden, düğümlere üfleyen büyücülerin şerrinden ve haset ettiği zaman hasetçinin şerrinden, sabah aydınlığının Rabbine sığınırım.",
+  nasMeaning: "De ki: Cinlerden ve insanlardan olup, insanların göğüslerine vesvese veren o sinsi vesvesecinin şerrinden insanların Rabbine, insanların Hükümdarına, insanların İlahına sığınırım.",
+  inshirahMeaning: "Rahmân ve Rahîm olan Allah'ın adıyla. Biz senin göğsünü açıp genişletmedik mi? Belini büken yükünü üzerinden kaldırmadık mı? Senin şanını ve ününü yüceltmedik mi? Muhakkak ki zorlukla beraber bir kolaylık vardır. Evet, zorlukla beraber bir kolaylık vardır. Öyleyse, bir işi bitirince diğerine koyul. Ve ancak Rabbine yönel ve O'na yalvar.",
+  kafirunMeaning: "De ki: Ey kâfirler! Ben sizin taptıklarınıza tapmam. Siz de benim taptığıma tapanlar değilsiniz. Ben de sizin taptıklarınıza tapacak değilim. Siz de benim taptığıma tapacak değilsiniz. Sizin dininiz size, benim dinim bana.",
+  filMeaning: "Rabbin fil sahiplerine ne yaptı, görmedin mi? Onların tuzaklarını boşa çıkarmadı mı? Onların üzerine sürü sürü kuşlar gönderdi. Onlara balçıktan sertleştirilmiş taşlar atıyorlardı. Böylece Allah onları yenilmiş ekin yaprağı gibi kılıp parçaladı.",
+  quraishMeaning: "Kureyş'in yurt edinmesi, kış ve yaz yolculuklarına alıştırılmaları için. O hâlde bu Kâbe'nin Rabbi olan Allah'a kulluk etsinler. O ki, onları açlıktan doyurmuş ve korkudan emin kılmıştır.",
+  maunMeaning: "Din gününü yalanlayanı gördün mü? İşte yetimi iten, kakıştıran o kimsedir. Yoksulun yiyeceği için teşvik etmez. Vay haline o namaz kılanların ki, onlar namazlarından gafildirler; onlar gösteriş yaparlar ve zekât vermezler.",
+  takathurMeaning: "Çokluğu ile öğünmek sizi oyaladı. Hatta mezarlıkları ziyaret edinceye kadar. Hayır! İleride bileceksiniz. Yine hayır! İleride bileceksiniz. Hayır! Kesin olarak bilseniz o cehennem ateşini mutlaka görürsünüz. Sonra onu gözün görmesiyle (kesin olarak) görürsünüz. Sonra o gün nimetlerden muhakkak hesaba çekileceksiniz.",
+  zilzalMeaning: "Yer, o şiddetli sarsıntısıyla sarsıldığında; yer, ağırlıklarını (içindekilerini) dışarı çıkardığında; insan 'Bu (yer) ne oluyor?' dediğinde; işte o gün yer, haberlerini anlatır. Çünkü Rabbin ona vahyetmiştir. O gün insanlar, amellerinin karşılığını görmek üzere bölük bölük dönerler. Kim zerre ağırlığınca hayır işlerse onu görür. Kim de zerre ağırlığınca kötülük işlerse onu görür.",
+
+
+  nearbyMosques: "Yakındaki Camiler",
+  searchingMosques: "Çevredeki minareler aranıyor...",
+  locationPermissionError: "Harita kullanımı için konum izni gereklidir.",
+  networkError: "Camiler yüklenirken bir ağ hatası oluştu.",
+  mosquesFound: "adet bulundu (3 km)",
+  searchCompleted: "Arama tamamlandı",
+  nearbyMosquesSheet: "Çevrenizdeki Camiler",
+  noMosquesFound: "Maalesef yakınınızda bir cami kaydı bulunamadı.",
+  distanceAway: "uzaklıkta",
+  distanceLabel: "mesafe",
+  unknownMosque: "İsimsiz Cami / Mescit",
+
+
+  settingsTitle: "Ayarlar",
+  languageSection: "Dil Seçimi",
+  languageDesc: "Uygulama dilini seçin",
+  notificationSection: "Bildirimler",
+  prayerNotification: "Ezan Bildirimi",
+  prayerNotificationDesc: "Her namaz vaktinden 5 dakika önce bildirim",
+  hadithNotification: "Günlük Hadis",
+  hadithNotificationDesc: "Her gün sabah bir hadis bildirimi",
+  notificationsEnabled: "Bildirimler açık",
+  notificationsDisabled: "Bildirimler kapalı",
+
+
+  prayerNotifTitle: "Namaz Vakti Yaklaşıyor",
+  prayerNotifBody: "vaktine 5 dakika kaldı",
+  hadithNotifTitle: "Günün Hadisi",
+};

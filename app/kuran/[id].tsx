@@ -1,5 +1,5 @@
-import { Audio } from "expo-av";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Audio } from "expo-av";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -55,13 +55,11 @@ export default function SureOkuma() {
       setLoading(true);
       setError("");
 
-      // Arapça metni çek
       const arabicRes = await fetch(
         `https://api.alquran.cloud/v1/surah/${sureId}`
       );
       const arabicData = await arabicRes.json();
 
-      // Türkçe meali çek (Diyanet - tr.diyanet)
       const turkishRes = await fetch(
         `https://api.alquran.cloud/v1/surah/${sureId}/tr.diyanet`
       );
@@ -149,7 +147,6 @@ export default function SureOkuma() {
     <LinearGradient colors={["#0B101E", "#15233E"]} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
 
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.backBtn} onPress={() => { stopAudio(); router.back(); }}>
             <Ionicons name="chevron-back" size={24} color="#D4AF37" />
@@ -161,7 +158,6 @@ export default function SureOkuma() {
           <View style={{ width: 44 }} />
         </View>
 
-        {/* Ses Oynatıcı */}
         {!loading && !error && (
           <View style={styles.audioPlayer}>
             <View style={styles.audioPlayerLeft}>
@@ -188,14 +184,12 @@ export default function SureOkuma() {
           </View>
         )}
 
-        {/* Besmele */}
         {!loading && !error && sureId !== 9 && (
           <View style={styles.besmeleBox}>
             <Text style={styles.besmeleText}>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</Text>
           </View>
         )}
 
-        {/* İçerik */}
         {loading ? (
           <View style={styles.centerBox}>
             <ActivityIndicator size="large" color="#D4AF37" />
