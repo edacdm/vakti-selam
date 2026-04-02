@@ -69,17 +69,58 @@ export default function YakindakiCamiler() {
         return;
       }
 
-      const loc = await Location.getCurrentPositionAsync({});
+      // 10 second timeout for location to avoid hanging
+      const locPromise = Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("LocationTimeout")), 10000)
+      );
+
+      const loc: any = await Promise.race([locPromise, timeoutPromise]);
       const lat = loc.coords.latitude;
       const lon = loc.coords.longitude;
       setUserLocation({ latitude: lat, longitude: lon });
 
       const query = `[out:json][timeout:25];(node["amenity"="place_of_worship"]["religion"="muslim"](around:3000,${lat},${lon});way["amenity"="place_of_worship"]["religion"="muslim"](around:3000,${lat},${lon}););out center;`;
-      const overpassUrl = `https://lz4.overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+      
+      const mirrors = [
+        "https://overpass-api.de/api/interpreter",
+        "https://lz4.overpass-api.de/api/interpreter",
+        "https://z.overpass-api.de/api/interpreter",
+      ];
 
-      const response = await fetch(overpassUrl);
-      if (!response.ok) throw new Error("Server responded with an error");
-      const data = await response.json();
+      let lastError = null;
+      let data = null;
+
+      for (const mirror of mirrors) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout per mirror
+
+          const response = await fetch(`${mirror}?data=${encodeURIComponent(query)}`, {
+            headers: {
+              'User-Agent': 'VaktiSelam-App/1.0 (Mobile; Android/iOS; help@vaktiselam.com)',
+              'Accept-Language': 'tr,en;q=0.9',
+            },
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+
+          if (response.ok) {
+            data = await response.json();
+            break;
+          }
+        } catch (e) {
+          console.warn(`Mirror ${mirror} failed:`, e);
+          lastError = e;
+        }
+      }
+
+      if (!data) {
+        throw lastError || new Error("All mirrors failed");
+      }
 
       let fetchedMosques: Mosque[] = [];
 
@@ -107,13 +148,18 @@ export default function YakindakiCamiler() {
       );
 
       setMosques(uniqueMosques.slice(0, 30));
-    } catch (error) {
-      console.log(error);
-      setErrorMsg(t("networkError"));
+    } catch (error: any) {
+      console.log("Mosque Fetch Error:", error);
+      if (error?.message === "LocationTimeout") {
+        setErrorMsg(t("locationPermissionError")); 
+      } else {
+        setErrorMsg(t("networkError"));
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371e3;
