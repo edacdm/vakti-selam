@@ -94,7 +94,7 @@ const Stardust = () => {
 export default function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { prayerNotificationsEnabled, hadithNotificationsEnabled, loadNotificationSettings } = useAppStore();
+  const { userName, loadSettings } = useAppStore();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [prayerTimes, setPrayerTimes] = useState<any>(null);
@@ -105,10 +105,43 @@ export default function HomeScreen() {
 
   const mandalaRotation = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const entranceAnim = useRef(new Animated.Value(0)).current;
+
+  // Dynamic Background Colors based on next prayer
+  const getBackgroundColors = (): [string, string] => {
+    switch (nextPrayerKey) {
+      case "fajr": return ["#1A0B2E", "#080D1A"]; // Mistik Mor/Lacivert
+      case "sunrise": return ["#2E1A0B", "#080D1A"]; // Şafak Turuncusu/Siyah
+      case "dhuhr": return ["#0B1C2E", "#080D1A"]; // Gündüz Mavisi
+      case "asr": return ["#2E240B", "#080D1A"]; // Altın İkindi
+      case "maghrib": return ["#1E0B0B", "#080D1A"]; // Gün Batımı Kırmızısı
+      case "isha": return ["#080D1A", "#050811"]; // Derin Gece
+      default: return [Colors.luxury.midnight, Colors.luxury.midnightDeep];
+    }
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    let key: any = "greetingDay";
+    if (hour >= 5 && hour < 11) key = "greetingMorning";
+    else if (hour >= 11 && hour < 17) key = "greetingDay";
+    else if (hour >= 17 && hour < 22) key = "greetingEvening";
+    else key = "greetingNight";
+
+    const greeting = t(key);
+    return userName ? `${greeting}, ${userName}` : greeting;
+  };
 
   useEffect(() => {
-    loadNotificationSettings();
+    loadSettings();
     getLocationAndTimes();
+
+    // Montage Entrance
+    Animated.timing(entranceAnim, {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: true,
+    }).start();
 
     // Mandala Continuous Rotation
     Animated.loop(
@@ -122,7 +155,7 @@ export default function HomeScreen() {
     // Golden Pulse
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.1, duration: 3000, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1.05, duration: 3000, useNativeDriver: true }),
         Animated.timing(pulseAnim, { toValue: 1, duration: 3000, useNativeDriver: true }),
       ])
     ).start();
@@ -179,17 +212,14 @@ export default function HomeScreen() {
     let prevD, nextD, targetKey;
 
     if (targetIdx === -1) {
-
       prevD = sortedPrayers[sortedPrayers.length - 1].d;
       nextD = new Date(sortedPrayers[0].d.getTime() + 86400000);
       targetKey = sortedPrayers[0].nameKey;
     } else if (targetIdx === 0) {
-
       prevD = new Date(sortedPrayers[sortedPrayers.length - 1].d.getTime() - 86400000);
       nextD = sortedPrayers[0].d;
       targetKey = sortedPrayers[0].nameKey;
     } else {
-
       prevD = sortedPrayers[targetIdx - 1].d;
       nextD = sortedPrayers[targetIdx].d;
       targetKey = sortedPrayers[targetIdx].nameKey;
@@ -204,7 +234,7 @@ export default function HomeScreen() {
     const mins = Math.floor((diff % 3600000) / 60000);
     const secs = Math.floor((diff % 60000) / 1000);
 
-    setNextPrayerKey(targetKey);
+    setNextPrayerKey(targetKey as any);
     setRemainingTime(`${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`);
     setProgressPercent(progress);
   };
@@ -226,7 +256,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <LinearGradient colors={[Colors.luxury.midnight, Colors.luxury.midnightDeep]} style={styles.container}>
+    <LinearGradient colors={getBackgroundColors()} style={styles.container}>
       <Stardust />
       
       <Animated.View style={[
@@ -249,129 +279,139 @@ export default function HomeScreen() {
       </Animated.View>
 
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <Animated.View style={{ 
+          flex: 1,
+          opacity: entranceAnim,
+          transform: [
+            { scale: entranceAnim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) },
+            { translateY: entranceAnim.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) }
+          ]
+        }}>
+          <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-          <View style={styles.header}>
-            <View>
-              <Text style={styles.hijriHeader}>{hijriDate}</Text>
-              <Text style={styles.appNameLuxury}>VAKTİ SELAM</Text>
-            </View>
-            <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.iconBtn} onPress={() => router.push("/YakindakiCamiler")}>
-                <MaterialCommunityIcons name="mosque" size={20} color={Colors.luxury.gold} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconBtn} onPress={() => router.push("/Ayarlar")}>
-                <Ionicons name="settings-sharp" size={20} color={Colors.luxury.gold} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <LuxuryCard title={t("nextPrayerLabel") || "VAKİT KADRANI"} icon="compass-outline">
-            <View style={styles.dialContainer}>
-              <View style={styles.dialOuterRing}>
-                <LinearGradient 
-                  colors={["rgba(212, 175, 55, 0.4)", "transparent"]} 
-                  style={styles.dialGlow}
-                />
-                
-                <View style={styles.dialInner}>
-                  <ImageBackground 
-                    source={require("../../assets/images/mandala_bg.png")}
-                    style={styles.dialMandala}
-                    imageStyle={{ opacity: 0.15 }}
-                  >
-                    <Animated.View style={[styles.dialContent, { transform: [{ scale: pulseAnim }] }]}>
-                      <Text style={styles.dialVakitName}>{nextPrayerKey ? t(nextPrayerKey).toUpperCase() : "—"}</Text>
-                      <Text style={styles.dialTimeText}>{remainingTime}</Text>
-                      <View style={styles.dialProgressWrapper}>
-                        <Text style={styles.dialPercent}>{Math.round(progressPercent)}% ELAPSED</Text>
-                      </View>
-                    </Animated.View>
-                  </ImageBackground>
-                </View>
-
-                <View style={[
-                  styles.dialOrbitDot, 
-                  { 
-                    transform: [
-                      { rotate: `${(progressPercent * 3.6) - 90}deg` }, 
-                      { translateX: 105 } 
-                    ] 
-                  }
-                ]} />
+            <View style={styles.header}>
+              <View>
+                <Text style={styles.hijriHeader}>{hijriDate}</Text>
+                <Text style={styles.greetingText}>{getGreeting()}</Text>
+                <Text style={styles.appNameLuxury}>VAKTİ SELAM</Text>
+              </View>
+              <View style={styles.headerRight}>
+                <TouchableOpacity style={styles.iconBtn} onPress={() => router.push("/YakindakiCamiler")}>
+                  <MaterialCommunityIcons name="mosque" size={20} color={Colors.luxury.gold} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconBtn} onPress={() => router.push("/Ayarlar")}>
+                  <Ionicons name="settings-sharp" size={20} color={Colors.luxury.gold} />
+                </TouchableOpacity>
               </View>
             </View>
-          </LuxuryCard>
 
-          {(() => {
-            const todayDua = DUAS[new Date().getDate() % DUAS.length];
-            return (
-              <LuxuryCard title={t("duaDayTitle") || "GÜNÜN DUASI"} icon="hands-pray">
-                <View style={styles.duaContent}>
-                  <Text style={styles.arabicDua}>{todayDua.arabic}</Text>
-                  <Text style={styles.translationDua}>"{todayDua.translation}"</Text>
-                  <Text style={styles.duaSource}>({todayDua.source})</Text>
-                </View>
-              </LuxuryCard>
-            );
-          })()}
-
-          <LuxuryCard title={t("prayerTimesTitle") || "VAKİT GELİYOR"}>
-            {loading ? <ActivityIndicator color={Colors.luxury.gold} /> : (
-              <View style={styles.prayerList}>
-                {PRAYER_NAMES.map((p) => {
-                  const isNext = nextPrayerKey === p.nameKey;
-                  return (
-                    <BlurView 
-                       key={p.apiKey} 
-                       intensity={isNext ? 40 : 10} 
-                       tint="light" 
-                       style={[styles.prayerItem, isNext && styles.prayerItemActive]}
+            <LuxuryCard title={t("nextPrayerLabel" as any) || "VAKİT KADRANI"} icon="compass-outline">
+              <View style={styles.dialContainer}>
+                <View style={styles.dialOuterRing}>
+                  <LinearGradient 
+                    colors={["rgba(212, 175, 55, 0.5)", "transparent"]} 
+                    style={styles.dialGlow}
+                  />
+                  
+                  <View style={styles.dialInner}>
+                    <ImageBackground 
+                      source={require("../../assets/images/mandala_bg.png")}
+                      style={styles.dialMandala}
+                      imageStyle={{ opacity: 0.2 }}
                     >
-                      <View style={styles.prayerItemLeft}>
-                        <MaterialCommunityIcons
-                          name={p.iconKey as any}
-                          size={18}
-                          color={isNext ? Colors.luxury.midnight : Colors.luxury.gold}
-                        />
-                        <Text style={[styles.prayerItemName, isNext && styles.prayerItemNameActive]}>{t(p.nameKey as any)}</Text>
-                      </View>
-                      <Text style={[styles.prayerItemTime, isNext && styles.prayerItemTimeActive]}>
-                        {prayerTimes ? prayerTimes[p.apiKey] : "--:--"}
-                      </Text>
-                    </BlurView>
-                  );
-                })}
-              </View>
-            )}
-          </LuxuryCard>
+                      <Animated.View style={[styles.dialContent, { transform: [{ scale: pulseAnim }] }]}>
+                        <Text style={styles.dialVakitName}>{nextPrayerKey ? t(nextPrayerKey as any).toUpperCase() : "—"}</Text>
+                        <Text style={styles.dialTimeText}>{remainingTime}</Text>
+                        <View style={styles.dialProgressWrapper}>
+                          <Text style={styles.dialPercent}>{Math.round(progressPercent)}% ELAPSED</Text>
+                        </View>
+                      </Animated.View>
+                    </ImageBackground>
+                  </View>
 
-          <TouchableOpacity
-            style={styles.spiritualBanner}
-            onPress={() => router.push("/YakindakiCamiler")}
-          >
-            <BlurView intensity={20} tint="dark" style={styles.spiritualBannerInner}>
-              <LinearGradient
-                colors={["rgba(212, 175, 55, 0.15)", "transparent"]}
-                style={styles.bannerHalo}
-              />
-
-              <View style={styles.bannerContent}>
-                <View style={styles.bannerIconBox}>
-                  <MaterialCommunityIcons name="mosque" size={32} color={Colors.luxury.gold} />
+                  <View style={[
+                    styles.dialOrbitDot, 
+                    { 
+                      transform: [
+                        { rotate: `${(progressPercent * 3.6) - 90}deg` }, 
+                        { translateX: 105 } 
+                      ] 
+                    }
+                  ]} />
                 </View>
-                <Text style={styles.bannerTitle}>{t("mosquesBtn") || "YAKINDAKİ CAMİLER"}</Text>
-                <Text style={styles.bannerSubTitle}>{t("searchCompleted") || "Huzur veren minareleri keşfedin"}</Text>
-                <View style={styles.bannerDivider} />
               </View>
+            </LuxuryCard>
 
-              <View style={styles.cornerOrnamentTop} />
-              <View style={styles.cornerOrnamentBottom} />
-            </BlurView>
-          </TouchableOpacity>
+            {(() => {
+              const todayDua = DUAS[new Date().getDate() % DUAS.length];
+              return (
+                <LuxuryCard title={t("duaDayTitle" as any) || "GÜNÜN DUASI"} icon="hands-pray">
+                  <View style={styles.duaContent}>
+                    <Text style={styles.arabicDua}>{todayDua.arabic}</Text>
+                    <Text style={styles.translationDua}>"{todayDua.translation}"</Text>
+                    <Text style={styles.duaSource}>({todayDua.source})</Text>
+                  </View>
+                </LuxuryCard>
+              );
+            })()}
 
-          <View style={{ height: 40 }} />
-        </ScrollView>
+            <LuxuryCard title={t("prayerTimesTitle" as any) || "VAKİT GELİYOR"}>
+              {loading ? <ActivityIndicator color={Colors.luxury.gold} /> : (
+                <View style={styles.prayerList}>
+                  {PRAYER_NAMES.map((p) => {
+                    const isNext = nextPrayerKey === p.nameKey;
+                    return (
+                      <BlurView 
+                         key={p.apiKey} 
+                         intensity={isNext ? 40 : 10} 
+                         tint="light" 
+                         style={[styles.prayerItem, isNext && styles.prayerItemActive]}
+                      >
+                        <View style={styles.prayerItemLeft}>
+                          <MaterialCommunityIcons
+                            name={p.iconKey as any}
+                            size={18}
+                            color={isNext ? Colors.luxury.midnight : Colors.luxury.gold}
+                          />
+                          <Text style={[styles.prayerItemName, isNext && styles.prayerItemNameActive]}>{t(p.nameKey as any)}</Text>
+                        </View>
+                        <Text style={[styles.prayerItemTime, isNext && styles.prayerItemTimeActive]}>
+                          {prayerTimes ? prayerTimes[p.apiKey] : "--:--"}
+                        </Text>
+                      </BlurView>
+                    );
+                  })}
+                </View>
+              )}
+            </LuxuryCard>
+
+            <TouchableOpacity
+              style={styles.spiritualBanner}
+              onPress={() => router.push("/YakindakiCamiler")}
+            >
+              <BlurView intensity={20} tint="dark" style={styles.spiritualBannerInner}>
+                <LinearGradient
+                  colors={["rgba(212, 175, 55, 0.15)", "transparent"]}
+                  style={styles.bannerHalo}
+                />
+
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconBox}>
+                    <MaterialCommunityIcons name="mosque" size={32} color={Colors.luxury.gold} />
+                  </View>
+                  <Text style={styles.bannerTitle}>{t("mosquesBtn" as any) || "YAKINDAKİ CAMİLER"}</Text>
+                  <Text style={styles.bannerSubTitle}>{t("searchCompleted" as any) || "Huzur veren minareleri keşfedin"}</Text>
+                  <View style={styles.bannerDivider} />
+                </View>
+
+                <View style={styles.cornerOrnamentTop} />
+                <View style={styles.cornerOrnamentBottom} />
+              </BlurView>
+            </TouchableOpacity>
+
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </Animated.View>
       </SafeAreaView>
 
       <View style={styles.lanternLeft}>
@@ -387,6 +427,7 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: 20, paddingTop: 10 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 25, marginTop: 10 },
   hijriHeader: { color: Colors.luxury.gold, fontSize: 13, fontWeight: "600", letterSpacing: 1 },
+  greetingText: { color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: "500", marginTop: 2 },
   appNameLuxury: { color: "#FFFFFF", fontSize: 24, fontWeight: "900", letterSpacing: 2 },
   headerRight: { flexDirection: "row", gap: 10 },
   iconBtn: { padding: 10, borderRadius: 12, backgroundColor: "rgba(212, 175, 55, 0.1)", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)" },
@@ -447,38 +488,45 @@ const styles = StyleSheet.create({
     width: 210,
     height: 210,
     borderRadius: 105,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.2)",
+    borderWidth: 2,
+    borderColor: "rgba(212, 175, 55, 0.3)",
     justifyContent: "center",
     alignItems: "center",
-    position: "relative"
+    position: "relative",
+    shadowColor: Colors.luxury.gold,
+    shadowRadius: 15,
+    shadowOpacity: 0.4,
+    elevation: 10,
+    backgroundColor: "rgba(212, 175, 55, 0.05)"
   },
-  dialGlow: { ...StyleSheet.absoluteFillObject, borderRadius: 105, opacity: 0.2 },
+  dialGlow: { ...StyleSheet.absoluteFillObject, borderRadius: 105, opacity: 0.3 },
   dialInner: {
     width: 190,
     height: 190,
     borderRadius: 95,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.4)",
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.1)"
+    borderColor: "rgba(212, 175, 55, 0.2)"
   },
   dialMandala: { flex: 1, justifyContent: "center", alignItems: "center" },
   dialContent: { alignItems: "center" },
   dialVakitName: { color: Colors.luxury.gold, fontSize: 12, fontWeight: "800", letterSpacing: 4, marginBottom: 10, opacity: 0.8 },
   dialTimeText: { color: "#FFF", fontSize: 34, fontWeight: "200", letterSpacing: 2 },
-  dialProgressWrapper: { marginTop: 10, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: "rgba(212, 175, 55, 0.1)" },
+  dialProgressWrapper: { marginTop: 10, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: "rgba(212, 175, 55, 0.15)" },
   dialPercent: { color: Colors.luxury.gold, fontSize: 10, fontWeight: "900" },
   dialOrbitDot: {
     position: "absolute",
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
     backgroundColor: Colors.luxury.gold,
     shadowColor: Colors.luxury.gold,
-    shadowRadius: 10,
+    shadowRadius: 15,
     shadowOpacity: 1,
-    zIndex: 10
+    zIndex: 10,
+    borderWidth: 2,
+    borderColor: "#FFF"
   },
 
   duaContent: {},

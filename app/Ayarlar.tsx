@@ -1,7 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Platform,
   SafeAreaView,
@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Switch,
   Text,
+  TextInput,
   TouchableOpacity,
   View
 } from "react-native";
@@ -30,15 +31,28 @@ export default function Ayarlar() {
     setPrayerNotificationsEnabled,
     hadithNotificationsEnabled,
     setHadithNotificationsEnabled,
-    loadNotificationSettings,
+    userName,
+    setUserName,
+    loadSettings,
   } = useAppStore();
 
+  const [tempName, setTempName] = useState(userName);
+
   useEffect(() => {
-    loadNotificationSettings();
+    loadSettings();
   }, []);
+
+  useEffect(() => {
+    setTempName(userName);
+  }, [userName]);
 
   const handleLanguageChange = async (lang: Language) => {
     await setLanguage(lang);
+  };
+
+  const handleNameChange = (val: string) => {
+    setTempName(val);
+    setUserName(val);
   };
 
   const handlePrayerToggle = async (value: boolean) => {
@@ -70,17 +84,37 @@ export default function Ayarlar() {
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t("settingsTitle")}</Text>
+          <Text style={styles.headerTitle}>{t("settingsTitle" as any)}</Text>
           <View style={{ width: 44 }} />
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          {/* Language Section */}
+          
+          {/* Profile Section */}
           <View style={styles.sectionHeader}>
-            <MaterialCommunityIcons name="translate" size={20} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>{t("languageSection")}</Text>
+            <Ionicons name="person-outline" size={20} color="#D4AF37" />
+            <Text style={styles.sectionTitle}>{t("profileSection" as any)}</Text>
           </View>
-          <Text style={styles.sectionDesc}>{t("languageDesc")}</Text>
+          <View style={styles.profileCard}>
+            <Text style={styles.labelSmall}>{t("userNameLabel" as any)}</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.nameInput}
+                value={tempName}
+                onChangeText={handleNameChange}
+                placeholder={t("userNamePlaceholder" as any)}
+                placeholderTextColor="rgba(255,255,255,0.2)"
+              />
+              <Ionicons name="pencil-outline" size={16} color="rgba(212,175,55,0.4)" />
+            </View>
+          </View>
+
+          {/* Language Section */}
+          <View style={[styles.sectionHeader, { marginTop: 25 }]}>
+            <MaterialCommunityIcons name="translate" size={20} color="#D4AF37" />
+            <Text style={styles.sectionTitle}>{t("languageSection" as any)}</Text>
+          </View>
+          <Text style={styles.sectionDesc}>{t("languageDesc" as any)}</Text>
 
           <View style={styles.languageGrid}>
             {LANGUAGE_OPTIONS.map((opt) => {
@@ -109,7 +143,7 @@ export default function Ayarlar() {
           {/* Notification Section */}
           <View style={[styles.sectionHeader, { marginTop: 30 }]}>
             <Ionicons name="notifications-outline" size={20} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>{t("notificationSection")}</Text>
+            <Text style={styles.sectionTitle}>{t("notificationSection" as any)}</Text>
           </View>
 
           {/* Prayer Notification */}
@@ -118,8 +152,8 @@ export default function Ayarlar() {
               <MaterialCommunityIcons name="mosque" size={22} color="#0B101E" />
             </View>
             <View style={styles.notifTextBox}>
-              <Text style={styles.notifTitle}>{t("prayerNotification")}</Text>
-              <Text style={styles.notifDesc}>{t("prayerNotificationDesc")}</Text>
+              <Text style={styles.notifTitle}>{t("prayerNotification" as any)}</Text>
+              <Text style={styles.notifDesc}>{t("prayerNotificationDesc" as any)}</Text>
             </View>
             <Switch
               value={prayerNotificationsEnabled}
@@ -135,8 +169,8 @@ export default function Ayarlar() {
               <MaterialCommunityIcons name="book-open-page-variant" size={22} color="#0B101E" />
             </View>
             <View style={styles.notifTextBox}>
-              <Text style={styles.notifTitle}>{t("hadithNotification")}</Text>
-              <Text style={styles.notifDesc}>{t("hadithNotificationDesc")}</Text>
+              <Text style={styles.notifTitle}>{t("hadithNotification" as any)}</Text>
+              <Text style={styles.notifDesc}>{t("hadithNotificationDesc" as any)}</Text>
             </View>
             <Switch
               value={hadithNotificationsEnabled}
@@ -185,7 +219,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginBottom: 6,
+    marginBottom: 12,
   },
   sectionTitle: {
     color: "#E2E8F0",
@@ -198,6 +232,39 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 16,
     marginLeft: 30,
+  },
+
+  profileCard: {
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+  },
+  labelSmall: {
+    color: "#D4AF37",
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1,
+    marginBottom: 10,
+    textTransform: "uppercase",
+    opacity: 0.8,
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.2)",
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    height: 50,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.1)",
+  },
+  nameInput: {
+    flex: 1,
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "500",
   },
 
   languageGrid: { gap: 12 },

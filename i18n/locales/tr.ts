@@ -7,10 +7,7 @@ export const tr = {
   save: "Kaydet",
   cancel: "İptal",
 
-  greetingMorning: "Hayırlı Sabahlar",
-  greetingDay: "Hayırlı Günler",
-  greetingEvening: "Hayırlı Akşamlar",
-  greetingNight: "Hayırlı Geceler",
+
 
   fajr: "İmsak",
   sunrise: "Güneş",
@@ -412,6 +409,9 @@ export const tr = {
   settingsTitle: "Ayarlar",
   languageSection: "Dil Seçimi",
   languageDesc: "Uygulama dilini seçin",
+  profileSection: "Profil",
+  userNameLabel: "Adınız",
+  userNamePlaceholder: "Adınızı buraya yazın...",
   notificationSection: "Bildirimler",
   prayerNotification: "Ezan Bildirimi",
   prayerNotificationDesc: "Her namaz vaktinden 5 dakika önce bildirim",
@@ -423,7 +423,11 @@ export const tr = {
   prayerNotifTitle: "Namaz Vakti Yaklaşıyor",
   prayerNotifBody: "vaktine 5 dakika kaldı",
   hadithNotifTitle: "Günün Hadisi",
-  ayahCount: "Ayet",
+  greetingMorning: "Hayırlı Sabahlar",
+  greetingDay: "Hayırlı Vakitler",
+  greetingEvening: "Hayırlı Akşamlar",
+  greetingNight: "Hayırlı Geceler",
   meccan: "Mekke",
   medinan: "Medine",
+  ayahCount: "Ayet",
 };

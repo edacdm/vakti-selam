@@ -7,10 +7,7 @@ export const id = {
   save: "Simpan",
   cancel: "Batal",
 
-  greetingMorning: "Selamat Pagi",
-  greetingDay: "Selamat Siang",
-  greetingEvening: "Selamat Sore",
-  greetingNight: "Selamat Malam",
+
 
   fajr: "Subuh",
   sunrise: "Syuruq",

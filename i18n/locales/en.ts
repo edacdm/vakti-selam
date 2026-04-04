@@ -7,10 +7,7 @@ export const en = {
   save: "Save",
   cancel: "Cancel",
 
-  greetingMorning: "Good Morning",
-  greetingDay: "Good Afternoon",
-  greetingEvening: "Good Evening",
-  greetingNight: "Good Night",
+
 
   fajr: "Dawn",
   sunrise: "Sunrise",
