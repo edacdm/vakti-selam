@@ -1,5 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BlurView } from "expo-blur";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -7,7 +8,10 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
+  ImageBackground,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,22 +20,81 @@ import {
 } from "react-native";
 import { useTranslation } from "../../i18n";
 import type { TranslationKeys } from "../../i18n";
+import { Colors } from "../../constants/Colors";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const ZIKIR_KEYS: TranslationKeys[] = ["dhikrSubhanallah", "dhikrAlhamdulillah", "dhikrAllahuAkbar", "dhikrLaIlaha"];
+
+const STARDUST_COUNT = 15;
+const Stardust = () => {
+  const [particles] = useState(() => 
+    Array.from({ length: STARDUST_COUNT }).map(() => ({
+      x: new Animated.Value(Math.random() * SCREEN_WIDTH),
+      y: new Animated.Value(Math.random() * SCREEN_HEIGHT),
+      opacity: new Animated.Value(Math.random()),
+      size: Math.random() * 3 + 1,
+    }))
+  );
+
+  useEffect(() => {
+    particles.forEach(p => {
+      const animate = () => {
+        Animated.parallel([
+          Animated.timing(p.y, {
+            toValue: -50,
+            duration: 15000 + Math.random() * 10000,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(p.opacity, { toValue: 0.8, duration: 2000, useNativeDriver: true }),
+            Animated.timing(p.opacity, { toValue: 0.2, duration: 2000, useNativeDriver: true }),
+          ])
+        ]).start(() => {
+          p.y.setValue(SCREEN_HEIGHT + 50);
+          p.x.setValue(Math.random() * SCREEN_WIDTH);
+          animate();
+        });
+      };
+      animate();
+    });
+  }, []);
+
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {particles.map((p, i) => (
+        <Animated.View
+          key={i}
+          style={{
+            position: "absolute",
+            width: p.size,
+            height: p.size,
+            borderRadius: p.size / 2,
+            backgroundColor: Colors.luxury.gold,
+            opacity: p.opacity,
+            transform: [{ translateX: p.x }, { translateY: p.y }],
+            shadowColor: Colors.luxury.gold,
+            shadowRadius: 5,
+            shadowOpacity: 0.5,
+          }}
+        />
+      ))}
+    </View>
+  );
+};
 
 export default function Zikirmatik() {
   const router = useRouter();
   const { t } = useTranslation();
   
-  // Revised state: Holds an object where keys are tab indices and values are counts
   const [counts, setCounts] = useState<Record<number, number>>({});
   const [activeTabIdx, setActiveTabIdx] = useState<number>(0);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-  const scaleValue = useRef<Animated.Value>(new Animated.Value(1)).current;
-  const translateYValue = useRef<Animated.Value>(new Animated.Value(0)).current;
+  const mandalaRotation = useRef(new Animated.Value(0)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const scaleValue = useRef(new Animated.Value(1)).current;
 
-  // Load individual counts and the last active tab on mount
   useEffect(() => {
     const loadData = async (): Promise<void> => {
       try {
@@ -39,18 +102,26 @@ export default function Zikirmatik() {
         const savedTab = await AsyncStorage.getItem("activeTabIdx");
         if (savedCounts !== null) setCounts(JSON.parse(savedCounts));
         if (savedTab !== null) setActiveTabIdx(parseInt(savedTab, 10));
-      } catch (error) {}
+      } catch (error) { }
     };
     loadData();
+
+    // Mandala Continuous Rotation
+    Animated.loop(
+      Animated.timing(mandalaRotation, {
+        toValue: 1,
+        duration: 120000,
+        useNativeDriver: true,
+      })
+    ).start();
   }, []);
 
-  // Save changes to storage whenever counts or active tab change
   useEffect(() => {
     const saveData = async (): Promise<void> => {
       try {
         await AsyncStorage.setItem("zikirCounts", JSON.stringify(counts));
         await AsyncStorage.setItem("activeTabIdx", activeTabIdx.toString());
-      } catch (error) {}
+      } catch (error) { }
     };
     saveData();
   }, [counts, activeTabIdx]);
@@ -58,8 +129,8 @@ export default function Zikirmatik() {
   useEffect(() => {
     return sound
       ? () => {
-          sound.unloadAsync();
-        }
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -70,64 +141,37 @@ export default function Zikirmatik() {
       );
       setSound(newSound);
       await newSound.playAsync();
-    } catch (error) {}
-  };
-
-  const handlePressIn = (): void => {
-    Animated.parallel([
-      Animated.spring(scaleValue, {
-        toValue: 0.85,
-        useNativeDriver: true,
-      }),
-      Animated.spring(translateYValue, {
-        toValue: 45,
-        useNativeDriver: true,
-      })
-    ]).start();
-  };
-
-  const handlePressOut = (): void => {
-    Animated.parallel([
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        friction: 4,
-        tension: 40,
-        useNativeDriver: true,
-      }),
-      Animated.spring(translateYValue, {
-        toValue: 0,
-        friction: 4,
-        tension: 40,
-        useNativeDriver: true,
-      })
-    ]).start();
+    } catch (error) { }
   };
 
   const handleIncrement = async (): Promise<void> => {
     const currentCount = counts[activeTabIdx] || 0;
     const newCount = currentCount + 1;
     
-    // Update only the count for the active dhikr
     setCounts(prev => ({ ...prev, [activeTabIdx]: newCount }));
+
+    // Interaction Animation
+    Animated.sequence([
+      Animated.timing(scaleValue, { toValue: 0.9, duration: 50, useNativeDriver: true }),
+      Animated.spring(scaleValue, { toValue: 1, friction: 3, tension: 40, useNativeDriver: true }),
+      Animated.parallel([
+        Animated.timing(pulseAnim, { toValue: 1.2, duration: 200, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      ])
+    ]).start();
 
     await playSound();
 
     if (newCount % 33 === 0) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } else {
-      Haptics.selectionAsync();
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
 
   const handleReset = (): void => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    // Reset only the current dhikr's count
     setCounts(prev => ({ ...prev, [activeTabIdx]: 0 }));
-  };
-
-  const handleTabChange = (idx: number): void => {
-    setActiveTabIdx(idx);
-    // Removed setCount(0) to maintain persistence across tabs
   };
 
   const handleGoBack = (): void => {
@@ -140,84 +184,134 @@ export default function Zikirmatik() {
 
   const currentCount = counts[activeTabIdx] || 0;
   const currentCycle: number = currentCount > 0 && currentCount % 33 === 0 ? 33 : currentCount % 33;
-  const progressPercentage: number = (currentCycle / 33) * 100;
+  const progressPercent: number = (currentCycle / 33) * 100;
+
+  const LuxuryCard = ({ children, title, icon }: { children: React.ReactNode, title?: string, icon?: any }) => (
+    <View style={styles.luxuryCardWrapper}>
+      <LinearGradient colors={["rgba(212, 175, 55, 0.25)", "rgba(212, 175, 55, 0.05)"]} style={styles.goldBorder} />
+      <BlurView intensity={25} tint="dark" style={styles.luxuryCardInner}>
+        {title && (
+          <View style={styles.cardHeader}>
+            <View style={styles.headerDot} />
+            <Text style={styles.cardTitle}>{title.toUpperCase()}</Text>
+            {icon && <MaterialCommunityIcons name={icon} size={18} color={Colors.luxury.gold} />}
+          </View>
+        )}
+        {children}
+      </BlurView>
+    </View>
+  );
 
   return (
-    <LinearGradient colors={["#0B101E", "#15233E"]} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        
+    <LinearGradient colors={[Colors.luxury.midnight, Colors.luxury.midnightDeep]} style={styles.container}>
+      <Stardust />
+      
+      <Animated.View style={[
+        StyleSheet.absoluteFill, 
+        {
+          transform: [{ 
+            rotate: mandalaRotation.interpolate({ 
+              inputRange: [0, 1], 
+              outputRange: ["0deg", "360deg"] 
+            }) 
+          }]
+        }
+      ]}>
+        <ImageBackground
+          source={require("../../assets/images/mandala_bg.png")}
+          style={StyleSheet.absoluteFill}
+          imageStyle={styles.mandalaImage}
+          resizeMode="contain"
+        />
+      </Animated.View>
+
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.iconButton} onPress={handleGoBack}>
-            <Ionicons name="chevron-back" size={28} color="#D4AF37" />
+          <TouchableOpacity style={styles.iconBtn} onPress={handleGoBack}>
+            <Ionicons name="chevron-back" size={24} color={Colors.luxury.gold} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t("dhikrTitle")}</Text>
-          <View style={{ width: 44 }} />
-        </View>
-
-        <View style={styles.tabs}>
-          {ZIKIR_KEYS.map((key, idx) => {
-            const active = idx === activeTabIdx;
-            return (
-              <TouchableOpacity
-                key={key}
-                style={[styles.tab, active && styles.activeTab]}
-                onPress={() => handleTabChange(idx)}
-              >
-                <Text style={[styles.tabText, active && styles.activeTabText]}>
-                  {t(key)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        <View style={styles.centerArea}>
-          <View style={styles.counterScreen}>
-            <Text style={styles.counterText}>{currentCount}</Text>
+          <View style={styles.titleWrapper}>
+            <Text style={styles.supTitle}>{t("dhikrTitle")}</Text>
+            <View style={styles.goldDot} />
           </View>
+          <TouchableOpacity style={styles.iconBtn} onPress={handleReset}>
+            <Ionicons name="refresh" size={20} color="rgba(255, 255, 255, 0.6)" />
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.progressWrapper}>
-            <Text style={styles.progressText}>{t("dhikrTarget")}: {currentCycle} / 33</Text>
-            <View style={styles.progressContainer}>
-              <View style={[styles.progressBar, { width: `${progressPercentage}%` }]} />
+        <View style={styles.tabsContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
+            {ZIKIR_KEYS.map((key, idx) => {
+              const active = idx === activeTabIdx;
+              return (
+                <TouchableOpacity
+                  key={key}
+                  onPress={() => setActiveTabIdx(idx)}
+                  style={[styles.tabChip, active && styles.activeTabChip]}
+                >
+                  <Text style={[styles.tabChipText, active && styles.activeTabChipText]}>
+                    {t(key)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        <View style={styles.content}>
+          <LuxuryCard title={t(ZIKIR_KEYS[activeTabIdx])} icon="finger-print">
+            <View style={styles.counterArea}>
+              <Text style={styles.counterValue}>{currentCount}</Text>
+              <View style={styles.targetRow}>
+                <Ionicons name="repeat" size={14} color={Colors.luxury.gold} style={{marginRight: 6}} />
+                <Text style={styles.targetText}>{currentCycle} / 33</Text>
+              </View>
+            </View>
+          </LuxuryCard>
+
+          <View style={styles.dialContainer}>
+            <View style={styles.dialOuterRing}>
+              <LinearGradient 
+                colors={["rgba(212, 175, 55, 0.4)", "transparent"]} 
+                style={styles.dialGlow}
+              />
+              
+              <View style={styles.dialInner}>
+                <ImageBackground 
+                  source={require("../../assets/images/mandala_bg.png")}
+                  style={styles.dialMandala}
+                  imageStyle={{ opacity: 0.15 }}
+                >
+                  <TouchableWithoutFeedback onPress={handleIncrement}>
+                    <Animated.View style={[styles.beadButton, { transform: [{ scale: scaleValue }] }]}>
+                      <BlurView intensity={30} tint="dark" style={styles.innerBead}>
+                        <LinearGradient
+                          colors={["#D4AF37", "#996515"]}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        <Ionicons name="finger-print" size={52} color="rgba(11, 16, 30, 0.9)" />
+                      </BlurView>
+                    </Animated.View>
+                  </TouchableWithoutFeedback>
+                </ImageBackground>
+              </View>
+
+              <View style={[
+                styles.dialOrbitDot, 
+                { 
+                  transform: [
+                    { rotate: `${(progressPercent * 3.6) - 90}deg` }, 
+                    { translateX: 110 } 
+                  ] 
+                }
+              ]} />
             </View>
           </View>
-
-          <View style={styles.beadContainer}>
-            <View style={styles.thread} />
-            
-            <TouchableWithoutFeedback 
-              onPressIn={handlePressIn} 
-              onPressOut={handlePressOut} 
-              onPress={handleIncrement}
-            >
-              <Animated.View 
-                style={[
-                  styles.beadButton, 
-                  { transform: [{ scale: scaleValue }, { translateY: translateYValue }] }
-                ]}
-              >
-                <View style={styles.innerBead}>
-                  <Ionicons name="finger-print-outline" size={48} color="#0B101E" />
-                </View>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </View>
         </View>
 
-        <View style={styles.bottom}>
-          <TouchableOpacity style={styles.iconButton} onPress={handleReset}>
-            <Ionicons name="refresh" size={24} color="#E2E8F0" />
-          </TouchableOpacity>
-
-          <View style={styles.activeTabDisplay}>
-            <Ionicons name="moon-outline" size={16} color="#D4AF37" />
-            <Text style={styles.activeText}>{t(ZIKIR_KEYS[activeTabIdx])}</Text>
-          </View>
-
-          <View style={{ width: 44 }} />
+        <View style={styles.footer}>
+           <Text style={styles.footerText}>{t("dhikrTarget")}: 33</Text>
         </View>
-
       </SafeAreaView>
     </LinearGradient>
   );
@@ -225,27 +319,37 @@ export default function Zikirmatik() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { flex: 1, justifyContent: "space-between", paddingVertical: 20 },
-  header: { flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: "space-between", marginBottom: 20 },
-  iconButton: { width: 44, height: 44, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(255, 255, 255, 0.05)", borderRadius: 12, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.1)" },
-  headerTitle: { color: "#E2E8F0", fontSize: 20, fontWeight: "300", letterSpacing: 1.5 },
-  tabs: { flexDirection: "row", justifyContent: "center", flexWrap: "wrap", gap: 10, paddingHorizontal: 15 },
-  tab: { backgroundColor: "rgba(255, 255, 255, 0.03)", paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, borderWidth: 1, borderColor: "transparent" },
-  activeTab: { backgroundColor: "rgba(212, 175, 55, 0.1)", borderColor: "rgba(212, 175, 55, 0.3)" },
-  tabText: { color: "#94A3B8", fontWeight: "500", fontSize: 14 },
-  activeTabText: { color: "#D4AF37", fontWeight: "700" },
-  centerArea: { alignItems: "center", marginTop: 20 },
-  counterScreen: { backgroundColor: "rgba(212, 175, 55, 0.03)", borderColor: "rgba(212, 175, 55, 0.3)", borderWidth: 1, borderRadius: 24, paddingVertical: 25, paddingHorizontal: 50, marginBottom: 25, shadowColor: "#D4AF37", shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.1, shadowRadius: 20, elevation: 5 },
-  counterText: { color: "#D4AF37", fontSize: 56, fontWeight: "200", fontVariant: ["tabular-nums"] },
-  progressWrapper: { alignItems: "center", marginBottom: 30 },
-  progressText: { color: "#94A3B8", fontSize: 12, fontWeight: "600", letterSpacing: 2, marginBottom: 10 },
-  progressContainer: { width: 220, height: 8, backgroundColor: "rgba(255, 255, 255, 0.1)", borderRadius: 4, overflow: "hidden" },
-  progressBar: { height: "100%", backgroundColor: "#D4AF37", borderRadius: 4 },
-  beadContainer: { alignItems: "center", justifyContent: "center", height: 200, width: 150 },
-  thread: { position: "absolute", width: 4, height: "100%", backgroundColor: "rgba(212, 175, 55, 0.2)", borderRadius: 2 },
-  beadButton: { width: 150, height: 150, borderRadius: 75, backgroundColor: "#C5A028", alignItems: "center", justifyContent: "center", shadowColor: "#D4AF37", shadowOpacity: 0.4, shadowOffset: { width: 0, height: 8 }, shadowRadius: 15, elevation: 10 },
-  innerBead: { width: 120, height: 120, borderRadius: 60, backgroundColor: "#D4AF37", alignItems: "center", justifyContent: "center" },
-  bottom: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 25, alignItems: "center", marginTop: 20 },
-  activeTabDisplay: { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(212, 175, 55, 0.05)", paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, gap: 8 },
-  activeText: { color: "#E2E8F0", fontWeight: "500", fontSize: 16, letterSpacing: 0.5 },
+  mandalaImage: { opacity: 0.08, position: "absolute", top: 100, right: -150, transform: [{ scale: 1.5 }] },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 24, paddingTop: 10, marginBottom: 20 },
+  iconBtn: { width: 40, height: 40, borderRadius: 12, backgroundColor: "rgba(212, 175, 55, 0.1)", justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)" },
+  titleWrapper: { alignItems: "center" },
+  supTitle: { color: "#FFF", fontSize: 16, fontWeight: "300", letterSpacing: 3, textTransform: "uppercase" },
+  goldDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: Colors.luxury.gold, marginTop: 4 },
+  tabsContainer: { marginBottom: 30 },
+  tabsScroll: { paddingHorizontal: 24, gap: 12 },
+  tabChip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, backgroundColor: "rgba(255, 255, 255, 0.03)", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.05)" },
+  activeTabChip: { backgroundColor: "rgba(212, 175, 55, 0.12)", borderColor: "rgba(212, 175, 55, 0.4)" },
+  tabChipText: { color: "rgba(255, 255, 255, 0.5)", fontSize: 13, fontWeight: "500" },
+  activeTabChipText: { color: Colors.luxury.gold, fontWeight: "700" },
+  content: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 },
+  luxuryCardWrapper: { width: "100%", marginBottom: 40, position: "relative" },
+  goldBorder: { position: "absolute", top: -1, left: -1, right: -1, bottom: -1, borderRadius: 24 },
+  luxuryCardInner: { backgroundColor: Colors.luxury.midnightDeep, borderRadius: 23, padding: 25, overflow: "hidden" },
+  cardHeader: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 15 },
+  headerDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.luxury.gold },
+  cardTitle: { color: Colors.luxury.textGold, fontSize: 11, fontWeight: "800", letterSpacing: 3, flex: 1 },
+  counterArea: { alignItems: "center" },
+  counterValue: { color: "#FFF", fontSize: 64, fontWeight: "200", letterSpacing: -2, fontVariant: ["tabular-nums"] },
+  targetRow: { flexDirection: "row", alignItems: "center", marginTop: 10, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: "rgba(212, 175, 55, 0.1)" },
+  targetText: { color: Colors.luxury.gold, fontSize: 13, fontWeight: "600", letterSpacing: 1 },
+  dialContainer: { alignItems: "center" },
+  dialOuterRing: { width: 220, height: 220, borderRadius: 110, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)", justifyContent: "center", alignItems: "center", position: "relative" },
+  dialGlow: { ...StyleSheet.absoluteFillObject, borderRadius: 110, opacity: 0.2 },
+  dialInner: { width: 200, height: 200, borderRadius: 100, backgroundColor: "rgba(0,0,0,0.2)", overflow: "hidden", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.1)" },
+  dialMandala: { flex: 1, justifyContent: "center", alignItems: "center" },
+  beadButton: { width: 140, height: 140, borderRadius: 70, overflow: "hidden" },
+  innerBead: { flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.2)" },
+  dialOrbitDot: { position: "absolute", width: 12, height: 12, borderRadius: 6, backgroundColor: Colors.luxury.gold, shadowColor: Colors.luxury.gold, shadowRadius: 10, shadowOpacity: 1, zIndex: 10 },
+  footer: { paddingBottom: 20, alignItems: "center" },
+  footerText: { color: "rgba(255, 255, 255, 0.2)", fontSize: 12, fontWeight: "700", letterSpacing: 2 },
 });

@@ -25,6 +25,8 @@ export const tr = {
   dailyHadithLabel: "— Günün Hadisi",
   zikirmatikBtn: "Zikirmatik",
   mosquesBtn: "Camiler",
+  quranPlayerTitle: "KUR'AN-I KERİM",
+  duaDayTitle: "GÜNÜN DUASI",
 
   tabPrayerTimes: "Vakitler",
   tabQuran: "Kur'an",
@@ -35,6 +37,8 @@ export const tr = {
 
   hadith1: "Ameller niyetlere göredir. (Buhârî)",
   hadith2: "Kolaylaştırın, zorlaştırmayın. (Buhârî)",
+  featuredSurah: "Öne Çıkan Sure",
+  searchSurah: "Sure Ara...",
   hadith3: "Komşusu açken tok yatan bizden değildir. (Tirmizî)",
   hadith4: "Selâmı yayınız ki aranızda sevgi artsın. (Müslim)",
   hadith5: "İyilik sadakadır. (Buhârî)",
@@ -132,6 +136,8 @@ export const tr = {
   namazKurbanBayramiDesc: "Kurban ibadeti öncesi olan namaz",
   namazTilavet: "Tilavet Secdesi",
   namazTilavetDesc: "Mushaflarda geçen secde ayetleri için",
+  namazBayram: "Bayram Namazı",
+  namazBayramDesc: "Ramazan ve Kurban bayramları",
   badgeOnceAYear: "Yılda Bir",
   badgeKurban: "Kurban",
   badgeSpecial: "Özel",
@@ -152,6 +158,8 @@ export const tr = {
   namazKuslukDesc: "Güneş yükselince kılınan şifa namazı",
   namazEvvabin: "Evvabin Namazı",
   namazEvvabinDesc: "Akşamdan sonra tövbe edenlerin namazı",
+  namazTeravih: "Teravih Namazı",
+  namazTeravihDesc: "Ramazan gecelerine özel",
   namazHacet: "Hacet Namazı",
   namazHacetDesc: "Bir istek veya dilek için",
   namazSukur: "Şükür Namazı",
@@ -329,8 +337,8 @@ export const tr = {
 
   prayersAndSurahs: "Dualar ve Sureler",
   prayersSubtitle: "Namazda okunan ezberler rehberi",
-  typeDua: "Dua",
-  typeSurah: "Sure",
+  typeSurah: "Kur'an",
+  typeDua: "Sure",
   pronunciation: "Okunuşu:",
   meaning: "Anlamı:",
   listen: "Dinle",
@@ -361,6 +369,8 @@ export const tr = {
   filSurah: "Fil Suresi",
   quraishSurah: "Kureyş Suresi",
   maunSurah: "Mâûn Suresi",
+  nasrSurah: "Nasr Suresi",
+  tebbetSurah: "Tebbet Suresi",
   takathurSurah: "Tekâsür Suresi",
   zilzalSurah: "Zilzal Suresi",
 
@@ -382,6 +392,8 @@ export const tr = {
   filMeaning: "Rabbin fil sahiplerine ne yaptı, görmedin mi? Onların tuzaklarını boşa çıkarmadı mı? Onların üzerine sürü sürü kuşlar gönderdi. Onlara balçıktan sertleştirilmiş taşlar atıyorlardı. Böylece Allah onları yenilmiş ekin yaprağı gibi kılıp parçaladı.",
   quraishMeaning: "Kureyş'in yurt edinmesi, kış ve yaz yolculuklarına alıştırılmaları için. O hâlde bu Kâbe'nin Rabbi olan Allah'a kulluk etsinler. O ki, onları açlıktan doyurmuş ve korkudan emin kılmıştır.",
   maunMeaning: "Din gününü yalanlayanı gördün mü? İşte yetimi iten, kakıştıran o kimsedir. Yoksulun yiyeceği için teşvik etmez. Vay haline o namaz kılanların ki, onlar namazlarından gafildirler; onlar gösteriş yaparlar ve zekât vermezler.",
+  nasrMeaning: "Allah'ın yardımı ve fetih geldiği, insanların bölük bölük Allah'ın dinine girdiklerini gördüğün zaman, Rabbini hamd ile tesbih et ve O'ndan mağfiret dile. Çünkü O, tevbeleri çok kabul edendir.",
+  tebbetMeaning: "Ebu Leheb'in elleri kurusun; kurudu da! Malı ve kazandığı ona fayda vermedi. O, alevli bir ateşe girecektir. Odun taşıyıcı olarak karısı da (ateşe girecektir). Boynunda hurma lifinden bükülmüş bir ip olduğu halde.",
   takathurMeaning: "Çokluğu ile öğünmek sizi oyaladı. Hatta mezarlıkları ziyaret edinceye kadar. Hayır! İleride bileceksiniz. Yine hayır! İleride bileceksiniz. Hayır! Kesin olarak bilseniz o cehennem ateşini mutlaka görürsünüz. Sonra onu gözün görmesiyle (kesin olarak) görürsünüz. Sonra o gün nimetlerden muhakkak hesaba çekileceksiniz.",
   zilzalMeaning: "Yer, o şiddetli sarsıntısıyla sarsıldığında; yer, ağırlıklarını (içindekilerini) dışarı çıkardığında; insan 'Bu (yer) ne oluyor?' dediğinde; işte o gün yer, haberlerini anlatır. Çünkü Rabbin ona vahyetmiştir. O gün insanlar, amellerinin karşılığını görmek üzere bölük bölük dönerler. Kim zerre ağırlığınca hayır işlerse onu görür. Kim de zerre ağırlığınca kötülük işlerse onu görür.",
 
@@ -411,4 +423,7 @@ export const tr = {
   prayerNotifTitle: "Namaz Vakti Yaklaşıyor",
   prayerNotifBody: "vaktine 5 dakika kaldı",
   hadithNotifTitle: "Günün Hadisi",
+  ayahCount: "Ayet",
+  meccan: "Mekke",
+  medinan: "Medine",
 };

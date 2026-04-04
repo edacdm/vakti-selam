@@ -1,126 +1,217 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { Colors } from "../../../constants/Colors";
 import { useTranslation } from "../../../i18n";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+const STARDUST_COUNT = 18;
+const Stardust = () => {
+  const [particles] = useState(() => 
+    Array.from({ length: STARDUST_COUNT }).map((_, i) => ({
+      x: new Animated.Value(Math.random() * SCREEN_WIDTH),
+      y: new Animated.Value(Math.random() * SCREEN_HEIGHT),
+      opacity: new Animated.Value(Math.random() * 0.4),
+      scale: new Animated.Value(Math.random() * 0.7 + 0.3),
+      duration: 18000 + Math.random() * 15000,
+      color: i % 2 === 0 ? Colors.luxury.gold : "#FFF",
+    }))
+  );
+
+  useEffect(() => {
+    particles.forEach(p => {
+      const animate = () => {
+        p.y.setValue(SCREEN_HEIGHT + 20);
+        Animated.parallel([
+          Animated.timing(p.y, {
+            toValue: -50,
+            duration: p.duration,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(p.opacity, { toValue: 0.7, duration: p.duration / 2, useNativeDriver: true }),
+            Animated.timing(p.opacity, { toValue: 0, duration: p.duration / 2, useNativeDriver: true }),
+          ]),
+          Animated.timing(p.scale, { toValue: 1, duration: p.duration, useNativeDriver: true })
+        ]).start(() => animate());
+      };
+      animate();
+    });
+  }, []);
+
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {particles.map((p, i) => (
+        <Animated.View
+          key={i}
+          style={{
+            position: "absolute",
+            width: 4,
+            height: 4,
+            borderRadius: 2,
+            backgroundColor: p.color,
+            opacity: p.opacity,
+            transform: [
+              { translateX: p.x },
+              { translateY: p.y },
+              { scale: p.scale }
+            ],
+            shadowColor: p.color,
+            shadowRadius: 4,
+            shadowOpacity: 0.8,
+          }}
+        />
+      ))}
+    </View>
+  );
+};
 
 export default function BesVakit() {
   const router = useRouter();
   const { t } = useTranslation();
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const mandalaRotation = useRef(new Animated.Value(0)).current;
+  const fadeAnims = useRef([new Animated.Value(0), new Animated.Value(0), new Animated.Value(0), new Animated.Value(0), new Animated.Value(0)]).current;
 
-  const renderListItem = (
-    path: string,
-    iconName: any,
-    title: string,
-    desc: string,
-    badgeText?: string
-  ) => (
-    <TouchableOpacity
-      style={styles.listItem}
-      onPress={() => router.push(path as any)}
-      activeOpacity={0.8}
-    >
-      <LinearGradient
-        colors={["rgba(255, 255, 255, 0.05)", "rgba(255, 255, 255, 0.01)"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.listItemInner}
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(mandalaRotation, {
+        toValue: 1,
+        duration: 200000,
+        useNativeDriver: true,
+      })
+    ).start();
+
+    Animated.stagger(100, 
+      fadeAnims.map(anim => 
+        Animated.spring(anim, { toValue: 1, friction: 8, tension: 40, useNativeDriver: true })
+      )
+    ).start();
+  }, []);
+
+  const renderPrayerCard = (title: string, desc: string, path: string, index: number) => (
+    <Animated.View style={{ 
+      opacity: fadeAnims[index],
+      transform: [
+        { translateX: fadeAnims[index].interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) },
+        { scale: fadeAnims[index].interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) }
+      ]
+    }}>
+      <TouchableOpacity 
+        style={styles.cardWrapper} 
+        onPress={() => router.push(path as any)}
+        activeOpacity={0.8}
       >
-        <View style={styles.listIconBox}>
-          <MaterialCommunityIcons name={iconName} size={26} color="#0B101E" />
-        </View>
-        <View style={styles.listTextContainer}>
-          <View style={styles.titleRow}>
-            <Text style={styles.listTitle}>{title}</Text>
-            {badgeText && (
-              <View style={styles.badgeBox}>
-                 <Text style={styles.badgeText}>{badgeText}</Text>
-              </View>
-            )}
+        <BlurView intensity={25} tint="dark" style={styles.card}>
+          <LinearGradient
+            colors={["rgba(212, 175, 55, 0.15)", "transparent"]}
+            style={StyleSheet.absoluteFill}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          />
+          <View style={styles.cardIcon}>
+             <MaterialCommunityIcons name="clock-check-outline" size={28} color={Colors.luxury.gold} />
           </View>
-          <Text style={styles.listDesc}>{desc}</Text>
-        </View>
-        <View style={styles.chevronBox}>
-           <Ionicons name="chevron-forward" size={18} color="#D4AF37" />
-        </View>
-      </LinearGradient>
-    </TouchableOpacity>
+          <View style={styles.cardText}>
+            <Text style={styles.cardTitle}>{title}</Text>
+            <Text style={styles.cardDesc}>{desc}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={Colors.luxury.gold} />
+        </BlurView>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [50, 150],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
+  const mandalaTranslateY = scrollY.interpolate({
+    inputRange: [0, SCREEN_HEIGHT],
+    outputRange: [0, SCREEN_HEIGHT * 0.1],
+  });
+
   return (
-    <LinearGradient colors={["#0B101E", "#15233E"]} style={styles.container}>
+    <LinearGradient colors={[Colors.luxury.midnight, Colors.luxury.midnightDeep, "#050812"]} style={styles.container}>
+      <Stardust />
+      
+      <Animated.View style={[
+        styles.mandalaLayer,
+        {
+          transform: [
+            { translateY: mandalaTranslateY },
+            { 
+              rotate: mandalaRotation.interpolate({ 
+                inputRange: [0, 1], 
+                outputRange: ["0deg", "360deg"] 
+              }) 
+            }
+          ]
+        }
+      ]}>
+        <ImageBackground
+          source={require("../../../assets/images/mandala_bg.png")}
+          style={styles.mandala}
+          imageStyle={{ opacity: 0.04 }}
+          resizeMode="contain"
+        />
+      </Animated.View>
+
+      <Animated.View style={[styles.navHeader, { opacity: headerOpacity }]}>
+        <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFill} />
+        <Text style={styles.navTitle}>{t("fiveDailyPrayers")}</Text>
+      </Animated.View>
+
       <SafeAreaView style={styles.safeArea}>
-        
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={28} color="#D4AF37" />
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
+        >
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color={Colors.luxury.gold} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t("fiveDailyPrayers")}</Text>
-          <View style={{ width: 44 }} />
-        </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          
-          <LinearGradient
-            colors={["rgba(212, 175, 55, 0.15)", "rgba(212, 175, 55, 0.02)"]}
-            style={styles.heroCard}
-          >
-            <View style={styles.heroContent}>
-              <View style={styles.heroIconBg}>
-                <MaterialCommunityIcons name="clock-time-four-outline" size={38} color="#D4AF37" />
-              </View>
-              <View style={styles.heroTextContainer}>
-                <Text style={styles.heroTitle}>{t("menuBesVakitHeroTitle")}</Text>
-                <Text style={styles.heroSubtitle}>{t("menuBesVakitHeroSubtitle")}</Text>
-              </View>
-            </View>
-            <View style={styles.separator} />
-            <Text style={styles.heroQuote}>
-              {t("menuBesVakitQuote")}
-            </Text>
-          </LinearGradient>
-
-          <View style={styles.listContainer}>
-            {renderListItem(
-              "/namazlar/BesVakit/SabahNamazi",
-              "weather-sunset-up",
-              t("namazSabah"),
-              t("namazSabahDesc"),
-              `4 ${t("rekatLabel")}`
-            )}
-            {renderListItem(
-              "/namazlar/BesVakit/OgleNamazi",
-              "white-balance-sunny",
-              t("namazOgle"),
-              t("namazOgleDesc"),
-              `10 ${t("rekatLabel")}`
-            )}
-            {renderListItem(
-              "/namazlar/BesVakit/IkindiNamazi",
-              "weather-sunset-down",
-              t("namazIkindi"),
-              t("namazIkindiDesc"),
-              `8 ${t("rekatLabel")}`
-            )}
-            {renderListItem(
-              "/namazlar/BesVakit/AksamNamazi",
-              "weather-sunset",
-              t("namazAksam"),
-              t("namazAksamDesc"),
-              `5 ${t("rekatLabel")}`
-            )}
-            {renderListItem(
-              "/namazlar/BesVakit/YatsiNamazi",
-              "moon-waning-crescent",
-              t("namazYatsi"),
-              t("namazYatsiDesc"),
-              `13 ${t("rekatLabel")}`
-            )}
+          <View style={styles.hero}>
+            <Text style={styles.heroTitle}>{t("fiveDailyPrayers")}</Text>
+            <Text style={styles.heroSub}>{t("fiveDailyPrayersDesc")}</Text>
+            <View style={styles.heroDivider} />
           </View>
 
-          <View style={{ height: 40 }} />
+          <BlurView intensity={30} tint="light" style={styles.quoteCard}>
+            <Text style={styles.quoteText}>{t("prayerTeacherQuote")}</Text>
+          </BlurView>
+
+          <View style={styles.grid}>
+            {renderPrayerCard(t("namazSabah"), t("namazSabahDesc"), "/namazlar/BesVakit/SabahNamazi", 0)}
+            {renderPrayerCard(t("namazOgle"), t("namazOgleDesc"), "/namazlar/BesVakit/SabahNamazi", 1)}
+            {renderPrayerCard(t("namazIkindi"), t("namazIkindiDesc"), "/namazlar/BesVakit/SabahNamazi", 2)}
+            {renderPrayerCard(t("namazAksam"), t("namazAksamDesc"), "/namazlar/BesVakit/SabahNamazi", 3)}
+            {renderPrayerCard(t("namazYatsi"), t("namazYatsiDesc"), "/namazlar/BesVakit/SabahNamazi", 4)}
+          </View>
+
+          <View style={{ height: 100 }} />
         </ScrollView>
-        
       </SafeAreaView>
     </LinearGradient>
   );
@@ -129,159 +220,40 @@ export default function BesVakit() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safeArea: { flex: 1 },
-  header: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  headerTitle: {
-    color: "#D4AF37",
-    fontSize: 18,
-    fontWeight: "600",
-    letterSpacing: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  heroCard: {
-    width: "100%",
-    borderRadius: 24,
-    padding: 24,
-    marginBottom: 25,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-    shadowColor: "#D4AF37",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 15,
-    elevation: 5,
-  },
-  heroContent: {
-    flexDirection: "row",
+  mandalaLayer: { ...StyleSheet.absoluteFillObject, justifyContent: "center", alignItems: "center" },
+  mandala: { width: SCREEN_WIDTH * 1.5, height: SCREEN_WIDTH * 1.5 },
+  navHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    zIndex: 100,
+    justifyContent: "flex-end",
+    paddingBottom: 15,
     alignItems: "center",
   },
-  heroIconBg: {
-    width: 60,
-    height: 60,
-    borderRadius: 18,
-    backgroundColor: "rgba(11, 16, 30, 0.6)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 15,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.2)",
+  navTitle: { color: Colors.luxury.gold, fontSize: 18, fontWeight: "600", letterSpacing: 1 },
+  scrollContent: { paddingHorizontal: 24, paddingTop: 10 },
+  backBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(212, 175, 55, 0.08)", justifyContent: "center", alignItems: "center", marginBottom: 15, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.3)", shadowColor: Colors.luxury.gold, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8 },
+  hero: { marginBottom: 20 },
+  heroTitle: { color: "#FFF", fontSize: 26, fontWeight: "300", letterSpacing: 0.5 },
+  heroSub: { color: Colors.luxury.gold, fontSize: 13, marginTop: 4, letterSpacing: 0.4, opacity: 0.8 },
+  heroDivider: { width: 40, height: 1.2, backgroundColor: Colors.luxury.gold, marginTop: 12, opacity: 0.5 },
+  quoteCard: { 
+    borderRadius: 20, 
+    padding: 18, 
+    marginBottom: 24, 
+    borderWidth: 1, 
+    borderColor: "rgba(212, 175, 55, 0.25)",
+    overflow: "hidden"
   },
-  heroTextContainer: { flex: 1 },
-  heroTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#E2E8F0",
-    letterSpacing: 0.5,
-  },
-  heroSubtitle: {
-    fontSize: 13,
-    color: "#D4AF37",
-    marginTop: 4,
-    fontWeight: "500",
-    letterSpacing: 0.5,
-  },
-  separator: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "rgba(212, 175, 55, 0.2)",
-    marginVertical: 18,
-  },
-  heroQuote: {
-    color: "#94A3B8",
-    fontSize: 14,
-    fontStyle: "italic",
-    lineHeight: 22,
-    textAlign: "center",
-  },
-  listContainer: { gap: 15 },
-  listItem: {
-    width: "100%",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  listItemInner: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-  },
-  listIconBox: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: "#D4AF37",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 16,
-    shadowColor: "#D4AF37",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  listTextContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  listTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#E2E8F0",
-    marginRight: 8,
-  },
-  badgeBox: {
-    backgroundColor: "rgba(212, 175, 55, 0.15)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-  },
-  badgeText: {
-    fontSize: 9,
-    color: "#D4AF37",
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  },
-  listDesc: {
-    fontSize: 12,
-    color: "#94A3B8",
-    lineHeight: 18,
-    paddingRight: 10,
-  },
-  chevronBox: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(11, 16, 30, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  quoteText: { color: "rgba(255, 255, 255, 0.7)", fontSize: 14, fontStyle: "italic", textAlign: "center", lineHeight: 22 },
+  grid: { gap: 14 },
+  cardWrapper: { borderRadius: 20, overflow: "hidden", shadowColor: "#000", shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.25, shadowRadius: 10 },
+  card: { flexDirection: "row", alignItems: "center", padding: 18, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.15)" },
+  cardIcon: { width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(212, 175, 55, 0.1)", justifyContent: "center", alignItems: "center", marginRight: 16 },
+  cardText: { flex: 1 },
+  cardTitle: { color: "#FFF", fontSize: 16, fontWeight: "600", marginBottom: 2 },
+  cardDesc: { color: "rgba(255, 255, 255, 0.5)", fontSize: 12 },
 });

@@ -13,12 +13,14 @@
     },
     "android": {
       "package": "com.vaktiselam.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#0B101E"
       },
       "edgeToEdgeEnabled": true
     },
+
     "web": {
       "bundler": "metro",
       "output": "static",

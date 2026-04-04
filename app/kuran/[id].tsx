@@ -1,5 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -30,9 +32,12 @@ const SURE_NAMES: Record<number, string> = {
 };
 
 export default function SureOkuma() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const params = useLocalSearchParams();
   const router = useRouter();
-  const sureId = parseInt(id ?? "1");
+
+  const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
+  const parsedId = parseInt(idParam ?? "1", 10);
+  const sureId = isNaN(parsedId) ? 1 : parsedId;
   const sureName = SURE_NAMES[sureId] ?? `${sureId}. Sure`;
 
   const [ayetler, setAyetler] = useState<AyetItem[]>([]);
@@ -55,21 +60,21 @@ export default function SureOkuma() {
       setLoading(true);
       setError("");
 
-      const arabicRes = await fetch(
-        `https://api.alquran.cloud/v1/surah/${sureId}`
-      );
+      const arabicRes = await fetch(`https://api.alquran.cloud/v1/surah/${sureId}`);
       const arabicData = await arabicRes.json();
 
-      const turkishRes = await fetch(
-        `https://api.alquran.cloud/v1/surah/${sureId}/tr.diyanet`
-      );
+      const turkishRes = await fetch(`https://api.alquran.cloud/v1/surah/${sureId}/tr.diyanet`);
       const turkishData = await turkishRes.json();
+
+      if (arabicData.code !== 200 || !arabicData.data || !arabicData.data.ayahs) {
+        throw new Error("Sure verisi alınamadı.");
+      }
 
       const ayets: AyetItem[] = arabicData.data.ayahs.map((a: any, i: number) => ({
         number: a.number,
         numberInSurah: a.numberInSurah,
         arabic: a.text,
-        turkish: turkishData.data.ayahs[i]?.text ?? "",
+        turkish: turkishData.data?.ayahs?.[i]?.text ?? "",
       }));
 
       setAyetler(ayets);
@@ -81,6 +86,7 @@ export default function SureOkuma() {
   };
 
   const toggleFullAudio = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const paddedId = sureId.toString().padStart(3, "0");
     const audioUrl = `https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/${paddedId}.mp3`;
 
@@ -114,13 +120,13 @@ export default function SureOkuma() {
       setSound(newSound);
       setIsPlaying(true);
     } catch (e) {
-      console.log("Ses hatası:", e);
     } finally {
       setIsAudioLoading(false);
     }
   };
 
   const stopAudio = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (sound) {
       await sound.stopAsync();
       await sound.unloadAsync();
@@ -128,6 +134,12 @@ export default function SureOkuma() {
       setIsPlaying(false);
       setActiveAyet(null);
     }
+  };
+
+  const handleBack = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    stopAudio();
+    router.back();
   };
 
   const renderAyet = ({ item }: { item: AyetItem }) => (
@@ -146,20 +158,19 @@ export default function SureOkuma() {
   return (
     <LinearGradient colors={["#0B101E", "#15233E"]} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => { stopAudio(); router.back(); }}>
+          <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
             <Ionicons name="chevron-back" size={24} color="#D4AF37" />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>{sureName} Suresi</Text>
+            <Text style={styles.headerTitle}>{sureName}</Text>
             <Text style={styles.headerSub}>{sureId}. Sure · {ayetler.length > 0 ? `${ayetler.length} Ayet` : ""}</Text>
           </View>
           <View style={{ width: 44 }} />
         </View>
 
         {!loading && !error && (
-          <View style={styles.audioPlayer}>
+          <BlurView intensity={20} tint="dark" style={styles.audioPlayer}>
             <View style={styles.audioPlayerLeft}>
               <MaterialCommunityIcons name="music-note" size={20} color="#D4AF37" />
               <Text style={styles.audioPlayerText}>Mishary Alafasy</Text>
@@ -181,7 +192,7 @@ export default function SureOkuma() {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </BlurView>
         )}
 
         {!loading && !error && sureId !== 9 && (
@@ -237,23 +248,23 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.3)",
   },
   headerCenter: { alignItems: "center" },
-  headerTitle: { color: "#E2E8F0", fontSize: 18, fontWeight: "700" },
-  headerSub: { color: "#64748B", fontSize: 12, marginTop: 2 },
+  headerTitle: { color: "#E2E8F0", fontSize: 18, fontWeight: "700", letterSpacing: 1 },
+  headerSub: { color: "#D4AF37", fontSize: 12, marginTop: 4, fontWeight: "600" },
   audioPlayer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginHorizontal: 20,
-    marginBottom: 12,
-    backgroundColor: "rgba(212,175,55,0.08)",
+    marginBottom: 15,
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.25)",
+    borderColor: "rgba(212,175,55,0.2)",
+    overflow: "hidden"
   },
   audioPlayerLeft: { flexDirection: "row", alignItems: "center", gap: 8 },
-  audioPlayerText: { color: "#D4AF37", fontSize: 13, fontWeight: "500" },
+  audioPlayerText: { color: "#D4AF37", fontSize: 13, fontWeight: "600" },
   audioPlayerRight: { flexDirection: "row", alignItems: "center", gap: 10 },
   audioPlayBtn: {
     flexDirection: "row", alignItems: "center", gap: 6,
@@ -261,7 +272,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8, paddingHorizontal: 14,
     borderRadius: 12,
   },
-  audioPlayText: { color: "#0B101E", fontWeight: "700", fontSize: 13 },
+  audioPlayText: { color: "#0B101E", fontWeight: "800", fontSize: 12, letterSpacing: 1 },
   audioStopBtn: {
     width: 36, height: 36,
     backgroundColor: "rgba(239,68,68,0.1)",
@@ -271,9 +282,9 @@ const styles = StyleSheet.create({
   },
   besmeleBox: {
     alignItems: "center",
-    paddingVertical: 16,
+    paddingVertical: 20,
     marginHorizontal: 20,
-    marginBottom: 8,
+    marginBottom: 10,
     borderRadius: 18,
     backgroundColor: "rgba(212,175,55,0.06)",
     borderWidth: 1,
@@ -281,7 +292,7 @@ const styles = StyleSheet.create({
   },
   besmeleText: {
     color: "#D4AF37",
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "400",
     writingDirection: "rtl",
   },
@@ -291,9 +302,9 @@ const styles = StyleSheet.create({
   },
   ayetContainer: {
     flexDirection: "row",
-    paddingVertical: 18,
+    paddingVertical: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.05)",
+    borderBottomColor: "rgba(212,175,55,0.1)",
   },
   ayetContainerActive: {
     backgroundColor: "rgba(212,175,55,0.06)",
@@ -315,22 +326,22 @@ const styles = StyleSheet.create({
   ayetNumText: { color: "#D4AF37", fontSize: 12, fontWeight: "700" },
   ayetContent: { flex: 1 },
   ayetArabic: {
-    color: "#F1F5F9",
-    fontSize: 22,
+    color: "#D4AF37",
+    fontSize: 26,
     textAlign: "right",
-    lineHeight: 40,
+    lineHeight: 45,
     writingDirection: "rtl",
     fontWeight: "400",
   },
   ayetDivider: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    marginVertical: 10,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    marginVertical: 15,
   },
   ayetTurkish: {
-    color: "#94A3B8",
-    fontSize: 14,
-    lineHeight: 22,
+    color: "#E2E8F0",
+    fontSize: 15,
+    lineHeight: 24,
     textAlign: "left",
   },
   centerBox: {

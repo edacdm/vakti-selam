@@ -31,7 +31,7 @@ export default function TabLayout() {
         options={{
           title: t("tabPrayerTimes"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="clock-outline" size={size} color={color} />
+            <Ionicons name="time-outline" size={size} color={color} />
           ),
         }}
       />
@@ -41,7 +41,7 @@ export default function TabLayout() {
         options={{
           title: t("tabQuran"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />
+            <Ionicons name="library-outline" size={size} color={color} />
           ),
         }}
       />
@@ -51,7 +51,7 @@ export default function TabLayout() {
         options={{
           title: t("tabGuide"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="mosque" size={size} color={color} />
+            <Ionicons name="sparkles-outline" size={size} color={color} />
           ),
         }}
       />
@@ -61,7 +61,7 @@ export default function TabLayout() {
         options={{
           title: t("tabDhikr"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="dots-horizontal-circle-outline" size={size} color={color} />
+            <Ionicons name="finger-print-outline" size={size} color={color} />
           ),
         }}
       />
@@ -71,7 +71,7 @@ export default function TabLayout() {
         options={{
           title: t("tabCalendar"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="calendar-month-outline" size={size} color={color} />
+            <Ionicons name="calendar-clear-outline" size={size} color={color} />
           ),
         }}
       />

@@ -1,149 +1,67 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  Modal,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  UIManager,
-  View
+  ActivityIndicator, Animated, Dimensions, FlatList, Modal,
+  SafeAreaView, ScrollView, StyleSheet, Text, TextInput,
+  TouchableOpacity, View
 } from "react-native";
-import type { TranslationKeys } from "../../i18n";
+import { Colors } from "../../constants/Colors";
 import { useTranslation } from "../../i18n";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
-
-
-interface DuaItem {
-  typeKey: "typeDua" | "typeSurah";
-  titleKey: TranslationKeys;
-  arabic: string;
-  okunus: string;
-  anlamKey: TranslationKeys;
-  audioSource?: any;
-}
+interface Surah { number: number; name: string; englishName: string; englishNameTranslation: string; numberOfAyahs: number; revelationType: string; }
+interface Ayah { number: number; text: string; translation: string; audio: string; }
+interface DuaItem { typeKey: string; titleKey: string; arabic: string; okunus: string; anlamKey: string; audioSource?: any; }
 
 const dualarData: DuaItem[] = [
-  { typeKey: "typeDua", titleKey: "subhanakaDua", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ ۝ وَتَبَارَكَ اسْمُكَ ۝ وَتَعَالَى جَدُّكَ ۝ وَلَا إِلَهَ غَيْرُكَ", okunus: "Sübhânekellâhümme ve bi hamdik ve tebârakesmük ve teâlâ ceddük (ve celle senâük)* ve lâ ilâhe ğayruk.", anlamKey: "subhanakaMeaning", audioSource: require("../../assets/audio/subhaneke.mp3") },
-  { typeKey: "typeDua", titleKey: "ettehiyyatuDua", arabic: "التَّحِيَّاتُ لِلَّهِ وَالصَّلَاوَاتُ وَالطَّيِّبَاتُ ۝ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ ۝ السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ ۝ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنْ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", okunus: "Ettehiyyâtü lillâhi ve's-salevâtü ve't-tayyibât. Es-selâmü aleyke eyyühe'n-nebiyyü ve rahmetüllâhi ve berakâtüh. Es-selâmü aleynâ ve alâ ıbâdillâhi's-sâlihîn. Eşhedü en lâ ilâhe illallâh ve eşhedü enne Muhammeden abdühû ve rasûlüh.", anlamKey: "ettehiyyatuMeaning", audioSource: require("../../assets/audio/ettehiyyatu.mp3") },
-  { typeKey: "typeDua", titleKey: "allahummaSalli", arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ ۝ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ ۝ إِنَّكَ حَمِيدٌ مَجِيدٌ", okunus: "Allâhümme salli alâ Muhammedin ve alâ âli Muhammed. Kemâ salleyte alâ İbrâhîme ve alâ âli İbrâhim. İnneke hamîdün mecîd.", anlamKey: "allahummaSalliMeaning", audioSource: require("../../assets/audio/salli.mp3") },
-  { typeKey: "typeDua", titleKey: "allahummaBarik", arabic: "اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ ۝ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ ۝ إِنَّكَ hamîdün mecîd.", okunus: "Allâhümme bârik alâ Muhammedin ve alâ âli Muhammed. Kemâ bârakte alâ İbrâhîme ve alâ âli İbrâhim. İnneke hamîdün mecîd.", anlamKey: "allahummaBarikMeaning", audioSource: require("../../assets/audio/barik.mp3") },
-  { typeKey: "typeDua", titleKey: "rabbanaAtina", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", okunus: "Rabbenâ âtinâ fi'd-dünyâ haseneten ve fi'l-âhirati haseneten ve kınâ azâbe'n-nâr.", anlamKey: "rabbanaAtinaMeaning", audioSource: require("../../assets/audio/rabbena.mp3") },
-  { typeKey: "typeDua", titleKey: "qunutDuas", arabic: "اللَّهُمَّ إِنَّا نَسْتَعِينُكَ وَنَسْتَغْفِرُكَ وَنَسْتَهْدِيكَ... اللَّهُمَّ إِيَّاكَ نَعْبُدُ وَلَكَ نُصَلِّي...", okunus: "Allâhümme innâ nesteînüke ve nestağfiruke ve nestehdîk... Allâhümme iyyâke na'büdü ve leke nüsallî...", anlamKey: "qunutMeaning", audioSource: require("../../assets/audio/kunut.mp3") },
-  { typeKey: "typeSurah", titleKey: "fatiha", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعEMْTE ALEYHİÌM ĞAYRİL MAĞDÛBİ ALEYHİM VE LED-DÂLLÎN", okunus: "Bismillâhirrahmânirrahîm. Elhamdü lillâhi rabbil'alemin. Errahmânir'rahim. Mâliki yevmiddin. İyyâke na'budü ve iyyâke neste'în. İhdinessırâtel müstakîm. Sırâtellezine en'amte aleyhim ğayrilmağdûbi aleyhim ve leddâllîn.", anlamKey: "fatihaMeaning", audioSource: require("../../assets/audio/001.mp3") },
-  { typeKey: "typeSurah", titleKey: "ayatulKursi", arabic: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ", okunus: "Allâhü lâ ilâhe illâ hüvel hayyül kayyûm, lâ te'huzühu sinetün velâ nevm, lehu mâ fissemâvâti ve ma fil'ard, men zellezi yeşfeu indehu illâ bi'iznih, ya'lemü mâ beyne eydiyhim vemâ halfehüm, velâ yühiytûne bişey'in min ilmihî illâ bima şâe vesia kürsiyyühüssemâvâti vel'ard, velâ yeûdühû hıfzuhümâ ve hüvel aliyyül azim.", anlamKey: "ayatulKursiMeaning", audioSource: require("../../assets/audio/002255.mp3") },
-  { typeKey: "typeSurah", titleKey: "filSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ ۝ أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ ۝ وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ ۝ تَرْمِيهِمْ بِحِجَارَةٍ مِنْ سِجِّيلٍ ۝ فَجَعَلَهُمْ كَعَصْفٍ مَأْكُولٍ", okunus: "Bismillâhirrahmânirrahîm. Elem tera keyfe feale rabbüke biashâbil fîl. Elem yec'al keydehüm fî tadlîl. Ve ersele aleyhim tayran ebâbîl. Termîhim bihicâratin min siccîl. Fecealehüm keasfin me'kûl.", anlamKey: "filMeaning", audioSource: require("../../assets/audio/105.mp3") },
-  { typeKey: "typeSurah", titleKey: "quraishSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ لِإِيلَافِ قُرَيْشٍ ۝ إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ ۝ felyeb'udû rabbe hâzelbeyt. Ellezi at'amehüm min cûin ve âmenehüm min havf.", okunus: "Bismillâhirrahmânirrahîm. Li'îlâfi kuraýš. Îlâfihim rihleteššitâi vessayf. Felyeba'dû rabbe hâzelbeyt. Ellezi at'amehüm min cûin ve âmenehüm min havf.", anlamKey: "quraishMeaning", audioSource: require("../../assets/audio/106.mp3") },
-  { typeKey: "typeSurah", titleKey: "maunSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ ۝ فَذَلِكَ الَّذِي يَدُعُّ الْيَتِيمَ ۝ وَلَا يَحُضُّ عَلَى طَعَامِ الْمِسْكِينِ ۝ فَوَيْلٌ لِلْمُصَلِّينَ ۝ الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ ۝ الَّذِينَ هُمْ yürâûn. Ve yemneûnel mâûn.", okunus: "Bismillâhirrahmânirrahîm. Era'eytellezî yükezzibü biddîn. Fezâlikellezî yedu'ul yetîm. Velâ yehuddu alâ taâmil miskîn. Feveylün lil musallîn. Ellezîne hüm an salâtihim sâhûn. Ellezîne hüm yürâûn. Ve yemneûnel mâûn.", anlamKey: "maunMeaning", audioSource: require("../../assets/audio/107.mp3") },
-  { typeKey: "typeSurah", titleKey: "kavtharSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ ۝ فَصَلِّ لِرَبِّكَ وَانْحَرْ ۝ إِنَّ şâni'eke hüvel'ebter.", okunus: "Bismillâhirrahmânirrahîm. İnnâ a'taynâkel kevser. Fesalli lirabbike venhar. İnne şâni'eke hüvel'ebter.", anlamKey: "kavtharMeaning", audioSource: require("../../assets/audio/108.mp3") },
-  { typeKey: "typeSurah", titleKey: "kafirunSurah", arabic: "بِسْم. اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ قُلْ يَا أَيُّهَا الْكَAFİRÛN ۝ لَا أَعْبُدُ مَا تَعْبُدُونَ ۝ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ۝ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ۝ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ۝ لَكُمْ دِينُكُمْ وَلِيَ دِينِ", okunus: "Bismillâhirrahmânirrahîm. Kul yâ eyyühel kâfirûn. Lâ a'büdü mâ ta'büdûn. Velâ entüm âbidûne mâ a'büd. Velâ ene âbidün mâ abedtüm. Velâ entüm âbidûne mâ a'büd. Leküm dînüküm veliye dîn.", anlamKey: "kafirunMeaning", audioSource: require("../../assets/audio/109.mp3") },
-  { typeKey: "typeSurah", titleKey: "inshirahSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَن. الرَّحِيمِ ۝ أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ ۝ وَوَضَعْنَا عَنْكَ وِزْرَكَ ۝ الَّذِي أَنْقَضَ ظَهْرَكَ ۝ وَرَعْلَنَا لَكَ ذِكْرَكَ ۝ فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ فَإِذَا فَرَغْتَ فَانْصَبْ ۝ وَإِلَى رَبِّكَ فَارْغَبْ", okunus: "Bismillâhirrahmânirrahîm. Elem neşrah leke sadrak. Ve vada'nâ anke vizrak. Ellezî enkada zahrak. Ve rafa'nâ leke zikrak. Feinne meal usri yusrâ. İnne meal usri yusrâ. Feizâ ferağte fensab. Ve ilâ rabbike ferğab.", anlamKey: "inshirahMeaning", audioSource: require("../../assets/audio/094.mp3") },
-  { typeKey: "typeSurah", titleKey: "asrSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ وَالْعَصْرِ ۝ إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ ۝ إِلَّا الَّذِينَ آمَنُوا وَعَمِيلة الصَّALİHÂTİ VE TAVÂSAV BİL-HAKKI VE TAVÂSAV BİS-SABR.", okunus: "Bismillâhirrahmânirrahîm. Vel'asr. İnnel'insâne lefî husr. İllellezîne âmenû ve amilüssâlihâti ve tevâsav bi'l-hakkı ve tevâsav bi's-sabr.", anlamKey: "asrMeaning", audioSource: require("../../assets/audio/103.mp3") },
-  { typeKey: "typeSurah", titleKey: "ikhlasSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَم_ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كüfûven ehad.", okunus: "Bismillâhirrahmânirrahîm. Kul hüvellâhü ehad. Allâhüssamed. Lem yelid ve len yûled. Ve len yekün lehû küfüven ehad.", anlamKey: "ikhlasMeaning", audioSource: require("../../assets/audio/112.mp3") },
-  { typeKey: "typeSurah", titleKey: "falaqSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِنْ şerri mâ halak. Ve min şerri ğâsikın izâ vekab. Ve min şerrin neffâsâti fi'l ukad. Ve min şerri hâsidin izâ hased.", okunus: "Bismillâhirrahmânirrahîm. Kul eûzü birabbil felak. Min şerri mâ halak. Ve min şerri ğâsikın izâ vekab. Ve min şerrin neffâsâti fi'l ukad. Ve min şerri hâsidin izâ hased.", anlamKey: "falaqMeaning", audioSource: require("../../assets/audio/113.mp3") },
-  { typeKey: "typeSurah", titleKey: "nasSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَهِ النَّاسِ ۝ مِنْ şerril vesvâsil hannâs. Ellezî yüvesvisü fî sudûrin-nâs. Minel cinneti ven-nâs.", okunus: "Bismillâhirrahmânirrahîm. Kul eûzü birabbin-nâs. Melikin-nâs. İlâhin-nâs. Min şerril vesvâsil hannâs. Ellezî yüvesvisü fî sudûrin-nâs. Minel cinneti ven-nâs.", anlamKey: "nasMeaning", audioSource: require("../../assets/audio/114.mp3") },
-  { typeKey: "typeSurah", titleKey: "takathurSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ أَلْهَاكُمُ التَّكَاثُرُ ۝ حَتَّى زُرْتُمُ الْمَقَابِرَ ۝ كَلَّا سَوْفَ تَعَلَمُونَ ۝ sümme kellâ sevfe ta'lemûn. Kellâ lev ta'lemûne ilmel yakîn. Leteravünnel cehîm. Sümme leteravünnehâ aynel yakîn. Sümme letüs'elünne yevmeizin anin naîm.", okunus: "Bismillâhirrahmânirrahîm. Elhâkümüt tekâsür. Hattâ zürtümül mekâbir. Kellâ sevfe ta'lemûn. Sümme kellâ sevfe ta'lemûn. Kellâ lev ta'lemûne ilmel yakîn. Leteravünnel cehîm. Sümme leteravünnehâ aynel yakîn. Sümme letüs'elünne yevmeizin anin naîm.", anlamKey: "takathurMeaning", audioSource: require("../../assets/audio/102.mp3") },
-  { typeKey: "typeSurah", titleKey: "zilzalSurah", arabic: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم. ۝ إِذَا زُلْزِلَتِ الْأَرْضُ زِلْズâlEHÂ ۝ VE AHRECETİL ARDU ESKÂLEHÂ ۝ VE KÂLEL İNSÂNÜ MÂ LEHÂ ۝ YEVMEİZİN TÜHADDİSÜ AHBÂRAHÂ ۝ BİENNE RABBEKE EVHÂ LEHÂ ۝ YEVMEİZİN YASDÜRUN NÂSÜ EŞTÂTEN LİYÜRAV A'MÂLEHÜM ۝ FEMEN YA'MEL MİSKÂLE ZERRATİN HAYRAN YERAH ۝ VE MEN YA'MEL MİSKÂLE ZERRATİN ŞERRAN YERAH", okunus: "Bismillâhirrahmânirrahîm. İzâ zülziletil ardu zilzâlehâ. Ve ahrecetil ardu eskâlehâ. Ve kâlel insânü mâ lehâ. Yevmeizin tühaddisü ahbârahâ. Bienne rabbeke evhâ lehâ. Yevmeizin yasdürun nâsü eştâten liyürav a'mâlehüm. Femen ya'mel miskâle zerratin hayran yerah. Vemen ya'mel miskâle zerratin şerran yerah.", anlamKey: "zilzalMeaning", audioSource: require("../../assets/audio/099.mp3") }
+  { typeKey: "typeDua", titleKey: "subhanakaDua", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ", okunus: "Sübhânekellâhümme ve bi hamdik ve tebârekesmük ve teâlâ ceddük ve lâ ilâhe ğayruk.", anlamKey: "subhanakaMeaning", audioSource: require("../../assets/audio/subhaneke.mp3") },
+  { typeKey: "typeDua", titleKey: "ettehiyyatuDua", arabic: "التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", okunus: "Ettehiyyâtü lillâhi vessalevâtü vettayyibât...", anlamKey: "ettehiyyatuMeaning", audioSource: require("../../assets/audio/ettehiyyatu.mp3") },
+  { typeKey: "typeDua", titleKey: "allahummaSalli", arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ", okunus: "Allâhümme salli alâ Muhammedin ve alâ âli Muhammed...", anlamKey: "allahummaSalliMeaning", audioSource: require("../../assets/audio/salli.mp3") },
+  { typeKey: "typeDua", titleKey: "allahummaBarik", arabic: "اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ", okunus: "Allâhümme bârik alâ Muhammedin ve alâ âli Muhammed...", anlamKey: "allahummaBarikMeaning", audioSource: require("../../assets/audio/barik.mp3") },
+  { typeKey: "typeDua", titleKey: "rabbanaAtina", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", okunus: "Rabbenâ âtinâ fi'd-dünyâ haseneten ve fi'l-âhireti haseneten ve qinâ azâbe'n-nâr.", anlamKey: "rabbanaAtinaMeaning", audioSource: require("../../assets/audio/rabbena.mp3") },
+  { typeKey: "typeDua", titleKey: "qunutDuas", arabic: "اللَّهُمَّ إِنَّا نَسْتَعِينُكَ وَنَسْتَغْفِرُكَ وَنَسْتَهْدِيكَ وَنُؤْمِنُ بِكَ وَنَتُوبُ إِلَيْكَ...", okunus: "Allâhümme innâ nesteînüke ve nesteğfiruke ve nestehdîk...", anlamKey: "qunutMeaning", audioSource: require("../../assets/audio/kunut.mp3") },
+  { typeKey: "typeSurah", titleKey: "fatiha", arabic: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۞ الرَّحْمَنِ الرَّحِيمِ ۞ مَالِكِ يَوْمِ الدِّينِ ۞ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۞ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ...", okunus: "Elhamdü lillâhi rabbi'l-âlemîn. Errahmânirrahîm...", anlamKey: "fatihaMeaning", audioSource: require("../../assets/audio/001.mp3") },
+  { typeKey: "typeSurah", titleKey: "ayatulKursi", arabic: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ...", okunus: "Allâhü lâ ilâhe illâ hüvel hayyül kayyûm...", anlamKey: "ayatulKursiMeaning", audioSource: require("../../assets/audio/002255.mp3") },
+  { typeKey: "typeSurah", titleKey: "inshirahSurah", arabic: "أَلَمْ نَشْرَح| لَكَ صَدْرَكَ ۞ وَوَضَعْنَا عَنكَ وِزْرَكَ...", okunus: "Elem neşrah leke sadrak. Ve veda'nâ anke vizrak...", anlamKey: "inshirahMeaning", audioSource: require("../../assets/audio/094.mp3") },
+  { typeKey: "typeSurah", titleKey: "zilzalSurah", arabic: "إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا ۞ وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا...", okunus: "İzâ zülziletil ardu zilzâlehâ. Ve ahrecetil ardu eskâlehâ...", anlamKey: "zilzalMeaning", audioSource: require("../../assets/audio/099.mp3") },
+  { typeKey: "typeSurah", titleKey: "takathurSurah", arabic: "أَلْهَاكُمُ التَّكَاثُرُ ۞ حَتَّىٰ زُرْتُمُ الْمَقَابِرَ...", okunus: "Elhâkümüt tekasür. Hattâ zürtümül mekabir...", anlamKey: "takathurMeaning", audioSource: require("../../assets/audio/102.mp3") },
+  { typeKey: "typeSurah", titleKey: "asrSurah", arabic: "وَالْعَصْرِ ۞ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ...", okunus: "Vel asr. İnnel insâne lefî husr...", anlamKey: "asrMeaning", audioSource: require("../../assets/audio/103.mp3") },
+  { typeKey: "typeSurah", titleKey: "filSurah", arabic: "أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ...", okunus: "Elem tera keyfe feale rabbüke bi ashâbil fîl...", anlamKey: "filMeaning", audioSource: require("../../assets/audio/105.mp3") },
+  { typeKey: "typeSurah", titleKey: "quraishSurah", arabic: "لِإِيْلَافِ قُرَيْشٍ ۞ إِيْلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ...", okunus: "Li îlâfi kurayş. Îlâfihim rihleteş şitâi ves sayf...", anlamKey: "quraishMeaning", audioSource: require("../../assets/audio/106.mp3") },
+  { typeKey: "typeSurah", titleKey: "maunSurah", arabic: "أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ ۞ فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ...", okunus: "Eraeytellezî yükezzibü biddîn. Fezâlikellezî yedü'ul yetîm...", anlamKey: "maunMeaning", audioSource: require("../../assets/audio/107.mp3") },
+  { typeKey: "typeSurah", titleKey: "kavtharSurah", arabic: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ ۞ فَصَلِّ لِرَبِّكَ وَانْحَرْ...", okunus: "İnnâ a'taynâkel kevser. Fesalli li rabbike venhar...", anlamKey: "kavtharMeaning", audioSource: require("../../assets/audio/108.mp3") },
+  { typeKey: "typeSurah", titleKey: "kafirunSurah", arabic: "قُلْ يَا أَيُّهَا الْكَافِرُونَ ۞ لَا أَعْبُدُ مَا تَعْبُدُونَ...", okunus: "Kul yâ eyyühel kâfirûn. Lâ a'büdü mâ ta'büdûn...", anlamKey: "kafirunMeaning", audioSource: require("../../assets/audio/109.mp3") },
+  { typeKey: "typeSurah", titleKey: "nasrSurah", arabic: "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ۞ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا...", okunus: "İzâ câe nasrullâhi vel feth. Ve raeytennâse yedhulûne fî dînillâhi efvâcâ...", anlamKey: "nasrMeaning", audioSource: { uri: "https://download.quranicaudio.com/quran/mishari_rashid_al_afasy/110.mp3" } },
+  { typeKey: "typeSurah", titleKey: "tebbetSurah", arabic: "تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ ۞ مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ...", okunus: "Tebbet yedâ ebî lehebin ve tebb. Mâ ağnâ anhü mâlühü ve mâ keseb...", anlamKey: "tebbetMeaning", audioSource: { uri: "https://download.quranicaudio.com/quran/mishari_rashid_al_afasy/111.mp3" } },
+  { typeKey: "typeSurah", titleKey: "ikhlasSurah", arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ ۞ اللَّهُ الصَّمَدُ...", okunus: "Kul hüvellâhü ehad. Allâhüssamed...", anlamKey: "ikhlasMeaning", audioSource: require("../../assets/audio/112.mp3") },
+  { typeKey: "typeSurah", titleKey: "falaqSurah", arabic: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۞ مِنْ شَرِّ مَا خَلَقَ...", okunus: "Kul eûzü birabbil felak. Min şerri mâ halak...", anlamKey: "falaqMeaning", audioSource: require("../../assets/audio/113.mp3") },
+  { typeKey: "typeSurah", titleKey: "nasSurah", arabic: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۞ مَلِكِ النَّاسِ...", okunus: "Kul eûzü birabbinnâs. Melikinnâs...", anlamKey: "nasMeaning", audioSource: require("../../assets/audio/114.mp3") },
 ];
 
-
-interface Surah {
-  number: number;
-  name: string;
-  englishName: string;
-  englishNameTranslation: string;
-  numberOfAyahs: number;
-  revelationType: string;
-}
-
-interface Ayah {
-  number: number;
-  text: string;
-  translation: string;
-  audio: string;
-}
-
-const DuaAccordionItem = ({ item }: { item: DuaItem }) => {
-  const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isBuffering, setIsBuffering] = useState<boolean>(false);
-
-  useEffect(() => { return sound ? () => { sound.unloadAsync(); } : undefined; }, [sound]);
-
-  const toggleAudio = async () => {
-    if (!item.audioSource) return;
-    try {
-      if (sound) { isPlaying ? await sound.pauseAsync() : await sound.playAsync(); }
-      else {
-        setIsBuffering(true);
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          typeof item.audioSource === "string" ? { uri: item.audioSource } : item.audioSource,
-          { shouldPlay: true },
-          (s) => { if (s.isLoaded) { setIsPlaying(s.isPlaying); setIsBuffering(s.isBuffering); if (s.didJustFinish) setIsPlaying(false); } }
-        );
-        setSound(newSound);
-      }
-    } catch (e) { setIsBuffering(false); }
-  };
-
-  return (
-    <View style={styles.cardContainer}>
-      <TouchableOpacity style={styles.cardHeader} activeOpacity={0.7} onPress={() => setExpanded(!expanded)}>
-        <View style={styles.cardHeaderLeft}>
-          <View style={[styles.typeBadge, item.typeKey === "typeSurah" ? styles.badgeSure : styles.badgeDua]}>
-            <Text style={styles.typeBadgeText}>{t(item.typeKey)}</Text>
-          </View>
-          <Text style={styles.cardTitle}>{t(item.titleKey)}</Text>
-        </View>
-        <Ionicons name={expanded ? "chevron-up" : "chevron-down"} size={22} color="#D4AF37" />
-      </TouchableOpacity>
-      {expanded && (
-        <View style={styles.cardBody}>
-          <View style={styles.arabicBox}>
-            <View style={styles.arabicHeader}>
-              {item.audioSource ? (
-                <TouchableOpacity style={styles.audioPlayButton} onPress={toggleAudio}>
-                  {isBuffering ? <ActivityIndicator size="small" color="#0B101E" /> : <Ionicons name={isPlaying ? "pause" : "play"} size={16} color="#0B101E" />}
-                  <Text style={styles.audioPlayText}>{isPlaying ? t("stop") : t("listen")}</Text>
-                </TouchableOpacity>
-              ) : (
-                <View style={styles.audioDisabledBadge}><Ionicons name="volume-mute" size={16} color="#94A3B8" /><Text style={styles.audioDisabledText}>{t("noAudio")}</Text></View>
-              )}
-            </View>
-            <Text style={styles.arabicText}>{item.arabic}</Text>
-          </View>
-          <Text style={styles.sectionLabel}>{t("pronunciation")}</Text>
-          <Text style={styles.contentText}>{item.okunus}</Text>
-          <View style={styles.divider} />
-          <Text style={styles.sectionLabel}>{t("meaning")}</Text>
-          <Text style={styles.contentText}>{t(item.anlamKey)}</Text>
-        </View>
-      )}
-    </View>
-  );
+const LOCAL_SURAH_AUDIO: Record<number, any> = {
+  1: require("../../assets/audio/001.mp3"),
+  94: require("../../assets/audio/094.mp3"),
+  99: require("../../assets/audio/099.mp3"),
+  102: require("../../assets/audio/102.mp3"),
+  103: require("../../assets/audio/103.mp3"),
+  105: require("../../assets/audio/105.mp3"),
+  106: require("../../assets/audio/106.mp3"),
+  107: require("../../assets/audio/107.mp3"),
+  108: require("../../assets/audio/108.mp3"),
+  109: require("../../assets/audio/109.mp3"),
+  112: require("../../assets/audio/112.mp3"),
+  113: require("../../assets/audio/113.mp3"),
+  114: require("../../assets/audio/114.mp3"),
 };
 
 export default function KuranDualar() {
-  const { t, language } = useTranslation();
-  const flatListRef = useRef<FlatList>(null);
-  const detailListRef = useRef<FlatList>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<"surah" | "dua">("surah");
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [filteredSurahs, setFilteredSurahs] = useState<Surah[]>([]);
   const [loadingSurahs, setLoadingSurahs] = useState(true);
@@ -152,231 +70,323 @@ export default function KuranDualar() {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loadingAyahs, setLoadingAyahs] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
   const [quranSound, setQuranSound] = useState<Audio.Sound | null>(null);
   const [playingAyahIdx, setPlayingAyahIdx] = useState<number | null>(null);
-  const [modalKey, setModalKey] = useState(0);
+  const [featuredSound, setFeaturedSound] = useState<Audio.Sound | null>(null);
+  const [playingSource, setPlayingSource] = useState<string | null>(null);
+  const [playback, setPlayback] = useState({ isPlaying: false, position: 0, duration: 0 });
+  const [viewingDua, setViewingDua] = useState<DuaItem | null>(null);
+
+  const mandalaRotation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    fetchSurahs();
-    return () => { if (quranSound) quranSound.unloadAsync(); };
+    (async () => {
+      try {
+        const res = await fetch("https://api.alquran.cloud/v1/surah");
+        const d = await res.json();
+        setSurahs(d.data);
+        setFilteredSurahs(d.data);
+      } catch (e) { } finally { setLoadingSurahs(false); }
+    })();
+
+    Animated.loop(
+      Animated.timing(mandalaRotation, { toValue: 1, duration: 120000, useNativeDriver: true })
+    ).start();
+
+    return () => { quranSound?.unloadAsync(); featuredSound?.unloadAsync(); };
   }, []);
 
-  const fetchSurahs = async () => {
-    try {
-      const response = await fetch("https://api.alquran.cloud/v1/surah");
-      const data = await response.json();
-      const sorted = data.data.sort((a: Surah, b: Surah) => a.number - b.number);
-      setSurahs(sorted);
-      setFilteredSurahs(sorted);
-    } catch (e) { console.error(e); } finally { setLoadingSurahs(false); }
+  const onPlaybackStatusUpdate = (status: any) => {
+    if (status.isLoaded) {
+      setPlayback({ isPlaying: status.isPlaying, position: status.positionMillis, duration: status.durationMillis || 0 });
+      if (status.didJustFinish) setPlayingSource(null);
+    }
   };
 
-  const handleQuranSearch = (text: string) => {
+  const handleSearch = (text: string) => {
     setQuranSearch(text);
-    setFilteredSurahs(surahs.filter(s => s.englishName.toLowerCase().includes(text.toLowerCase()) || s.number.toString().includes(text)));
+    const filtered = surahs.filter(s => s.englishName.toLowerCase().includes(text.toLowerCase()) || s.name.includes(text));
+    setFilteredSurahs(filtered);
   };
 
-  const playAyah = async (url: string, index: number) => {
+  const playDua = async (dua: DuaItem) => {
     try {
-      if (quranSound) { await quranSound.unloadAsync(); if (playingAyahIdx === index) { setPlayingAyahIdx(null); return; } }
-      setPlayingAyahIdx(index);
-      const { sound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: true }, (s) => { if (s.isLoaded && s.didJustFinish) setPlayingAyahIdx(null); });
-      setQuranSound(sound);
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      setViewingDua(dua);
+
+      if (featuredSound) {
+        await featuredSound.unloadAsync();
+        setFeaturedSound(null);
+      }
+
+      if (!dua.audioSource) return;
+
+      if (playingSource === dua.titleKey) {
+        setPlayingSource(null);
+        return;
+      }
+
+      setPlayingSource(dua.titleKey);
+      const { sound } = await Audio.Sound.createAsync(
+        dua.audioSource,
+        { shouldPlay: true },
+        onPlaybackStatusUpdate
+      );
+      setFeaturedSound(sound);
+    } catch (e) {
+      console.log("Audio play error", e);
+    }
+  };
+
+  const playSurahAudio = async (s: Surah) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const local = LOCAL_SURAH_AUDIO[s.number];
+    const source = local ? local : { uri: `https://download.quranicaudio.com/quran/mishari_rashid_al_afasy/${String(s.number).padStart(3, '0')}.mp3` };
+    try {
+      if (quranSound) await quranSound.stopAsync();
+      if (featuredSound) {
+        if (playingSource === `surah_${s.number}`) {
+          playback.isPlaying ? await featuredSound.pauseAsync() : await featuredSound.playAsync();
+          return;
+        } else await featuredSound.unloadAsync();
+      }
+      const { sound } = await Audio.Sound.createAsync(source, { shouldPlay: true }, onPlaybackStatusUpdate);
+      setFeaturedSound(sound);
+      setPlayingSource(`surah_${s.number}`);
     } catch (e) { }
   };
 
-  const openSurah = async (surah: Surah) => {
-    setSelectedSurah(surah);
-    setModalVisible(true);
-    setLoadingAyahs(true);
-    setPlayingAyahIdx(null);
-    setModalKey(prev => prev + 1);
-    if (quranSound) { await quranSound.unloadAsync(); setQuranSound(null); }
+  const playAyah = async (url: string, index: number) => {
+    if (quranSound) await quranSound.unloadAsync();
+    setPlayingAyahIdx(index);
+    const { sound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: true }, s => { if (s.isLoaded && s.didJustFinish) setPlayingAyahIdx(null); });
+    setQuranSound(sound);
+  };
 
+  const openSurah = async (surah: Surah) => {
+    setSelectedSurah(surah); setModalVisible(true); setLoadingAyahs(true);
     try {
-      const res = await fetch(`https://api.alquran.cloud/v1/surah/${surah.number}/editions/quran-simple-clean,id.indonesian,tr.diyanet,en.sahih,ar.alafasy`);
+      const res = await fetch(`https://api.alquran.cloud/v1/surah/${surah.number}/editions/quran-simple-clean,tr.diyanet,ar.alafasy`);
       const data = await res.json();
-      if (data.data && data.data.length >= 5) {
-        const arabic = data.data[0].ayahs;
-        const idTrans = data.data[1].ayahs;
-        const trTrans = data.data[2].ayahs;
-        const enTrans = data.data[3].ayahs;
-        const audioData = data.data[4].ayahs;
-        const combined = arabic.map((a: any, idx: number) => {
-          const vNum = a.numberInSurah;
-          const findIn = (list: any[]) => list.find(x => x.numberInSurah === vNum) || list[idx];
-          return {
-            number: vNum,
-            text: a.text,
-            translation: language === "id" ? findIn(idTrans).text : language === "tr" ? findIn(trTrans).text : findIn(enTrans).text,
-            audio: findIn(audioData).audio
-          };
-        });
-        setAyahs(combined.sort((a: Ayah, b: Ayah) => a.number - b.number));
-      }
+      setAyahs(data.data[0].ayahs.map((a: any, i: number) => ({ number: a.numberInSurah, text: a.text, translation: data.data[1].ayahs[i].text, audio: data.data[2].ayahs[i].audio })));
     } catch (e) { } finally { setLoadingAyahs(false); }
   };
 
   return (
-    <LinearGradient colors={["#080C16", "#121E36"]} style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.topTabs}>
-          <TouchableOpacity onPress={() => { flatListRef.current?.scrollToIndex({ index: 0 }); setActiveIndex(0); }} style={[styles.tabBtn, activeIndex === 0 && styles.tabBtnActive]}>
-            <Text style={[styles.tabBtnText, activeIndex === 0 && styles.tabBtnTextActive]}>{t("tabQuran").toUpperCase()}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { flatListRef.current?.scrollToIndex({ index: 1 }); setActiveIndex(1); }} style={[styles.tabBtn, activeIndex === 1 && styles.tabBtnActive]}>
-            <Text style={[styles.tabBtnText, activeIndex === 1 && styles.tabBtnTextActive]}>{t("tabDualar").toUpperCase()}</Text>
-          </TouchableOpacity>
-        </View>
+    <LinearGradient colors={[Colors.luxury.midnight, Colors.luxury.midnightDeep]} style={styles.container}>
+      <Animated.Image
+        source={require("../../assets/images/mandala_bg.png")}
+        style={[styles.mandalaBase, { transform: [{ rotate: mandalaRotation.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] }) }, { scale: 2 }] }]}
+        resizeMode="contain"
+      />
 
-        <FlatList
-          ref={flatListRef}
-          data={[0, 1]}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={(e) => setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH))}
-          keyExtractor={(it) => it.toString()}
-          renderItem={({ item }) => (
-            <View style={{ width: SCREEN_WIDTH }}>
-              {item === 0 ? (
-                <View style={{ flex: 1 }}>
-                  <View style={styles.searchBarContainer}>
-                    <Ionicons name="search" size={18} color="#94A3B8" />
-                    <TextInput style={styles.searchInput} placeholder={t("quranSearchPlaceholder")} placeholderTextColor="#64748B" value={quranSearch} onChangeText={handleQuranSearch} />
-                  </View>
-                  {loadingSurahs ? <View style={styles.center}><ActivityIndicator color="#D4AF37" /></View> : (
-                    <FlatList data={filteredSurahs} contentContainerStyle={{ padding: 20, paddingBottom: 100 }} keyExtractor={(s) => s.number.toString()}
-                      renderItem={({ item: s }) => (
-                        <TouchableOpacity style={styles.surahCard} onPress={() => openSurah(s)}>
-                          <View style={styles.surahNumberBox}><Text style={styles.surahNumberText}>{s.number}</Text></View>
-                          <View style={styles.surahInfo}><Text style={styles.surahName}>{s.englishName}</Text><Text style={styles.surahSubtitle}>{s.revelationType === "Meccan" ? t("revelationMeccan") : t("revelationMedinan")} • {s.numberOfAyahs} {t("ayahCountLabel")}</Text></View>
-                          <Text style={styles.arabicSmall}>{s.name}</Text>
-                        </TouchableOpacity>
-                      )} />
-                  )}
-                </View>
-              ) : (
-                <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100 }}>
-                  {dualarData.map((d, index) => <DuaAccordionItem key={index} item={d} />)}
-                </ScrollView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50 }}>
+          <View style={styles.header}>
+            <View style={styles.titleWrapper}>
+              <Text style={styles.pageSubHeader}>{t("tabQuran" as any)?.toUpperCase() || "KUR'AN"}</Text>
+              <View style={styles.goldDot} />
+              <Text style={styles.appNameLuxury}>VAKTİ SELAM</Text>
+            </View>
+          </View>
+
+          <View style={styles.categoriesContainer}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsScroll}>
+              <TouchableOpacity style={[styles.categoryChip, activeTab === "surah" && styles.activeChip]} onPress={() => setActiveTab("surah")}>
+                <Text style={[styles.chipText, activeTab === "surah" && styles.activeChipText]}>{t("typeSurah" as any)}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.categoryChip, activeTab === "dua" && styles.activeChip]} onPress={() => setActiveTab("dua")}>
+                <Text style={[styles.chipText, activeTab === "dua" && styles.activeChipText]}>{t("typeDua" as any)}</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+
+          <View style={styles.searchContainer}>
+            <BlurView intensity={30} tint="dark" style={styles.searchGlass}>
+              <Ionicons name="search" size={18} color="rgba(212, 175, 55, 0.5)" style={styles.searchIcon} />
+              <TextInput style={styles.searchBar} placeholder={t("searchSurah" as any) || "Ara..."} placeholderTextColor="rgba(255,255,255,0.3)" value={quranSearch} onChangeText={handleSearch} />
+            </BlurView>
+          </View>
+
+          {activeTab === "dua" ? (
+            <View style={styles.duaGrid}>
+              {dualarData.map((d, index) => (
+                <TouchableOpacity key={index} activeOpacity={0.9} onPress={() => playDua(d)} style={styles.luxuryCardWrapper}>
+                  <LinearGradient colors={["rgba(212, 175, 55, 0.25)", "rgba(212, 175, 55, 0.05)"]} style={styles.goldBorder} />
+                  <BlurView intensity={25} tint="dark" style={styles.luxuryCardInner}>
+                    <View style={styles.cardHeader}>
+                      <View style={styles.headerDot} />
+                      <Text style={styles.cardTitle}>{t("typeDua" as any).toUpperCase()}</Text>
+                      <TouchableOpacity onPress={() => playDua(d)} style={[styles.surahPlaySmall, playingSource === `dua_${d.titleKey}` && playback.isPlaying && styles.surahPlaySmallActive]}>
+                        <Ionicons name={playingSource === `dua_${d.titleKey}` && playback.isPlaying ? "pause" : "play"} size={12} color={playingSource === `dua_${d.titleKey}` && playback.isPlaying ? Colors.luxury.midnight : Colors.luxury.gold} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.duaMainContent}>
+                      <Text style={styles.duaArabicSmall}>{d.arabic}</Text>
+                      <Text style={styles.duaTitleSmall}>{t(d.titleKey as any)}</Text>
+                      <Text style={styles.duaMeaningSmall} numberOfLines={2}>{t(d.anlamKey as any)}</Text>
+                    </View>
+                    <View style={styles.cornerOrnamentTop} />
+                    <View style={styles.cornerOrnamentBottom} />
+                  </BlurView>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.surahList}>
+              {loadingSurahs ? <ActivityIndicator color={Colors.luxury.gold} style={{ marginTop: 40 }} /> : (
+                filteredSurahs.map(s => (
+                  <TouchableOpacity key={s.number} activeOpacity={0.8} onPress={() => openSurah(s)} style={styles.surahCardWrapper}>
+                    <BlurView intensity={20} tint="dark" style={styles.surahCardInner}>
+                      <View style={styles.surahCardLeft}>
+                        <View style={styles.surahNumberCircle}><Text style={styles.surahNumberText}>{s.number}</Text></View>
+                        <View>
+                          <Text style={styles.surahTitleMain}>{s.englishName}</Text>
+                          <Text style={styles.surahMetaSmall}>{s.revelationType === "Meccan" ? "Mekki" : "Medeni"} • {s.numberOfAyahs} {t("ayahCount" as any)}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.surahCardRight}>
+                        <Text style={styles.arabicNameSmall}>{s.name}</Text>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+                          <TouchableOpacity onPress={() => playSurahAudio(s)} style={[styles.surahPlaySmall, playingSource === `surah_${s.number}` && playback.isPlaying && styles.surahPlaySmallActive]}>
+                            <Ionicons name={playingSource === `surah_${s.number}` && playback.isPlaying ? "pause" : "play"} size={12} color={playingSource === `surah_${s.number}` && playback.isPlaying ? Colors.luxury.midnight : Colors.luxury.gold} />
+                          </TouchableOpacity>
+                          <Ionicons name="chevron-forward" size={14} color="rgba(212, 175, 55, 0.4)" />
+                        </View>
+                      </View>
+                    </BlurView>
+                  </TouchableOpacity>
+                ))
               )}
             </View>
           )}
-        />
-
-        <Modal visible={modalVisible} animationType="slide" onRequestClose={() => { if (quranSound) quranSound.stopAsync(); setModalVisible(false); }}>
-          <View style={styles.mushafContainer}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <View style={styles.mushafHeader}>
-                <TouchableOpacity style={styles.mushafBack} onPress={() => { if (quranSound) quranSound.stopAsync(); setModalVisible(false); }}>
-                  <Ionicons name="close" size={28} color="#D4AF37" />
-                </TouchableOpacity>
-                <View style={styles.mushafTitleArea}>
-                  <Text style={styles.mushafTitleEn}>{selectedSurah?.englishName}</Text>
-                  <Text style={styles.mushafTitleAr}>{selectedSurah?.name}</Text>
-                </View>
-                <TouchableOpacity style={styles.mushafSettings}><Ionicons name="ellipsis-vertical" size={24} color="#D4AF37" /></TouchableOpacity>
-              </View>
-
-              {loadingAyahs ? <View style={styles.center}><ActivityIndicator size="large" color="#D4AF37" /></View> : (
-                <FlatList
-                  key={modalKey}
-                  ref={detailListRef}
-                  data={ayahs}
-                  keyExtractor={(a) => a.number.toString()}
-                  contentContainerStyle={{ paddingBottom: 80 }}
-                  ListHeaderComponent={() => (
-                    selectedSurah?.number !== 9 && (
-                      <View style={styles.mushafBismillah}>
-                        <Text style={styles.bismillahArabic}>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</Text>
-                      </View>
-                    )
-                  )}
-                  renderItem={({ item: a, index: ai }) => (
-                    <View style={styles.mushafAyahRow}>
-                      <View style={styles.mushafAyahTop}>
-                        <View style={styles.mushafVerseMarker}>
-                          <Text style={styles.mushafVerseNum}>{a.number}</Text>
-                        </View>
-                        <View style={styles.mushafLine} />
-                        <TouchableOpacity
-                          style={[styles.mushafPlay, playingAyahIdx === ai && styles.mushafPlayActive]}
-                          onPress={() => playAyah(a.audio, ai)}
-                        >
-                          <Ionicons name={playingAyahIdx === ai ? "pause" : "play"} size={14} color={playingAyahIdx === ai ? "#0B101E" : "#D4AF37"} />
-                        </TouchableOpacity>
-                      </View>
-
-                      <Text style={styles.mushafArabicText}>{a.text}</Text>
-                      <Text style={styles.mushafTranslationText}>{a.translation}</Text>
-                      <View style={styles.mushafAyahSeparator} />
-                    </View>
-                  )} />
-              )}
-            </SafeAreaView>
-          </View>
-        </Modal>
+        </ScrollView>
       </SafeAreaView>
+
+      <Modal visible={modalVisible} animationType="slide">
+        <LinearGradient colors={[Colors.luxury.midnight, Colors.luxury.midnightDeep]} style={styles.container}>
+          <Animated.Image
+            source={require("../../assets/images/mandala_bg.png")}
+            style={[styles.mandalaBase, { transform: [{ rotate: mandalaRotation.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] }) }, { scale: 2 }] }]}
+            resizeMode="contain"
+          />
+          <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalCloseBtn}><Ionicons name="close" size={24} color={Colors.luxury.gold} /></TouchableOpacity>
+              <Text style={styles.modalTitle}>{selectedSurah?.englishName}</Text>
+              <View style={{ width: 44 }} />
+            </View>
+            {loadingAyahs ? <ActivityIndicator size="large" color={Colors.luxury.gold} style={{ marginTop: 50 }} /> : (
+              <FlatList data={ayahs} keyExtractor={(item) => item.number.toString()} contentContainerStyle={{ padding: 20 }} renderItem={({ item, index }) => (
+                <BlurView intensity={10} tint="light" style={styles.ayahContainer}>
+                  <Text style={styles.mushafArabicText}>{item.text}</Text>
+                  <Text style={styles.mushafTranslationText}>{item.translation}</Text>
+                  <View style={styles.ayahActionRow}>
+                    <View style={styles.ayahNumberBadge}><Text style={styles.ayahNumberText}>{item.number}</Text></View>
+                    <TouchableOpacity onPress={() => playAyah(item.audio, index)} style={[styles.mushafPlay, playingAyahIdx === index && styles.mushafPlayActive]}>
+                      <Ionicons name={playingAyahIdx === index ? "pause" : "play"} size={16} color={playingAyahIdx === index ? Colors.luxury.midnight : Colors.luxury.gold} />
+                    </TouchableOpacity>
+                  </View>
+                </BlurView>
+              )} />
+            )}
+          </SafeAreaView>
+        </LinearGradient>
+      </Modal>
+      
+      <Modal visible={!!viewingDua} animationType="fade" transparent={true}>
+        <BlurView intensity={90} tint="dark" style={styles.duaModalContainer}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setViewingDua(null)} style={styles.modalCloseBtn}><Ionicons name="close" size={24} color={Colors.luxury.gold} /></TouchableOpacity>
+              <Text style={styles.modalTitle}>{viewingDua ? t(viewingDua.titleKey as any) : ""}</Text>
+              <TouchableOpacity onPress={() => viewingDua && playDua(viewingDua)} style={[styles.modalPlayBtn, playingSource === viewingDua?.titleKey && styles.modalPlayBtnActive]}>
+                <Ionicons name={playingSource === viewingDua?.titleKey ? "pause" : "play"} size={20} color={playingSource === viewingDua?.titleKey ? Colors.luxury.midnight : Colors.luxury.gold} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView contentContainerStyle={styles.duaModalContent}>
+              <View style={styles.duaTextWrapper}>
+                <Text style={styles.duaArabicLarge}>{viewingDua?.arabic}</Text>
+                <View style={styles.dividerGold} />
+                <Text style={styles.duaSectionLabel}>{t("pronunciation" as any)}</Text>
+                <Text style={styles.duaOkunusText}>{viewingDua?.okunus}</Text>
+                <View style={styles.dividerLight} />
+                <Text style={styles.duaSectionLabel}>{t("meaning" as any)}</Text>
+                <Text style={styles.duaMeaningText}>{viewingDua ? t(viewingDua.anlamKey as any) : ""}</Text>
+              </View>
+            </ScrollView>
+          </SafeAreaView>
+        </BlurView>
+      </Modal>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  topTabs: { flexDirection: "row", backgroundColor: "rgba(11, 16, 30, 0.8)", padding: 6, borderRadius: 16, margin: 20, marginBottom: 10, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)" },
-  tabBtn: { flex: 1, paddingVertical: 12, alignItems: "center", borderRadius: 12 },
-  tabBtnActive: { backgroundColor: "#D4AF37" },
-  tabBtnText: { color: "#94A3B8", fontWeight: "600", fontSize: 14 },
-  tabBtnTextActive: { color: "#0B101E", fontWeight: "bold" },
-  searchBarContainer: { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(255,255,255,0.06)", margin: 20, marginTop: 10, paddingHorizontal: 16, height: 50, borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
-  searchInput: { flex: 1, marginLeft: 12, color: "#E2E8F0" },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  surahCard: { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(30, 41, 59, 0.5)", padding: 18, borderRadius: 20, marginBottom: 14, borderWidth: 1, borderColor: "rgba(212,175,55,0.15)" },
-  surahNumberBox: { width: 44, height: 44, borderRadius: 12, backgroundColor: "rgba(212,175,55,0.12)", justifyContent: "center", alignItems: "center", marginRight: 18 },
-  surahNumberText: { color: "#D4AF37", fontWeight: "bold", fontSize: 16 },
-  surahInfo: { flex: 1 },
-  surahName: { color: "#E2E8F0", fontSize: 18, fontWeight: "600" },
-  surahSubtitle: { color: "#94A3B8", fontSize: 13, marginTop: 4 },
-  arabicSmall: { color: "#D4AF37", fontSize: 22 },
-  cardContainer: { backgroundColor: "rgba(30, 41, 59, 0.4)", borderRadius: 18, marginBottom: 14, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.05)", overflow: "hidden" },
-  cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 18 },
-  cardHeaderLeft: { flexDirection: "row", alignItems: "center", flex: 1 },
-  typeBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, marginRight: 12 },
-  badgeDua: { backgroundColor: "rgba(45, 212, 191, 0.12)" },
-  badgeSure: { backgroundColor: "rgba(212, 175, 55, 0.12)" },
-  typeBadgeText: { fontSize: 10, fontWeight: "bold", color: "#E2E8F0" },
-  cardTitle: { fontSize: 17, fontWeight: "600", color: "#E2E8F0", flex: 1 },
-  cardBody: { paddingHorizontal: 18, paddingBottom: 18 },
-  arabicBox: { backgroundColor: "rgba(11, 16, 30, 0.4)", padding: 20, borderRadius: 16, marginBottom: 15 },
-  arabicHeader: { flexDirection: "row", justifyContent: "flex-end", marginBottom: 15 },
-  audioPlayButton: { flexDirection: "row", backgroundColor: "#D4AF37", paddingHorizontal: 14, paddingVertical: 7, borderRadius: 10, alignItems: "center", gap: 6 },
-  audioPlayText: { color: "#0B101E", fontWeight: "bold", fontSize: 12 },
-  arabicText: { fontSize: 26, color: "#D4AF37", textAlign: "right", lineHeight: 45 },
-  sectionLabel: { fontSize: 12, color: "#D4AF37", fontWeight: "bold", marginBottom: 6 },
-  contentText: { fontSize: 15, color: "#cbd5e1", lineHeight: 24 },
-  divider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginVertical: 18 },
-
-  // MUSHAF STYLE (New)
-  mushafContainer: { flex: 1, backgroundColor: "#080C16" }, // Original dark theme preserved
-  mushafHeader: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: "rgba(212,175,55,0.15)" },
-  mushafBack: { width: 40 },
-  mushafTitleArea: { flex: 1, alignItems: "center" },
-  mushafTitleEn: { color: "#E2E8F0", fontSize: 18, fontWeight: "bold", letterSpacing: 1 },
-  mushafTitleAr: { color: "#D4AF37", fontSize: 16, marginTop: 2 },
-  mushafSettings: { width: 40, alignItems: "flex-end" },
-  mushafBismillah: { paddingVertical: 40, alignItems: "center" },
-  bismillahArabic: { fontSize: 32, color: "#D4AF37", fontWeight: "400" },
-  mushafAyahRow: { paddingHorizontal: 25, paddingTop: 10 },
-  mushafAyahTop: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
-  mushafVerseMarker: { width: 28, height: 28, borderRadius: 14, borderWidth: 1, borderColor: "#D4AF37", justifyContent: "center", alignItems: "center" },
-  mushafVerseNum: { color: "#D4AF37", fontSize: 10, fontWeight: "bold" },
-  mushafLine: { flex: 1, height: 1, backgroundColor: "rgba(212,175,55,0.08)", marginHorizontal: 15 },
-  mushafPlay: { width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(212,175,55,0.08)", justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.2)" },
-  mushafPlayActive: { backgroundColor: "#D4AF37" },
-  mushafArabicText: { fontSize: 28, color: "#E2E8F0", textAlign: "right", lineHeight: 52, marginBottom: 15, fontFamily: Platform.OS === "ios" ? "Georgia" : "serif" },
-  mushafTranslationText: { fontSize: 16, color: "#94A3B8", lineHeight: 24, fontStyle: "italic", textAlign: "right", marginBottom: 20 },
-  mushafAyahSeparator: { height: 1, width: "100%", backgroundColor: "rgba(255,255,255,0.03)", marginBottom: 10 },
-  audioDisabledBadge: { flexDirection: "row", alignItems: "center", gap: 5 },
-  audioDisabledText: { color: "#64748B", fontSize: 11 },
+  mandalaBase: { opacity: 0.1, position: "absolute", top: 100, right: -150 },
+  scroll: { flex: 1 },
+  header: { paddingHorizontal: 24, marginTop: 10, marginBottom: 25, alignItems: "center" },
+  titleWrapper: { alignItems: "center" },
+  pageSubHeader: { color: Colors.luxury.gold, fontSize: 11, fontWeight: "800", letterSpacing: 4, marginBottom: 4, opacity: 0.8 },
+  goldDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: Colors.luxury.gold, marginBottom: 8 },
+  appNameLuxury: { color: "#FFFFFF", fontSize: 22, fontWeight: "900", letterSpacing: 2 },
+  categoriesContainer: { marginBottom: 25 },
+  chipsScroll: { paddingHorizontal: 24, gap: 12 },
+  categoryChip: { paddingHorizontal: 20, paddingVertical: 12, borderRadius: 15, backgroundColor: "rgba(255,255,255,0.03)", borderWidth: 1, borderColor: "rgba(255,255,255,0.06)" },
+  activeChip: { backgroundColor: "rgba(212, 175, 55, 0.1)", borderColor: "rgba(212, 175, 55, 0.3)" },
+  chipText: { color: "rgba(255,255,255,0.4)", fontSize: 13, fontWeight: "600", letterSpacing: 1 },
+  activeChipText: { color: Colors.luxury.gold },
+  searchContainer: { marginHorizontal: 24, marginBottom: 25 },
+  searchGlass: { flexDirection: "row", alignItems: "center", paddingHorizontal: 15, borderRadius: 15, backgroundColor: "rgba(0,0,0,0.2)", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.1)", height: 50 },
+  searchIcon: { marginRight: 10 },
+  searchBar: { flex: 1, color: "#FFF", fontSize: 14 },
+  surahList: { paddingHorizontal: 24, gap: 12 },
+  surahCardWrapper: { borderRadius: 20, overflow: "hidden", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.1)" },
+  surahCardInner: { padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  surahCardLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
+  surahNumberCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212, 175, 55, 0.1)", justifyContent: "center", alignItems: "center" },
+  surahNumberText: { color: Colors.luxury.gold, fontSize: 11, fontWeight: "bold" },
+  surahTitleMain: { color: "#FFF", fontSize: 15, fontWeight: "600" },
+  surahMetaSmall: { color: "rgba(255,255,255,0.4)", fontSize: 11, marginTop: 2 },
+  surahCardRight: { flexDirection: "row", alignItems: "center", gap: 10 },
+  arabicNameSmall: { color: Colors.luxury.gold, fontSize: 16, opacity: 0.8 },
+  surahPlaySmall: { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212, 175, 55, 0.1)", justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.3)" },
+  surahPlaySmallActive: { backgroundColor: Colors.luxury.gold },
+  duaGrid: { paddingHorizontal: 24, gap: 15 },
+  luxuryCardWrapper: { marginBottom: 15, position: "relative" },
+  goldBorder: { position: "absolute", top: -1, left: -1, right: -1, bottom: -1, borderRadius: 24 },
+  luxuryCardInner: { backgroundColor: "rgba(15, 23, 42, 0.6)", borderRadius: 23, padding: 20, overflow: "hidden" },
+  cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 },
+  headerDot: { width: 5, height: 5, borderRadius: 2.5, backgroundColor: Colors.luxury.gold },
+  cardTitle: { color: Colors.luxury.gold, fontSize: 10, fontWeight: "800", letterSpacing: 2, flex: 1 },
+  cornerOrnamentTop: { position: "absolute", top: 10, left: 10, width: 15, height: 15, borderTopWidth: 1, borderLeftWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)" },
+  cornerOrnamentBottom: { position: "absolute", bottom: 10, right: 10, width: 15, height: 15, borderBottomWidth: 1, borderRightWidth: 1, borderColor: "rgba(212, 175, 55, 0.2)" },
+  duaMainContent: { gap: 8 },
+  duaArabicSmall: { color: Colors.luxury.gold, fontSize: 20, textAlign: "right", lineHeight: 32 },
+  duaTitleSmall: { color: "#FFF", fontSize: 14, fontWeight: "600" },
+  duaMeaningSmall: { color: "rgba(255,255,255,0.5)", fontSize: 12, lineHeight: 18 },
+  modalHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24, paddingVertical: 20 },
+  modalCloseBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(255,255,255,0.05)", justifyContent: "center", alignItems: "center" },
+  modalTitle: { color: "#FFF", fontSize: 18, fontWeight: "600", letterSpacing: 1 },
+  ayahContainer: { padding: 20, borderRadius: 20, marginBottom: 15, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.1)", backgroundColor: "rgba(255,255,255,0.02)" },
+  mushafArabicText: { color: Colors.luxury.gold, fontSize: 24, textAlign: "right", marginBottom: 15, lineHeight: 45 },
+  mushafTranslationText: { color: "#E2E8F0", fontSize: 15, marginBottom: 15, lineHeight: 24 },
+  ayahActionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 15, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.05)" },
+  ayahNumberBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: "rgba(212, 175, 55, 0.1)" },
+  ayahNumberText: { color: Colors.luxury.gold, fontSize: 12, fontWeight: "bold" },
+  mushafPlay: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.05)", justifyContent: "center", alignItems: "center" },
+  mushafPlayActive: { backgroundColor: Colors.luxury.gold },
+  duaModalContainer: { flex: 1, backgroundColor: "rgba(15, 23, 42, 0.8)" },
+  duaModalContent: { padding: 24, paddingBottom: 60 },
+  duaTextWrapper: { backgroundColor: "rgba(255,255,255,0.03)", borderRadius: 30, padding: 30, borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.1)" },
+  duaArabicLarge: { color: Colors.luxury.gold, fontSize: 32, textAlign: "center", lineHeight: 55, marginBottom: 25 },
+  dividerGold: { height: 1, backgroundColor: Colors.luxury.gold, opacity: 0.3, width: "60%", alignSelf: "center", marginBottom: 25 },
+  dividerLight: { height: 1, backgroundColor: "rgba(255,255,255,0.05)", width: "100%", marginVertical: 20 },
+  duaSectionLabel: { color: Colors.luxury.gold, fontSize: 10, fontWeight: "800", letterSpacing: 2, marginBottom: 10, textTransform: "uppercase", opacity: 0.7 },
+  duaOkunusText: { color: "#FFF", fontSize: 16, lineHeight: 26, fontStyle: "italic" },
+  duaMeaningText: { color: "rgba(255,255,255,0.8)", fontSize: 15, lineHeight: 24 },
+  modalPlayBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(212, 175, 55, 0.1)", justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.3)" },
+  modalPlayBtnActive: { backgroundColor: Colors.luxury.gold },
 });

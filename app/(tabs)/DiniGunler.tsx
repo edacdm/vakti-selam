@@ -1,9 +1,80 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
-import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  ImageBackground,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
 import { useTranslation } from "../../i18n";
 import type { TranslationKeys } from "../../i18n";
+import { Colors } from "../../constants/Colors";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+const STARDUST_COUNT = 15;
+const Stardust = () => {
+  const [particles] = useState(() => 
+    Array.from({ length: STARDUST_COUNT }).map(() => ({
+      x: new Animated.Value(Math.random() * SCREEN_WIDTH),
+      y: new Animated.Value(Math.random() * SCREEN_HEIGHT),
+      opacity: new Animated.Value(Math.random()),
+      size: Math.random() * 3 + 1,
+    }))
+  );
+
+  useEffect(() => {
+    particles.forEach(p => {
+      const animate = () => {
+        Animated.parallel([
+          Animated.timing(p.y, {
+            toValue: -50,
+            duration: 15000 + Math.random() * 10000,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(p.opacity, { toValue: 0.8, duration: 2000, useNativeDriver: true }),
+            Animated.timing(p.opacity, { toValue: 0.2, duration: 2000, useNativeDriver: true }),
+          ])
+        ]).start(() => {
+          p.y.setValue(SCREEN_HEIGHT + 50);
+          p.x.setValue(Math.random() * SCREEN_WIDTH);
+          animate();
+        });
+      };
+      animate();
+    });
+  }, []);
+
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {particles.map((p, i) => (
+        <Animated.View
+          key={i}
+          style={{
+            position: "absolute",
+            width: p.size,
+            height: p.size,
+            borderRadius: p.size / 2,
+            backgroundColor: Colors.luxury.gold,
+            opacity: p.opacity,
+            transform: [{ translateX: p.x }, { translateY: p.y }],
+            shadowColor: Colors.luxury.gold,
+            shadowRadius: 5,
+            shadowOpacity: 0.5,
+          }}
+        />
+      ))}
+    </View>
+  );
+};
 
 const DINI_GUNLER: { nameKey: TranslationKeys; date: string }[] = [
   { nameKey: "threeMonthsStart", date: "2026-01-19" },
@@ -17,7 +88,6 @@ const DINI_GUNLER: { nameKey: TranslationKeys; date: string }[] = [
   { nameKey: "hijriNewYear", date: "2026-06-16" },
   { nameKey: "ashuraDay", date: "2026-06-25" },
   { nameKey: "mawlidKandili", date: "2026-08-25" },
-
   { nameKey: "threeMonthsStart", date: "2027-01-08" },
   { nameKey: "regaibKandili", date: "2027-01-11" },
   { nameKey: "ramadanStart", date: "2027-02-07" },
@@ -37,9 +107,20 @@ export default function DiniGunler() {
   const { t, language } = useTranslation();
   const [nextEvent, setNextEvent] = useState<typeof DINI_GUNLER[0] | null>(null);
   const [daysLeft, setDaysLeft] = useState<number>(0);
-  const [todayText, setTodayText] = useState("");
+  const [todayHijriText, setTodayHijriText] = useState("");
+
+  const mandalaRotation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Mandala Continuous Rotation
+    Animated.loop(
+      Animated.timing(mandalaRotation, {
+        toValue: 1,
+        duration: 200000,
+        useNativeDriver: true,
+      })
+    ).start();
+
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
@@ -60,13 +141,29 @@ export default function DiniGunler() {
       const formatter = new Intl.DateTimeFormat(`${locale}-u-ca-islamic`, {
         day: "numeric", month: "long", year: "numeric"
       });
-      setTodayText(formatter.format(new Date()) + (language === 'id' ? " (Hijriah)" : language === 'en' ? " (Hijri)" : " (Hicri)"));
+      setTodayHijriText(formatter.format(new Date()));
     } catch {
-      setTodayText(t("religiousDaysTitle"));
+      setTodayHijriText("");
     }
   }, [language]);
 
   const getDateLocale = () => language === 'id' ? 'id-ID' : language === 'en' ? 'en-US' : 'tr-TR';
+
+  const LuxuryCard = ({ children, title, supLabel }: { children: React.ReactNode, title?: string, supLabel?: string }) => (
+    <View style={styles.luxuryCardWrapper}>
+      <LinearGradient colors={["rgba(212, 175, 55, 0.25)", "rgba(212, 175, 55, 0.05)"]} style={styles.goldBorder} />
+      <BlurView intensity={25} tint="dark" style={styles.luxuryCardInner}>
+        {supLabel && <Text style={styles.cardSupLabel}>{supLabel.toUpperCase()}</Text>}
+        {title && (
+          <View style={styles.cardHeader}>
+            <View style={styles.headerDot} />
+            <Text style={styles.cardTitle}>{title.toUpperCase()}</Text>
+          </View>
+        )}
+        {children}
+      </BlurView>
+    </View>
+  );
 
   const renderEventItem = (event: typeof DINI_GUNLER[0], index: number) => {
     const eventDate = new Date(event.date);
@@ -81,79 +178,103 @@ export default function DiniGunler() {
     const dateStr = eventDate.toLocaleDateString(getDateLocale(), { day: 'numeric', month: 'long', weekday: 'short' });
 
     return (
-      <View
-        key={index}
-        style={[
-          styles.listItem,
-          isPast && styles.listItemPast,
-          isToday && styles.listItemToday,
-          isNext && styles.listItemNext
-        ]}
-      >
-        <View style={styles.listLeft}>
-          <View style={[styles.dateDot, isPast ? styles.dateDotPast : isNext ? styles.dateDotNext : null]} />
-          <View>
-            <Text style={[styles.eventName, isPast && styles.textPast]}>{t(event.nameKey)}</Text>
-            <Text style={[styles.eventDate, isPast && styles.textPast]}>{dateStr} {eventDate.getFullYear()}</Text>
+      <View key={index} style={[styles.listItem, isPast && styles.listItemPast]}>
+        <BlurView intensity={isPast ? 5 : 15} tint="dark" style={styles.listItemInner}>
+          <View style={styles.listLeft}>
+            <View style={[styles.dateDot, isPast ? styles.dateDotPast : isNext ? styles.dateDotNext : null]} />
+            <View>
+              <Text style={[styles.eventName, isPast && styles.textPast, isNext && styles.textNext]}>{t(event.nameKey)}</Text>
+              <Text style={styles.eventDate}>{dateStr} {eventDate.getFullYear()}</Text>
+            </View>
           </View>
-        </View>
 
-        {isToday ? (
-          <View style={styles.badgeToday}>
-            <Text style={styles.badgeTodayText}>{t("today")}</Text>
-          </View>
-        ) : isPast ? (
-          <Text style={styles.pastLabel}>{t("passed")}</Text>
-        ) : (
-          <View style={styles.daysLeftPill}>
-            <Text style={styles.daysLeftText}>{t("upcoming")}</Text>
-          </View>
-        )}
+          {isToday ? (
+            <View style={styles.badgeToday}>
+              <Text style={styles.badgeTodayText}>{t("today")}</Text>
+            </View>
+          ) : isPast ? (
+            <MaterialCommunityIcons name="check-circle-outline" size={16} color="rgba(255,255,255,0.2)" />
+          ) : (
+            <View style={styles.upcomingPill}>
+              {isNext && <View style={styles.glowDot} />}
+              <Text style={[styles.upcomingText, isNext && styles.activeUpcomingText]}>
+                {isNext ? t("upcoming") : ""}
+              </Text>
+            </View>
+          )}
+        </BlurView>
       </View>
     );
   };
 
   return (
-    <LinearGradient colors={["#080C16", "#121E36"]} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+    <LinearGradient colors={[Colors.luxury.midnight, Colors.luxury.midnightDeep]} style={styles.container}>
+      <Stardust />
 
+      <Animated.View style={[
+        StyleSheet.absoluteFill, 
+        {
+          transform: [{ 
+            rotate: mandalaRotation.interpolate({ 
+              inputRange: [0, 1], 
+              outputRange: ["0deg", "360deg"] 
+            }) 
+          }]
+        }
+      ]}>
+        <ImageBackground
+          source={require("../../assets/images/mandala_bg.png")}
+          style={StyleSheet.absoluteFill}
+          imageStyle={styles.mandalaImage}
+          resizeMode="contain"
+        />
+      </Animated.View>
+
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.header}>
-          <View>
-            <Text style={styles.headerTitle}>{t("religiousDaysTitle")}</Text>
-            <Text style={styles.headerSubtitle}>{todayText}</Text>
+          <View style={styles.titleWrapper}>
+            <Text style={styles.supTitle}>{t("tabCalendar")}</Text>
+            <Text style={styles.mainTitle}>{t("religiousDaysTitle").toUpperCase()}</Text>
+            <View style={styles.goldDot} />
           </View>
-          <MaterialCommunityIcons name="calendar-month-outline" size={36} color="#D4AF37" />
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
           {nextEvent && (
-            <View style={styles.heroCard}>
-              <MaterialCommunityIcons name="moon-waning-crescent" size={40} color="rgba(212, 175, 55, 0.2)" style={styles.heroGlowIcon} />
-              <Text style={styles.heroSubtitle}>{t("nextHolyDay")}</Text>
-              <Text style={styles.heroTitle}>{t(nextEvent.nameKey)}</Text>
-              <View style={styles.heroDivider} />
-              <View style={styles.heroFooter}>
-                <View style={styles.countdownBox}>
-                  <Text style={styles.countdownNumber}>{daysLeft}</Text>
-                  <Text style={styles.countdownLabel}>{t("daysLeft")}</Text>
-                </View>
-                <View style={styles.heroDateInfo}>
-                  <Ionicons name="calendar" size={16} color="#D4AF37" />
-                  <Text style={styles.heroDateText}>
-                    {new Date(nextEvent.date).toLocaleDateString(getDateLocale(), { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </Text>
+            <LuxuryCard supLabel={t("nextHolyDay")}>
+              <View style={styles.heroContent}>
+                <Text style={styles.heroTitle}>{t(nextEvent.nameKey)}</Text>
+                <View style={styles.heroInfoRow}>
+                  <View style={styles.heroStat}>
+                    <Text style={styles.heroStatValue}>{daysLeft}</Text>
+                    <Text style={styles.heroStatLabel}>{t("daysLeft").toUpperCase()}</Text>
+                  </View>
+                  <View style={styles.heroDivider} />
+                  <View style={styles.heroDateInfo}>
+                    <Text style={styles.heroDateText}>
+                      {new Date(nextEvent.date).toLocaleDateString(getDateLocale(), { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </Text>
+                    <Text style={styles.hijriDateText}>{todayHijriText}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </LuxuryCard>
           )}
 
           <View style={styles.listHeader}>
-            <Text style={styles.listTitle}>{t("calendarRange")}</Text>
+            <Text style={styles.listSectionTitle}>{t("calendarRange").toUpperCase()}</Text>
+            <View style={styles.sectionLine} />
           </View>
 
           <View style={styles.listContainer}>
-            {DINI_GUNLER.map((item, index) => renderEventItem(item, index))}
+            {DINI_GUNLER.filter(event => {
+              const eventDate = new Date(event.date);
+              eventDate.setHours(0, 0, 0, 0);
+              const now = new Date();
+              now.setHours(0, 0, 0, 0);
+              // Only return events that are today or in the future
+              return eventDate.getTime() >= now.getTime();
+            }).map((item, index) => renderEventItem(item, index))}
           </View>
 
           <View style={{ height: 100 }} />
@@ -165,58 +286,54 @@ export default function DiniGunler() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { flex: 1, paddingTop: Platform.OS === "android" ? 40 : 10 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  headerTitle: { fontSize: 28, fontWeight: "300", color: "#E2E8F0", letterSpacing: 1 },
-  headerSubtitle: { fontSize: 13, color: "#D4AF37", marginTop: 4, fontStyle: "italic", opacity: 0.9 },
-  scroll: { paddingHorizontal: 16, paddingBottom: 20 },
+  mandalaImage: { opacity: 0.08, position: "absolute", top: 100, left: -150, transform: [{ scale: 1.5 }] },
+  header: { paddingHorizontal: 24, paddingVertical: 15, alignItems: "center" },
+  titleWrapper: { alignItems: "center" },
+  supTitle: { color: Colors.luxury.gold, fontSize: 12, fontWeight: "700", letterSpacing: 4, marginBottom: 4 },
+  mainTitle: { color: "#FFF", fontSize: 24, fontWeight: "200", letterSpacing: 2 },
+  goldDot: { width: 5, height: 5, borderRadius: 2.5, backgroundColor: Colors.luxury.gold, marginTop: 8 },
+  scroll: { paddingHorizontal: 20 },
 
-  heroCard: {
-    backgroundColor: "rgba(212, 175, 55, 0.08)",
-    borderRadius: 24, padding: 24, marginBottom: 30,
-    borderWidth: 1, borderColor: "rgba(212, 175, 55, 0.4)",
-    overflow: "hidden", position: "relative",
-    shadowColor: "#D4AF37", shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15, shadowRadius: 25, elevation: 8,
-  },
-  heroGlowIcon: { position: "absolute", right: -10, top: -10, transform: [{ scale: 4 }] },
-  heroSubtitle: { color: "#94A3B8", fontSize: 11, fontWeight: "700", letterSpacing: 2, marginBottom: 8 },
-  heroTitle: { color: "#E2E8F0", fontSize: 26, fontWeight: "bold", letterSpacing: 0.5 },
-  heroDivider: { height: 1, backgroundColor: "rgba(212, 175, 55, 0.2)", marginVertical: 18 },
-  heroFooter: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-  countdownBox: { flexDirection: "row", alignItems: "flex-end", gap: 6 },
-  countdownNumber: { color: "#D4AF37", fontSize: 44, fontWeight: "300", lineHeight: 48 },
-  countdownLabel: { color: "#D4AF37", fontSize: 12, fontWeight: "700", letterSpacing: 1, paddingBottom: 6 },
-  heroDateInfo: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "rgba(11, 16, 30, 0.5)", paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 },
-  heroDateText: { color: "#E2E8F0", fontSize: 13, fontWeight: "500" },
+  luxuryCardWrapper: { width: "100%", marginBottom: 30, position: "relative" },
+  goldBorder: { position: "absolute", top: -1, left: -1, right: -1, bottom: -1, borderRadius: 24 },
+  luxuryCardInner: { backgroundColor: "rgba(11, 16, 30, 0.8)", borderRadius: 23, padding: 25, overflow: "hidden" },
+  cardSupLabel: { color: Colors.luxury.gold, fontSize: 10, fontWeight: "800", letterSpacing: 2, marginBottom: 12, opacity: 0.8 },
+  cardTitle: { color: "#FFF", fontSize: 14, fontWeight: "800", letterSpacing: 2 },
+  cardHeader: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 15 },
+  headerDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.luxury.gold },
 
-  listHeader: { marginBottom: 15, paddingHorizontal: 5 },
-  listTitle: { color: "#D4AF37", fontSize: 16, fontWeight: "600", letterSpacing: 1 },
-  listContainer: { backgroundColor: "rgba(11, 16, 30, 0.6)", borderRadius: 20, padding: 5, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.05)" },
+  heroContent: { marginTop: 5 },
+  heroTitle: { color: "#FFF", fontSize: 28, fontWeight: "bold", marginBottom: 20 },
+  heroInfoRow: { flexDirection: "row", alignItems: "center" },
+  heroStat: { alignItems: "center" },
+  heroStatValue: { color: Colors.luxury.gold, fontSize: 42, fontWeight: "200", lineHeight: 46 },
+  heroStatLabel: { color: Colors.luxury.gold, fontSize: 10, fontWeight: "700", letterSpacing: 1 },
+  heroDivider: { width: 1, height: 40, backgroundColor: "rgba(212, 175, 55, 0.2)", marginHorizontal: 25 },
+  heroDateInfo: { flex: 1 },
+  heroDateText: { color: "#FFF", fontSize: 16, fontWeight: "500", marginBottom: 4 },
+  hijriDateText: { color: "rgba(255,255,255,0.4)", fontSize: 12, fontStyle: "italic" },
 
-  listItem: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 16, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: "rgba(255, 255, 255, 0.03)" },
+  listHeader: { flexDirection: "row", alignItems: "center", marginBottom: 20, gap: 15, paddingHorizontal: 5 },
+  listSectionTitle: { color: "rgba(255,255,255,0.3)", fontSize: 11, fontWeight: "800", letterSpacing: 3 },
+  sectionLine: { flex: 1, height: 1, backgroundColor: "rgba(255,255,255,0.05)" },
+
+  listContainer: { gap: 12 },
+  listItem: { borderRadius: 18, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.05)" },
+  listItemInner: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 18 },
   listItemPast: { opacity: 0.4 },
-  listItemToday: { backgroundColor: "rgba(45, 212, 191, 0.08)", borderRadius: 12 },
-  listItemNext: { backgroundColor: "rgba(212, 175, 55, 0.05)", borderRadius: 12 },
+  listLeft: { flexDirection: "row", alignItems: "center", gap: 15 },
+  dateDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: "rgba(255,255,255,0.1)" },
+  dateDotPast: { backgroundColor: "transparent", borderWidth: 1, borderColor: "rgba(255,255,255,0.2)" },
+  dateDotNext: { backgroundColor: Colors.luxury.gold, shadowColor: Colors.luxury.gold, shadowRadius: 5, shadowOpacity: 0.8 },
+  eventName: { color: "#FFF", fontSize: 15, fontWeight: "600", marginBottom: 4 },
+  eventDate: { color: "rgba(255,255,255,0.4)", fontSize: 13 },
+  textPast: { color: "rgba(255,255,255,0.3)", textDecorationLine: "line-through" },
+  textNext: { color: Colors.luxury.gold },
 
-  listLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
-  dateDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: "#64748B" },
-  dateDotPast: { backgroundColor: "#334155" },
-  dateDotNext: { backgroundColor: "#D4AF37", width: 10, height: 10, borderRadius: 5, shadowColor: "#D4AF37", shadowOpacity: 0.8, shadowRadius: 6, elevation: 4 },
-
-  eventName: { color: "#E2E8F0", fontSize: 15, fontWeight: "500", marginBottom: 4 },
-  eventDate: { color: "#94A3B8", fontSize: 13 },
-  textPast: { textDecorationLine: "line-through" },
-
-  pastLabel: { color: "#64748B", fontSize: 11, fontStyle: "italic" },
   badgeToday: { backgroundColor: "#2DD4BF", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-  badgeTodayText: { color: "#0B101E", fontSize: 11, fontWeight: "bold", textTransform: "uppercase" },
-  daysLeftPill: { backgroundColor: "rgba(255,255,255,0.05)", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-  daysLeftText: { color: "#94A3B8", fontSize: 11, fontWeight: "600" },
+  badgeTodayText: { color: "#0B101E", fontSize: 10, fontWeight: "800" },
+  upcomingPill: { flexDirection: "row", alignItems: "center", gap: 6 },
+  glowDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.luxury.gold },
+  upcomingText: { color: "rgba(255,255,255,0.2)", fontSize: 10, fontWeight: "800", textTransform: "uppercase" },
+  activeUpcomingText: { color: Colors.luxury.gold },
 });
